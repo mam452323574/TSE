@@ -1,0 +1,286 @@
+﻿
+> bolt-expo-starter@1.0.0 test
+> jest __tests__/screens/ScannerScreen.test.tsx -t disables scan type buttons when limit is reached
+
+node.exe : FAIL __tests
+__/screens/ScannerScree
+n.test.tsx
+Au caractère Ligne:1 : 
+1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (FAIL __tests_   
+ _/...Screen.test.t    
+sx:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  ScannerScreen
+    camera permissions
+      Ôùï skipped 
+shows loading spinner 
+when permission is 
+undefined
+      Ôùï skipped 
+shows permission 
+request UI when not 
+granted
+      Ôùï skipped 
+calls 
+requestPermission when 
+Autoriser button is 
+pressed
+    scan type selection
+      ├ù disables scan 
+type buttons when 
+limit is reached (318 
+ms)
+      Ôùï skipped 
+renders all scan type 
+buttons
+    welcome credits
+      Ôùï skipped 
+shows welcome credits 
+banner when available
+      Ôùï skipped 
+allows scan selection 
+with welcome credits 
+even if not otherwise 
+allowed
+    capture actions
+      Ôùï skipped 
+shows alert when 
+trying to capture 
+without selecting scan 
+type
+      Ôùï skipped 
+checks eligibility 
+before proceeding with 
+scan
+      Ôùï skipped 
+allows selecting scan 
+type when eligibility 
+check passes
+      Ôùï skipped 
+allows scan when 
+welcome credits are 
+available
+    image picker
+      Ôùï skipped 
+requires scan type 
+selection before 
+picking image
+    scan eligibility 
+refresh
+      Ôùï skipped 
+refreshes eligibility 
+when screen gains focus
+      Ôùï skipped 
+displays updated 
+eligibility counts
+    error handling
+      Ôùï skipped 
+handles eligibility 
+check error gracefully
+      Ôùï skipped 
+shows scan types even 
+when eligibility data 
+is unavailable
+
+  ÔùÅ ScannerScreen 
+ÔÇ║ scan type 
+selection ÔÇ║ disables 
+scan type buttons when 
+limit is reached
+
+    Element type is 
+invalid: expected a 
+string (for built-in 
+components) or a 
+class/function (for 
+composite components) 
+but got: undefined. 
+You likely forgot to 
+export your component 
+from the file it's 
+defined in, or you 
+might have mixed up 
+default and named 
+imports.
+
+    Check the render 
+method of 
+`ContextualPaywall`.
+
+    [0m [90m 209 
+|[39m       [90m// 
+Button should be 
+disabled when allowed 
+is false and no 
+welcome credits[39m
+     [90m 210 |[39m  
+     [90m// Pressing 
+a disabled button 
+doesn't trigger the 
+handler[39m
+    [31m[1m>[22m[39
+m[90m 211 |[39m      
+ fireEvent[33m.[39mpr
+ess(screen[33m.[39mge
+tByText([35m/Visage/[
+39m))[33m;[39m
+     [90m     |[39m  
+               
+[31m[1m^[22m[39m
+     [90m 212 |[39m
+     [90m 213 |[39m  
+     [90m// No alert 
+is expected because 
+the button is 
+disabled[39m
+     [90m 214 |[39m  
+     expect(alertSpy)[
+33m.[39mnot[33m.[39m
+toHaveBeenCalled()[33m
+;[39m[0m
+
+      at createFiberFro
+mTypeAndProps (node_mod
+ules/react-test-rendere
+r/cjs/react-test-render
+er.development.js:12185
+:28)
+      at 
+createFiberFromElement 
+(node_modules/react-tes
+t-renderer/cjs/react-te
+st-renderer.development
+.js:12199:14)
+      at createChild (n
+ode_modules/react-test-
+renderer/cjs/react-test
+-renderer.development.j
+s:4475:26)
+      at 
+reconcileChildrenArray 
+(node_modules/react-tes
+t-renderer/cjs/react-te
+st-renderer.development
+.js:4805:25)
+      at reconcileChild
+FibersImpl (node_module
+s/react-test-renderer/c
+js/react-test-renderer.
+development.js:5122:30)
+      at node_modules/r
+eact-test-renderer/cjs/
+react-test-renderer.dev
+elopment.js:5227:33
+      at 
+reconcileChildren (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:5
+735:13)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7551:13)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at fireEvent (nod
+e_modules/@testing-libr
+ary/react-native/src/fi
+re-event.ts:122:11)
+      at fireEvent [as 
+press] (node_modules/@t
+esting-library/react-na
+tive/src/fire-event.ts:
+130:3)
+      at Object.press (
+__tests__/screens/Scann
+erScreen.test.tsx:211:1
+7)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+
+Test Suites: 1 failed, 
+1 total
+Tests:       1 failed, 
+15 skipped, 16 total
+Snapshots:   0 total
+Time:        0.805 s, 
+estimated 3 s
+Ran all test suites 
+matching __tests__/scre
+ens/ScannerScreen.test.
+tsx with tests 
+matching "disables 
+scan type buttons when 
+limit is reached".

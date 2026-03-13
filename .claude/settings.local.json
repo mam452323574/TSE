@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx jest --testPathPattern=\"ScanPreviewScreen|ScannerScreen\" --no-coverage)",
+      "Bash(npx jest --testPathPatterns=\"ScanPreviewScreen|ScannerScreen\" --no-coverage)",
+      "Bash(npx jest --testPathPatterns=\"ScanPreviewScreen|ScannerScreen|n8nWebhook\" --no-coverage)",
+      "Bash(npx jest --testPathPatterns=\"n8nWebhook\" --no-coverage)"
+    ]
+  }
+}

@@ -1,0 +1,7668 @@
+﻿
+> bolt-expo-starter@1.0.0 test
+> jest
+
+node.exe : PASS __tests__/comp
+onents/FeatureGate.test.tsx
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo            
+  : NotSpecified:     (PASS 
+__tests__/...r    
+eGate.test.tsx:Strin    g) 
+[], RemoteExcepti    on
+    + FullyQualifiedErro    
+rId : NativeCommandE    rror
+ 
+PASS __tests__/components/Feat
+ureComparisonList.test.tsx
+PASS __tests__/components/Avat
+arPicker.test.tsx
+PASS __tests__/hooks/queries/u
+seScanEligibility.test.ts
+PASS __tests__/screens/EmailVe
+rificationScreen.test.tsx
+PASS __tests__/components/Feat
+ureComparisonTable.test.tsx
+PASS __tests__/screens/Exercis
+esScreen.test.tsx
+PASS __tests__/screens/LoginSc
+reen.test.tsx
+PASS __tests__/screens/Usernam
+eSetupScreen.test.tsx
+PASS __tests__/screens/Recipes
+Screen.test.tsx
+PASS __tests__/components/Erro
+rBoundary.test.tsx
+  ÔùÅ Console
+
+    console.log
+      [ErrorBoundary] 
+Emergency logout initiated
+
+      at log (components/Error
+Boundary.tsx:46:15)
+
+PASS __tests__/screens/SignUpS
+creen.test.tsx
+PASS 
+__tests__/services/api.test.ts
+  ÔùÅ Console
+
+    console.error
+      Error getting next scan 
+date: Error: 
+api_errors.unauthorized
+          at 
+ApiService.<anonymous> (C:\Use
+rs\maloh\Downloads\1-main\serv
+ices\api.ts:435:13)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 483 |[39m     
+  [36mreturn[39m result[33m
+.[39mnext_available_date 
+[33m||[39m 
+[36mnull[39m[33m;[39m
+     [90m 484 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+485 |[39m       console[33m.
+[39merror([32m'Error 
+getting next scan 
+date:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 486 |[39m       
+[36mreturn[39m 
+[36mnull[39m[33m;[39m
+     [90m 487 |[39m     }
+     [90m 488 |[39m   }[0m
+
+      at ApiService.error 
+(services/api.ts:485:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [API] Erreur analyse 
+N8n: {
+        type: 'ANALYSIS',
+        message: 'Analysis 
+service unavailable',
+        context: {
+          scanId: 'scan-123',
+          imageBase64: 
+'[base64]',
+          scanType: 'body',
+          userId: 'user-123',
+          analysisResult: { 
+success: false, error: 
+'Analysis service 
+unavailable' }
+        }
+      }
+
+    [0m [90m 824 |[39m     
+  [90m// Si c'est d├®j├á une 
+ApiError, on la propage[39m
+     [90m 825 |[39m       
+[36mif[39m (error 
+[36minstanceof[39m 
+[33mApiError[39m) {
+    [31m[1m>[22m[39m[90m 
+826 |[39m         console[33
+m.[39merror([32m'[API] 
+Erreur analyse 
+N8n:'[39m[33m,[39m {
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 827 |[39m         
+  type[33m:[39m error[33m.
+[39mtype[33m,[39m
+     [90m 828 |[39m         
+  message[33m:[39m error[33
+m.[39mmessage[33m,[39m
+     [90m 829 |[39m         
+  context[33m:[39m 
+error[33m.[39mcontext[0m
+
+      at ApiService.error 
+(services/api.ts:826:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [API] Erreur analyse 
+N8n: {
+        type: 'ANALYSIS',
+        message: "L'analyse a 
+├®chou├® sans donn├®es",
+        context: {
+          scanId: 'scan-123',
+          imageBase64: 
+'[base64]',
+          scanType: 'body',
+          userId: 'user-123',
+          analysisResult: { 
+success: true, data: null }
+        }
+      }
+
+    [0m [90m 824 |[39m     
+  [90m// Si c'est d├®j├á une 
+ApiError, on la propage[39m
+     [90m 825 |[39m       
+[36mif[39m (error 
+[36minstanceof[39m 
+[33mApiError[39m) {
+    [31m[1m>[22m[39m[90m 
+826 |[39m         console[33
+m.[39merror([32m'[API] 
+Erreur analyse 
+N8n:'[39m[33m,[39m {
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 827 |[39m         
+  type[33m:[39m error[33m.
+[39mtype[33m,[39m
+     [90m 828 |[39m         
+  message[33m:[39m error[33
+m.[39mmessage[33m,[39m
+     [90m 829 |[39m         
+  context[33m:[39m 
+error[33m.[39mcontext[0m
+
+      at ApiService.error 
+(services/api.ts:826:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.log
+      [API] Cr├®ation du scan 
+avec analyse: { scanType: 
+'health' }
+
+      at ApiService.log 
+(services/api.ts:870:13)
+
+    console.log
+      [API] D├®marrage 
+analyse N8n: { scanId: 
+'scan-123', scanType: 
+'health' }
+
+      at ApiService.log 
+(services/api.ts:877:15)
+
+    console.error
+      [API] Erreur inconnue, 
+tentative de remboursement... 
+Error: Analysis failed
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\api.test.ts:642:41)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 1001 |[39m
+     [90m 1002 |[39m       
+[90m// Erreur non g├®r├®e - 
+tenter un remboursement[39m
+    [31m[1m>[22m[39m[90m 
+1003 |[39m       console[33m
+.[39merror([32m'[API] 
+Erreur inconnue, tentative de 
+remboursement...'[39m[33m,[
+39m error)[33m;[39m
+     [90m      |[39m        
+       [31m[1m^[22m[39m
+     [90m 1004 |[39m
+     [90m 1005 |[39m       
+[36mtry[39m {
+     [90m 1006 |[39m        
+ [36mawait[39m [36mthis[39
+m[33m.[39mrefundScanCredit(s
+can[33m.[39mid[33m,[39m 
+scanType[33m,[39m scan[33m.
+[39m_usedWelcomeCredit)[33m;
+[39m[0m
+
+      at ApiService.error 
+(services/api.ts:1003:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [API] ├ëchec du 
+remboursement: ApiError: 
+Erreur lors du remboursement 
+du cr├®dit
+          at 
+ApiService.<anonymous> (C:\Use
+rs\maloh\Downloads\1-main\serv
+ices\api.ts:618:13)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5) {
+        type: 'UNKNOWN',
+        originalError: 
+TypeError: _supabase.supabase.
+from(...).select is not a 
+function
+            at 
+ApiService.select (C:\Users\ma
+loh\Downloads\1-main\services\
+api.ts:510:10)
+            at Generator.next 
+(<anonymous>)
+            at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+            at _next (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\@babel\runtime\helpers\
+asyncToGenerator.js:17:9)
+            at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5),
+        context: { scanId: 
+'scan-123', scanType: 
+'health', userId: 'user-123' }
+      }
+
+    [0m [90m 1006 |[39m    
+     [36mawait[39m [36mthis
+[39m[33m.[39mrefundScanCred
+it(scan[33m.[39mid[33m,[39
+m scanType[33m,[39m scan[33
+m.[39m_usedWelcomeCredit)[33
+m;[39m
+     [90m 1007 |[39m       
+} [36mcatch[39m 
+(refundError) {
+    [31m[1m>[22m[39m[90m 
+1008 |[39m         console[3
+3m.[39merror([32m'[API] 
+├ëchec du remboursement:'[39m
+[33m,[39m 
+refundError)[33m;[39m
+     [90m      |[39m        
+         [31m[1m^[22m[39m
+     [90m 1009 |[39m       }
+     [90m 1010 |[39m
+     [90m 1011 |[39m       
+[36mconst[39m apiError 
+[33m=[39m [36mnew[39m 
+[33mApiError[39m([0m
+
+      at ApiService.error 
+(services/api.ts:1008:17)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.log
+      [API] Cr├®ation du scan 
+avec analyse: { scanType: 
+'body' }
+
+      at ApiService.log 
+(services/api.ts:870:13)
+
+    console.log
+      [API] D├®marrage 
+analyse N8n: { scanId: 
+'scan-456', scanType: 'body' }
+
+      at ApiService.log 
+(services/api.ts:877:15)
+
+    console.log
+      [API] Analyse N8n 
+r├®ussie, mise ├á jour de la 
+base de donn├®es...
+
+      at ApiService.log 
+(services/api.ts:944:15)
+
+    console.error
+      [API] Erreur inconnue, 
+tentative de remboursement... 
+TypeError: _supabase.supabase.
+from(...).update(...).eq(...).
+select is not a function
+          at 
+ApiService.select (C:\Users\ma
+loh\Downloads\1-main\services\
+api.ts:953:10)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 1001 |[39m
+     [90m 1002 |[39m       
+[90m// Erreur non g├®r├®e - 
+tenter un remboursement[39m
+    [31m[1m>[22m[39m[90m 
+1003 |[39m       console[33m
+.[39merror([32m'[API] 
+Erreur inconnue, tentative de 
+remboursement...'[39m[33m,[
+39m error)[33m;[39m
+     [90m      |[39m        
+       [31m[1m^[22m[39m
+     [90m 1004 |[39m
+     [90m 1005 |[39m       
+[36mtry[39m {
+     [90m 1006 |[39m        
+ [36mawait[39m [36mthis[39
+m[33m.[39mrefundScanCredit(s
+can[33m.[39mid[33m,[39m 
+scanType[33m,[39m scan[33m.
+[39m_usedWelcomeCredit)[33m;
+[39m[0m
+
+      at ApiService.error 
+(services/api.ts:1003:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [API] ├ëchec du 
+remboursement: ApiError: 
+Erreur lors du remboursement 
+du cr├®dit
+          at 
+ApiService.<anonymous> (C:\Use
+rs\maloh\Downloads\1-main\serv
+ices\api.ts:618:13)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5) {
+        type: 'UNKNOWN',
+        originalError: 
+TypeError: _supabase.supabase.
+from(...).select is not a 
+function
+            at 
+ApiService.select (C:\Users\ma
+loh\Downloads\1-main\services\
+api.ts:510:10)
+            at Generator.next 
+(<anonymous>)
+            at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+            at _next (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\@babel\runtime\helpers\
+asyncToGenerator.js:17:9)
+            at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5),
+        context: { scanId: 
+'scan-456', scanType: 'body', 
+userId: 'user-123' }
+      }
+
+    [0m [90m 1006 |[39m    
+     [36mawait[39m [36mthis
+[39m[33m.[39mrefundScanCred
+it(scan[33m.[39mid[33m,[39
+m scanType[33m,[39m scan[33
+m.[39m_usedWelcomeCredit)[33
+m;[39m
+     [90m 1007 |[39m       
+} [36mcatch[39m 
+(refundError) {
+    [31m[1m>[22m[39m[90m 
+1008 |[39m         console[3
+3m.[39merror([32m'[API] 
+├ëchec du remboursement:'[39m
+[33m,[39m 
+refundError)[33m;[39m
+     [90m      |[39m        
+         [31m[1m^[22m[39m
+     [90m 1009 |[39m       }
+     [90m 1010 |[39m
+     [90m 1011 |[39m       
+[36mconst[39m apiError 
+[33m=[39m [36mnew[39m 
+[33mApiError[39m([0m
+
+      at ApiService.error 
+(services/api.ts:1008:17)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+PASS __tests__/screens/Premium
+UpgradeScreen.test.tsx
+  ÔùÅ Console
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 76 |[39m
+     [90m 77 |[39m       
+[36mif[39m (error) 
+[36mthrow[39m 
+error[33m;[39m
+    [31m[1m>[22m[39m[90m 
+78 |[39m       
+setFeatures(data [33m||[39m 
+[])[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 79 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 80 |[39m       con
+sole[33m.[39merror([32m'Err
+or loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setFeatures (screens/
+PremiumUpgradeScreen.tsx:78:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 80 |[39m      
+ console[33m.[39merror([32m
+'Error loading 
+features:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m 81 |[39m     } 
+[36mfinally[39m {
+    [31m[1m>[22m[39m[90m 
+82 |[39m       setLoading([3
+6mfalse[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 83 |[39m     }
+     [90m 84 |[39m   
+}[33m;[39m
+     [90m 85 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setLoading (screens/P
+remiumUpgradeScreen.tsx:82:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+PremiumUpgradeScreen inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 59 |[39m      
+ [36mconst[39m product 
+[33m=[39m [36mawait[39m pa
+ymentService[33m.[39mgetProd
+uctDetails()[33m;[39m
+     [90m 60 |[39m       
+[36mif[39m (product 
+[33m&&[39m product[33m.[39
+mlocalizedPrice) {
+    [31m[1m>[22m[39m[90m 
+61 |[39m         setProductPr
+ice(product[33m.[39mlocalize
+dPrice)[33m;[39m
+     [90m    |[39m         
+[31m[1m^[22m[39m
+     [90m 62 |[39m       }
+     [90m 63 |[39m     } 
+[36mcatch[39m (error) {
+     [90m 64 |[39m       con
+sole[33m.[39merror([32m'Err
+or initializing 
+payment:'[39m[33m,[39m 
+error)[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setProductPrice (scre
+ens/PremiumUpgradeScreen.tsx:6
+1:9)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+PASS __tests__/hooks/queries/u
+sePremiumFeatures.test.ts
+PASS __tests__/components/Butt
+on.test.tsx
+PASS __tests__/screens/Analyti
+csScreen.test.tsx
+PASS __tests__/hooks/queries/u
+seExercises.test.ts
+PASS __tests__/hooks/queries/u
+seRecipes.test.ts
+PASS __tests__/hooks/queries/u
+seAnalytics.test.ts
+PASS __tests__/hooks/useNotifi
+cations.test.tsx
+PASS __tests__/hooks/queries/u
+seDashboard.test.ts
+PASS __tests__/components/Moda
+lHandle.test.tsx
+PASS __tests__/hooks/queries/u
+seNotificationsQuery.test.ts
+PASS __tests__/components/Prod
+uctCard.test.tsx
+PASS __tests__/contexts/Notifi
+cationContext.test.tsx
+  ÔùÅ Console
+
+    console.error
+      An update to 
+NotificationProvider inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 40 |[39m
+     [90m 41 |[39m     
+[36mif[39m 
+([33m![39merror 
+[33m&&[39m count 
+[33m!==[39m [36mnull[39m) 
+{
+    [31m[1m>[22m[39m[90m 
+42 |[39m       setNotificatio
+nCount(count)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 43 |[39m       set
+HasUnreadNotifications(count 
+[33m>[39m 
+[35m0[39m)[33m;[39m
+     [90m 44 |[39m     }
+     [90m 45 |[39m   
+}[33m,[39m 
+[user])[33m;[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at setNotificationCount 
+(contexts/NotificationContext.
+tsx:42:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      An update to 
+NotificationProvider inside a 
+test was not wrapped in 
+act(...).
+      
+      When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+      
+      act(() => {
+        /* fire events that 
+update state */
+      });
+      /* assert on the output 
+*/
+      
+      This ensures that 
+you're testing the behavior 
+the user would see in the 
+browser. Learn more at https:/
+/react.dev/link/wrap-tests-wit
+h-act
+
+    [0m [90m 41 |[39m     
+[36mif[39m 
+([33m![39merror 
+[33m&&[39m count 
+[33m!==[39m [36mnull[39m) 
+{
+     [90m 42 |[39m       set
+NotificationCount(count)[33m;
+[39m
+    [31m[1m>[22m[39m[90m 
+43 |[39m       setHasUnreadNo
+tifications(count [33m>[39m 
+[35m0[39m)[33m;[39m
+     [90m    |[39m       
+[31m[1m^[22m[39m
+     [90m 44 |[39m     }
+     [90m 45 |[39m   
+}[33m,[39m 
+[user])[33m;[39m
+     [90m 46 |[39m[0m
+
+      at node_modules/react-te
+st-renderer/cjs/react-test-ren
+derer.development.js:11801:19
+      at runWithFiberInDEV (no
+de_modules/react-test-renderer
+/cjs/react-test-renderer.devel
+opment.js:1574:13)
+      at warnIfUpdatesNotWrapp
+edWithActDEV (node_modules/rea
+ct-test-renderer/cjs/react-tes
+t-renderer.development.js:1180
+0:9)
+      at 
+scheduleUpdateOnFiber (node_mo
+dules/react-test-renderer/cjs/
+react-test-renderer.developmen
+t.js:10326:9)
+      at 
+dispatchSetStateInternal (node
+_modules/react-test-renderer/c
+js/react-test-renderer.develop
+ment.js:4148:13)
+      at dispatchSetState (nod
+e_modules/react-test-renderer/
+cjs/react-test-renderer.develo
+pment.js:4107:7)
+      at 
+setHasUnreadNotifications (con
+texts/NotificationContext.tsx:
+43:7)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+PASS __tests__/screens/HomeScr
+een.test.tsx
+PASS __tests__/contexts/AuthCo
+ntext.test.tsx
+  ÔùÅ Console
+
+    console.error
+      [SignUp] IP Check 
+exception: TypeError: Cannot 
+read properties of undefined 
+(reading 'json')
+          at json (C:\Users\ma
+loh\Downloads\1-main\contexts\
+AuthContext.tsx:188:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 201 |[39m     
+    [36mthrow[39m 
+error[33m;[39m
+     [90m 202 |[39m       }
+    [31m[1m>[22m[39m[90m 
+203 |[39m       console[33m.
+[39merror([32m'[SignUp] IP 
+Check 
+exception:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 204 |[39m       
+[90m// Decide: Fail open 
+(allow signup) on network 
+error?[39m
+     [90m 205 |[39m       
+[90m// Keeping it open for 
+now to prevent blocking on 
+connectivity issues[39m
+     [90m 206 |[39m     
+}[0m
+
+      at error (contexts/AuthC
+ontext.tsx:203:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [SignUp] IP Check 
+exception: TypeError: Cannot 
+read properties of undefined 
+(reading 'json')
+          at json (C:\Users\ma
+loh\Downloads\1-main\contexts\
+AuthContext.tsx:188:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 201 |[39m     
+    [36mthrow[39m 
+error[33m;[39m
+     [90m 202 |[39m       }
+    [31m[1m>[22m[39m[90m 
+203 |[39m       console[33m.
+[39merror([32m'[SignUp] IP 
+Check 
+exception:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 204 |[39m       
+[90m// Decide: Fail open 
+(allow signup) on network 
+error?[39m
+     [90m 205 |[39m       
+[90m// Keeping it open for 
+now to prevent blocking on 
+connectivity issues[39m
+     [90m 206 |[39m     
+}[0m
+
+      at error (contexts/AuthC
+ontext.tsx:203:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [Verification] Error: 
+Code incorrect
+
+    [0m [90m 642 |[39m     
+    }
+     [90m 643 |[39m
+    [31m[1m>[22m[39m[90m 
+644 |[39m         console[33
+m.[39merror([32m'[Verificati
+on] Error:'[39m[33m,[39m da
+ta[33m.[39merror)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 645 |[39m         
+[36mthrow[39m [36mnew[39m 
+[33mError[39m(errorMessage)
+[33m;[39m
+     [90m 646 |[39m       }
+     [90m 647 |[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:644:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [Verification] Error 
+verifying code: Error: Code 
+incorrect
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\contexts
+\AuthContext.tsx:645:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 648 |[39m     
+  [36mreturn[39m 
+data[33m.[39mverified 
+[33m===[39m 
+[36mtrue[39m[33m;[39m
+     [90m 649 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+650 |[39m       console[33m.
+[39merror([32m'[Verification
+] Error verifying 
+code:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 651 |[39m       
+[36mthrow[39m 
+error[33m;[39m
+     [90m 652 |[39m     }
+     [90m 653 |[39m   
+}[33m;[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:650:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [SignOut] React Query 
+cache clear error: TypeError: 
+A dynamic import callback was 
+invoked without 
+--experimental-vm-modules
+          at importModuleDynam
+icallyCallback (node:internal/
+modules/esm/utils:277:11)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\contexts
+\AuthContext.tsx:745:9)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at Object.apply [as 
+signOut] (C:\Users\maloh\Downl
+oads\1-main\contexts\AuthConte
+xt.tsx:736:16)
+          at signOut (C:\Users
+\maloh\Downloads\1-main\__test
+s__\contexts\AuthContext.test.
+tsx:445:30)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:14:12
+          at callback (C:\User
+s\maloh\Downloads\1-main\node_
+modules\@testing-library\react
+-native\src\act.ts:31:24)
+          at process.env.NODE_
+ENV.exports.act (C:\Users\malo
+h\Downloads\1-main\node_module
+s\react\cjs\react.development.
+js:789:22)
+          at 
+actImplementation (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\@testing-library\react-nat
+ive\src\act.ts:30:25)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\contexts\AuthContext.test.ts
+x:444:16)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9) {
+        code: 'ERR_VM_DYNAMIC_
+IMPORT_CALLBACK_MISSING_FLAG'
+      }
+
+    [0m [90m 747 |[39m     
+    console[33m.[39mlog([32
+m'[SignOut] React Query cache 
+cleared'[39m)[33m;[39m
+     [90m 748 |[39m       } 
+[36mcatch[39m (queryError) {
+    [31m[1m>[22m[39m[90m 
+749 |[39m         console[33
+m.[39merror([32m'[SignOut] 
+React Query cache clear 
+error:'[39m[33m,[39m 
+queryError)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 750 |[39m       }
+     [90m 751 |[39m
+     [90m 752 |[39m       
+[90m// Purger toutes les 
+cl├®s AsyncStorage li├®es ├á 
+l'utilisateur[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:749:17)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.log
+      [SignOut] AsyncStorage 
+cleaned
+
+      at Object.log (contexts/
+AuthContext.tsx:759:17)
+
+    console.error
+      [SignOut] React Query 
+cache clear error: TypeError: 
+A dynamic import callback was 
+invoked without 
+--experimental-vm-modules
+          at importModuleDynam
+icallyCallback (node:internal/
+modules/esm/utils:277:11)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\contexts
+\AuthContext.tsx:745:9)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at Object.apply [as 
+signOut] (C:\Users\maloh\Downl
+oads\1-main\contexts\AuthConte
+xt.tsx:736:16)
+          at signOut (C:\Users
+\maloh\Downloads\1-main\__test
+s__\contexts\AuthContext.test.
+tsx:465:32)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:14:12
+          at callback (C:\User
+s\maloh\Downloads\1-main\node_
+modules\@testing-library\react
+-native\src\act.ts:31:24)
+          at process.env.NODE_
+ENV.exports.act (C:\Users\malo
+h\Downloads\1-main\node_module
+s\react\cjs\react.development.
+js:789:22)
+          at 
+actImplementation (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\@testing-library\react-nat
+ive\src\act.ts:30:25)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\contexts\AuthContext.test.ts
+x:464:12)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9) {
+        code: 'ERR_VM_DYNAMIC_
+IMPORT_CALLBACK_MISSING_FLAG'
+      }
+
+    [0m [90m 747 |[39m     
+    console[33m.[39mlog([32
+m'[SignOut] React Query cache 
+cleared'[39m)[33m;[39m
+     [90m 748 |[39m       } 
+[36mcatch[39m (queryError) {
+    [31m[1m>[22m[39m[90m 
+749 |[39m         console[33
+m.[39merror([32m'[SignOut] 
+React Query cache clear 
+error:'[39m[33m,[39m 
+queryError)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 750 |[39m       }
+     [90m 751 |[39m
+     [90m 752 |[39m       
+[90m// Purger toutes les 
+cl├®s AsyncStorage li├®es ├á 
+l'utilisateur[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:749:17)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.log
+      [SignOut] AsyncStorage 
+cleaned
+
+      at Object.log (contexts/
+AuthContext.tsx:759:17)
+
+    console.error
+      [SignOut] Supabase sign 
+out error: { message: 'Sign 
+out failed' }
+
+    [0m [90m 765 |[39m     
+  [36mconst[39m { error } 
+[33m=[39m [36mawait[39m su
+pabase[33m.[39mauth[33m.[3
+9msignOut({ scope[33m:[39m 
+[32m'local'[39m 
+})[33m;[39m
+     [90m 766 |[39m       
+[36mif[39m (error) {
+    [31m[1m>[22m[39m[90m 
+767 |[39m         console[33
+m.[39merror([32m'[SignOut] 
+Supabase sign out 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 768 |[39m         
+[36mthrow[39m 
+error[33m;[39m
+     [90m 769 |[39m       }
+     [90m 770 |[39m     } 
+[36mcatch[39m (error) {[0m
+
+      at Object.error (context
+s/AuthContext.tsx:767:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [SignOut] Error during 
+sign out: { message: 'Sign 
+out failed' }
+
+    [0m [90m 769 |[39m     
+  }
+     [90m 770 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+771 |[39m       console[33m.
+[39merror([32m'[SignOut] 
+Error during sign 
+out:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 772 |[39m       
+[90m// S'assurer que les 
+├®tats sont r├®initialis├®s 
+m├¬me en cas d'erreur[39m
+     [90m 773 |[39m       se
+tUserProfile([36mnull[39m)[
+33m;[39m
+     [90m 774 |[39m       se
+tUser([36mnull[39m)[33m;[3
+9m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:771:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [TrustedDevice] Error 
+adding device: { message: 
+'Insert failed' }
+
+    [0m [90m 697 |[39m
+     [90m 698 |[39m       
+[36mif[39m (error) {
+    [31m[1m>[22m[39m[90m 
+699 |[39m         console[33
+m.[39merror([32m'[TrustedDev
+ice] Error adding 
+device:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 700 |[39m         
+[36mthrow[39m 
+error[33m;[39m
+     [90m 701 |[39m       }
+     [90m 702 |[39m     } 
+[36mcatch[39m (error) {[0m
+
+      at Object.error (context
+s/AuthContext.tsx:699:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [TrustedDevice] Error 
+adding device: { message: 
+'Insert failed' }
+
+    [0m [90m 701 |[39m     
+  }
+     [90m 702 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+703 |[39m       console[33m.
+[39merror([32m'[TrustedDevic
+e] Error adding 
+device:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 704 |[39m       
+[36mthrow[39m 
+error[33m;[39m
+     [90m 705 |[39m     }
+     [90m 706 |[39m   
+}[33m;[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:703:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+PASS __tests__/contexts/BadgeC
+ontext.test.tsx
+PASS __tests__/components/Acti
+onCard.test.tsx
+PASS __tests__/components/Sett
+ingsCog.test.tsx
+PASS __tests__/screens/ScanPre
+viewScreen.test.tsx
+PASS __tests__/components/OAut
+hButton.test.tsx
+PASS __tests__/components/Noti
+ficationBell.test.tsx
+PASS __tests__/hooks/useProtec
+tedRoute.test.tsx
+PASS __tests__/components/Next
+ScanTimer.test.tsx
+PASS __tests__/components/Cond
+itionCard.test.tsx
+PASS __tests__/components/Scan
+LimitIndicator.test.tsx
+PASS __tests__/components/Anim
+atedTabBarIcon.test.tsx
+PASS __tests__/components/Succ
+essConfetti.test.tsx
+PASS __tests__/components/Came
+raGuide.test.tsx
+PASS __tests__/components/Acco
+untBadge.test.tsx
+PASS __tests__/services/paymen
+t.test.ts
+  ÔùÅ Console
+
+    console.error
+      [PaymentService] 
+Initialization error: Error: 
+Init failed
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\payment.test.ts:84:
+48)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 48 |[39m      
+   [36mreturn[39m[33m;[39m
+     [90m 49 |[39m       }
+    [31m[1m>[22m[39m[90m 
+50 |[39m       console[33m.
+[39merror([32m'[PaymentServic
+e] Initialization 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+     [31m[1m^[22m[39m
+     [90m 51 |[39m       
+[36mthrow[39m [36mnew[39m 
+[33mError[39m([32m'Failed 
+to initialize payment 
+service'[39m)[33m;[39m
+     [90m 52 |[39m     }
+     [90m 53 |[39m   }[0m
+
+      at PaymentService.error 
+(services/payment.ts:50:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [PaymentService] Error 
+fetching products: Error: 
+Fetch error
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\payment.test.ts:130
+:45)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m  99 |[39m     
+  [36mreturn[39m 
+[36mnull[39m[33m;[39m
+     [90m 100 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+101 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Error fetching 
+products:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 102 |[39m       
+[36mreturn[39m 
+[36mnull[39m[33m;[39m
+     [90m 103 |[39m     }
+     [90m 104 |[39m   }[0m
+
+      at PaymentService.error 
+(services/payment.ts:101:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [PaymentService] 
+Purchase error: Error: User 
+cancelled
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\payment.test.ts:156
+:27)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12) {
+        code: 
+'E_USER_CANCELLED'
+      }
+
+    [0m [90m 121 |[39m     
+  }[33m;[39m
+     [90m 122 |[39m     } 
+[36mcatch[39m 
+(error[33m:[39m any) {
+    [31m[1m>[22m[39m[90m 
+123 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Purchase 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 124 |[39m
+     [90m 125 |[39m       
+[36mif[39m 
+(error[33m.[39mcode 
+[33m===[39m 
+[32m'E_USER_CANCELLED'[39m) 
+{
+     [90m 126 |[39m         
+[36mreturn[39m {[0m
+
+      at PaymentService.error 
+(services/payment.ts:123:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [PaymentService] 
+Purchase error: Error: 
+Purchase failed
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\payment.test.ts:167
+:29)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12) {
+        code: 
+'E_PURCHASE_ERROR'
+      }
+
+    [0m [90m 121 |[39m     
+  }[33m;[39m
+     [90m 122 |[39m     } 
+[36mcatch[39m 
+(error[33m:[39m any) {
+    [31m[1m>[22m[39m[90m 
+123 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Purchase 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 124 |[39m
+     [90m 125 |[39m       
+[36mif[39m 
+(error[33m.[39mcode 
+[33m===[39m 
+[32m'E_USER_CANCELLED'[39m) 
+{
+     [90m 126 |[39m         
+[36mreturn[39m {[0m
+
+      at PaymentService.error 
+(services/payment.ts:123:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [PaymentService] 
+Verification error: Error: 
+Unauthorized
+          at 
+PaymentService.<anonymous> (C:
+\Users\maloh\Downloads\1-main\
+services\payment.ts:178:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 188 |[39m     
+  }
+     [90m 189 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+190 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Verification 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 191 |[39m       
+[36mthrow[39m 
+error[33m;[39m
+     [90m 192 |[39m     }
+     [90m 193 |[39m   }[0m
+
+      at PaymentService.error 
+(services/payment.ts:190:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [PaymentService] 
+Restore error: Error: 
+Unauthorized
+          at 
+PaymentService.<anonymous> (C:
+\Users\maloh\Downloads\1-main\
+services\payment.ts:178:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 229 |[39m     
+  }[33m;[39m
+     [90m 230 |[39m     } 
+[36mcatch[39m 
+(error[33m:[39m any) {
+    [31m[1m>[22m[39m[90m 
+231 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Restore 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 232 |[39m       
+[36mreturn[39m {
+     [90m 233 |[39m         
+success[33m:[39m 
+[36mfalse[39m[33m,[39m
+     [90m 234 |[39m         
+message[33m:[39m 
+error[33m.[39mmessage 
+[33m||[39m [32m'Failed to 
+restore 
+purchases'[39m[33m,[39m[0m
+
+      at PaymentService.error 
+(services/payment.ts:231:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [PaymentService] 
+Verification error: Error: 
+HTTP error: 500
+          at 
+PaymentService.<anonymous> (C:
+\Users\maloh\Downloads\1-main\
+services\payment.ts:178:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 188 |[39m     
+  }
+     [90m 189 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+190 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Verification 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 191 |[39m       
+[36mthrow[39m 
+error[33m;[39m
+     [90m 192 |[39m     }
+     [90m 193 |[39m   }[0m
+
+      at PaymentService.error 
+(services/payment.ts:190:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [PaymentService] 
+Restore error: Error: HTTP 
+error: 500
+          at 
+PaymentService.<anonymous> (C:
+\Users\maloh\Downloads\1-main\
+services\payment.ts:178:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 229 |[39m     
+  }[33m;[39m
+     [90m 230 |[39m     } 
+[36mcatch[39m 
+(error[33m:[39m any) {
+    [31m[1m>[22m[39m[90m 
+231 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Restore 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 232 |[39m       
+[36mreturn[39m {
+     [90m 233 |[39m         
+success[33m:[39m 
+[36mfalse[39m[33m,[39m
+     [90m 234 |[39m         
+message[33m:[39m 
+error[33m.[39mmessage 
+[33m||[39m [32m'Failed to 
+restore 
+purchases'[39m[33m,[39m[0m
+
+      at PaymentService.error 
+(services/payment.ts:231:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [PaymentService] 
+Verification error: Error: 
+HTTP error: 500
+          at 
+PaymentService.<anonymous> (C:
+\Users\maloh\Downloads\1-main\
+services\payment.ts:178:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 188 |[39m     
+  }
+     [90m 189 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+190 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Verification 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 191 |[39m       
+[36mthrow[39m 
+error[33m;[39m
+     [90m 192 |[39m     }
+     [90m 193 |[39m   }[0m
+
+      at PaymentService.error 
+(services/payment.ts:190:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [PaymentService] 
+Restore error: Error: HTTP 
+error: 500
+          at 
+PaymentService.<anonymous> (C:
+\Users\maloh\Downloads\1-main\
+services\payment.ts:178:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 229 |[39m     
+  }[33m;[39m
+     [90m 230 |[39m     } 
+[36mcatch[39m 
+(error[33m:[39m any) {
+    [31m[1m>[22m[39m[90m 
+231 |[39m       console[33m.
+[39merror([32m'[PaymentServi
+ce] Restore 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 232 |[39m       
+[36mreturn[39m {
+     [90m 233 |[39m         
+success[33m:[39m 
+[36mfalse[39m[33m,[39m
+     [90m 234 |[39m         
+message[33m:[39m 
+error[33m.[39mmessage 
+[33m||[39m [32m'Failed to 
+restore 
+purchases'[39m[33m,[39m[0m
+
+      at PaymentService.error 
+(services/payment.ts:231:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+PASS __tests__/components/Load
+ingSpinner.test.tsx
+PASS __tests__/components/Fade
+InView.test.tsx
+PASS __tests__/components/Erro
+rMessage.test.tsx
+PASS __tests__/services/supaba
+se.test.ts
+PASS __tests__/services/scanEl
+igibility.test.ts
+  ÔùÅ Console
+
+    console.warn
+      [API] Backend rejected 
+super scan. Using client-side 
+fallback.
+
+    [0m [90m 391 |[39m     
+  [90m// FALLBACK: Si 
+l'erreur est "Invalid scan 
+type" pour "super", on g├¿re 
+localement[39m
+     [90m 392 |[39m       
+[36mif[39m (scanType 
+[33m===[39m 
+[32m'super'[39m 
+[33m&&[39m 
+error[33m.[39merror 
+[33m===[39m [32m'Invalid 
+scan type'[39m) {
+    [31m[1m>[22m[39m[90m 
+393 |[39m         console[33
+m.[39mwarn([32m'[API] 
+Backend rejected super scan. 
+Using client-side 
+fallback.'[39m)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 394 |[39m
+     [90m 395 |[39m         
+[90m// Cr├®er l'entr├®e scan 
+directement[39m
+     [90m 396 |[39m         
+[36mconst[39m { 
+data[33m:[39m 
+scanRecord[33m,[39m 
+error[33m:[39m scanError } 
+[33m=[39m [36mawait[39m 
+supabase[0m
+
+      at ApiService.warn 
+(services/api.ts:393:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+PASS __tests__/screens/Scanner
+Screen.test.tsx
+PASS __tests__/components/Dail
+yStat.test.tsx
+PASS __tests__/hooks/queries/i
+ndex.test.ts
+PASS __tests__/backend_simulat
+ion.test.ts
+PASS __tests__/backend_scan_lo
+gic.test.ts
+PASS __tests__/services/device
+Fingerprint.test.ts
+  ÔùÅ Console
+
+    console.error
+      [DeviceFingerprint] 
+Error: Error: Read failed
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\deviceFingerprint.t
+est.ts:82:84)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 64 |[39m     
+[36mreturn[39m 
+newFingerprint[33m;[39m
+     [90m 65 |[39m   } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+66 |[39m     console[33m.[3
+9merror([32m'[DeviceFingerpri
+nt] Error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+   [31m[1m^[22m[39m
+     [90m 67 |[39m     
+[36mreturn[39m 
+[36mawait[39m generateFinger
+print()[33m;[39m
+     [90m 68 |[39m   }
+     [90m 69 |[39m }[0m
+
+      at error (services/devic
+eFingerprint.ts:66:13)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [DeviceFingerprint] 
+Error: Error: Write failed
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\deviceFingerprint.t
+est.ts:94:84)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 64 |[39m     
+[36mreturn[39m 
+newFingerprint[33m;[39m
+     [90m 65 |[39m   } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+66 |[39m     console[33m.[3
+9merror([32m'[DeviceFingerpri
+nt] Error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+   [31m[1m^[22m[39m
+     [90m 67 |[39m     
+[36mreturn[39m 
+[36mawait[39m generateFinger
+print()[33m;[39m
+     [90m 68 |[39m   }
+     [90m 69 |[39m }[0m
+
+      at error (services/devic
+eFingerprint.ts:66:13)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [DeviceFingerprint] 
+Error: Error: Read failed
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\deviceFingerprint.t
+est.ts:106:84)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 64 |[39m     
+[36mreturn[39m 
+newFingerprint[33m;[39m
+     [90m 65 |[39m   } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+66 |[39m     console[33m.[3
+9merror([32m'[DeviceFingerpri
+nt] Error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+   [31m[1m^[22m[39m
+     [90m 67 |[39m     
+[36mreturn[39m 
+[36mawait[39m generateFinger
+print()[33m;[39m
+     [90m 68 |[39m   }
+     [90m 69 |[39m }[0m
+
+      at error (services/devic
+eFingerprint.ts:66:13)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+PASS __tests__/hooks/useFramew
+orkReady.test.ts
+PASS __tests__/services/naviga
+tion.test.ts
+  ÔùÅ Console
+
+    console.error
+      [Navigation] Error 
+navigating to notifications: 
+Error: Navigation error
+          at C:\Users\maloh\Do
+wnloads\1-main\__tests__\servi
+ces\navigation.test.ts:49:15
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-mock\build\index.js:397:39
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-mock\build\index.js:404:13
+          at mockConstructor (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-mock\build
+\index.js:148:19)
+          at Object.mockPush 
+[as push] (C:\Users\maloh\Down
+loads\1-main\__tests__\service
+s\navigation.test.ts:12:29)
+          at 
+NavigationService.push [as 
+navigateToNotifications] (C:\U
+sers\maloh\Downloads\1-main\se
+rvices\navigation.ts:48:14)
+          at 
+navigateToNotifications (C:\Us
+ers\maloh\Downloads\1-main\__t
+ests__\services\navigation.tes
+t.ts:52:38)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\expect\build\index.js:182
+4:9)
+          at 
+Object.throwingMatcher [as 
+toThrow] (C:\Users\maloh\Downl
+oads\1-main\node_modules\expec
+t\build\index.js:2235:93)
+          at Object.toThrow (C
+:\Users\maloh\Downloads\1-main
+\__tests__\services\navigation
+.test.ts:52:69)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 48 |[39m      
+ router[33m.[39mpush([32m'/
+notifications'[39m)[33m;[39
+m
+     [90m 49 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+50 |[39m       console[33m.
+[39merror([32m'[Navigation] 
+Error navigating to notificati
+ons:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+     [31m[1m^[22m[39m
+     [90m 51 |[39m     }
+     [90m 52 |[39m   }
+     [90m 53 |[39m[0m
+
+      at 
+NavigationService.error [as 
+navigateToNotifications] 
+(services/navigation.ts:50:15)
+      at 
+navigateToNotifications (__tes
+ts__/services/navigation.test.
+ts:52:38)
+      at Object.<anonymous> (n
+ode_modules/expect/build/index
+.js:1824:9)
+      at 
+Object.throwingMatcher [as 
+toThrow] (node_modules/expect/
+build/index.js:2235:93)
+      at Object.toThrow (__tes
+ts__/services/navigation.test.
+ts:52:69)
+
+    console.error
+      [Navigation] Error in 
+dismissAllModalsAndNavigate: 
+Error: First replace error
+          at C:\Users\maloh\Do
+wnloads\1-main\__tests__\servi
+ces\navigation.test.ts:121:17
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-mock\build\index.js:397:39
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-mock\build\index.js:404:13
+          at mockConstructor (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-mock\build
+\index.js:148:19)
+          at 
+Object.mockReplace [as 
+replace] (C:\Users\maloh\Downl
+oads\1-main\__tests__\services
+\navigation.test.ts:11:32)
+          at 
+NavigationService.replace (C:\
+Users\maloh\Downloads\1-main\s
+ervices\navigation.ts:25:14)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 25 |[39m      
+ 
+router[33m.[39mreplace(path 
+[36mas[39m any)[33m;[39m
+     [90m 26 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+27 |[39m       console[33m.
+[39merror([32m'[Navigation] 
+Error in dismissAllModalsAndNa
+vigate:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+     [31m[1m^[22m[39m
+     [90m 28 |[39m       
+[36mtry[39m {
+     [90m 29 |[39m         
+router[33m.[39mreplace(path 
+[36mas[39m any)[33m;[39m
+     [90m 30 |[39m       } 
+[36mcatch[39m 
+(fallbackError) {[0m
+
+      at 
+NavigationService.error 
+(services/navigation.ts:27:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+PASS __tests__/components/Circ
+ularProgress.test.tsx
+PASS __tests__/integration/aut
+hFlow.test.tsx
+  ÔùÅ Console
+
+    console.error
+      [SignUp] IP Check 
+exception: TypeError: Cannot 
+read properties of undefined 
+(reading 'json')
+          at json (C:\Users\ma
+loh\Downloads\1-main\contexts\
+AuthContext.tsx:188:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 201 |[39m     
+    [36mthrow[39m 
+error[33m;[39m
+     [90m 202 |[39m       }
+    [31m[1m>[22m[39m[90m 
+203 |[39m       console[33m.
+[39merror([32m'[SignUp] IP 
+Check 
+exception:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 204 |[39m       
+[90m// Decide: Fail open 
+(allow signup) on network 
+error?[39m
+     [90m 205 |[39m       
+[90m// Keeping it open for 
+now to prevent blocking on 
+connectivity issues[39m
+     [90m 206 |[39m     
+}[0m
+
+      at error (contexts/AuthC
+ontext.tsx:203:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [SignUp] IP Check 
+exception: TypeError: Cannot 
+read properties of undefined 
+(reading 'json')
+          at json (C:\Users\ma
+loh\Downloads\1-main\contexts\
+AuthContext.tsx:188:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 201 |[39m     
+    [36mthrow[39m 
+error[33m;[39m
+     [90m 202 |[39m       }
+    [31m[1m>[22m[39m[90m 
+203 |[39m       console[33m.
+[39merror([32m'[SignUp] IP 
+Check 
+exception:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 204 |[39m       
+[90m// Decide: Fail open 
+(allow signup) on network 
+error?[39m
+     [90m 205 |[39m       
+[90m// Keeping it open for 
+now to prevent blocking on 
+connectivity issues[39m
+     [90m 206 |[39m     
+}[0m
+
+      at error (contexts/AuthC
+ontext.tsx:203:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [Verification] Error: 
+Code invalide ou expir├®
+
+    [0m [90m 642 |[39m     
+    }
+     [90m 643 |[39m
+    [31m[1m>[22m[39m[90m 
+644 |[39m         console[33
+m.[39merror([32m'[Verificati
+on] Error:'[39m[33m,[39m da
+ta[33m.[39merror)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 645 |[39m         
+[36mthrow[39m [36mnew[39m 
+[33mError[39m(errorMessage)
+[33m;[39m
+     [90m 646 |[39m       }
+     [90m 647 |[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:644:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [Verification] Error 
+verifying code: Error: Code 
+invalide ou expir├®
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\contexts
+\AuthContext.tsx:645:15)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 648 |[39m     
+  [36mreturn[39m 
+data[33m.[39mverified 
+[33m===[39m 
+[36mtrue[39m[33m;[39m
+     [90m 649 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+650 |[39m       console[33m.
+[39merror([32m'[Verification
+] Error verifying 
+code:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 651 |[39m       
+[36mthrow[39m 
+error[33m;[39m
+     [90m 652 |[39m     }
+     [90m 653 |[39m   
+}[33m;[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:650:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [AuthProvider] Error 
+loading session: Error: 
+Network error
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\integration\authFlow.test.ts
+x:346:40)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 61 |[39m      
+ }
+     [90m 62 |[39m     })[3
+3m.[39m[36mcatch[39m((error
+) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 
+63 |[39m       console[33m.
+[39merror([32m'[AuthProvider]
+ Error loading 
+session:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m    |[39m          
+     [31m[1m^[22m[39m
+     [90m 64 |[39m       
+[36mif[39m (isMountedRef[33
+m.[39mcurrent) {
+     [90m 65 |[39m         s
+etLoading([36mfalse[39m)[33
+m;[39m
+     [90m 66 |[39m       
+}[0m
+
+      at error (contexts/AuthC
+ontext.tsx:63:15)
+
+    console.error
+      [SignOut] React Query 
+cache clear error: TypeError: 
+A dynamic import callback was 
+invoked without 
+--experimental-vm-modules
+          at importModuleDynam
+icallyCallback (node:internal/
+modules/esm/utils:277:11)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\contexts
+\AuthContext.tsx:745:9)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at Object.apply [as 
+signOut] (C:\Users\maloh\Downl
+oads\1-main\contexts\AuthConte
+xt.tsx:736:16)
+          at signOut (C:\Users
+\maloh\Downloads\1-main\__test
+s__\integration\authFlow.test.
+tsx:439:30)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:14:12
+          at callback (C:\User
+s\maloh\Downloads\1-main\node_
+modules\@testing-library\react
+-native\src\act.ts:31:24)
+          at process.env.NODE_
+ENV.exports.act (C:\Users\malo
+h\Downloads\1-main\node_module
+s\react\cjs\react.development.
+js:789:22)
+          at 
+actImplementation (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\@testing-library\react-nat
+ive\src\act.ts:30:25)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\integration\authFlow.test.ts
+x:438:16)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9) {
+        code: 'ERR_VM_DYNAMIC_
+IMPORT_CALLBACK_MISSING_FLAG'
+      }
+
+    [0m [90m 747 |[39m     
+    console[33m.[39mlog([32
+m'[SignOut] React Query cache 
+cleared'[39m)[33m;[39m
+     [90m 748 |[39m       } 
+[36mcatch[39m (queryError) {
+    [31m[1m>[22m[39m[90m 
+749 |[39m         console[33
+m.[39merror([32m'[SignOut] 
+React Query cache clear 
+error:'[39m[33m,[39m 
+queryError)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 750 |[39m       }
+     [90m 751 |[39m
+     [90m 752 |[39m       
+[90m// Purger toutes les 
+cl├®s AsyncStorage li├®es ├á 
+l'utilisateur[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:749:17)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.log
+      [SignOut] AsyncStorage 
+cleaned
+
+      at Object.log (contexts/
+AuthContext.tsx:759:17)
+
+    console.error
+      [SignOut] React Query 
+cache clear error: TypeError: 
+A dynamic import callback was 
+invoked without 
+--experimental-vm-modules
+          at importModuleDynam
+icallyCallback (node:internal/
+modules/esm/utils:277:11)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\contexts
+\AuthContext.tsx:745:9)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at Object.apply [as 
+signOut] (C:\Users\maloh\Downl
+oads\1-main\contexts\AuthConte
+xt.tsx:736:16)
+          at signOut (C:\Users
+\maloh\Downloads\1-main\__test
+s__\integration\authFlow.test.
+tsx:458:32)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:14:12
+          at callback (C:\User
+s\maloh\Downloads\1-main\node_
+modules\@testing-library\react
+-native\src\act.ts:31:24)
+          at process.env.NODE_
+ENV.exports.act (C:\Users\malo
+h\Downloads\1-main\node_module
+s\react\cjs\react.development.
+js:789:22)
+          at 
+actImplementation (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\@testing-library\react-nat
+ive\src\act.ts:30:25)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\integration\authFlow.test.ts
+x:457:12)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9) {
+        code: 'ERR_VM_DYNAMIC_
+IMPORT_CALLBACK_MISSING_FLAG'
+      }
+
+    [0m [90m 747 |[39m     
+    console[33m.[39mlog([32
+m'[SignOut] React Query cache 
+cleared'[39m)[33m;[39m
+     [90m 748 |[39m       } 
+[36mcatch[39m (queryError) {
+    [31m[1m>[22m[39m[90m 
+749 |[39m         console[33
+m.[39merror([32m'[SignOut] 
+React Query cache clear 
+error:'[39m[33m,[39m 
+queryError)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 750 |[39m       }
+     [90m 751 |[39m
+     [90m 752 |[39m       
+[90m// Purger toutes les 
+cl├®s AsyncStorage li├®es ├á 
+l'utilisateur[39m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:749:17)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.log
+      [SignOut] AsyncStorage 
+cleaned
+
+      at Object.log (contexts/
+AuthContext.tsx:759:17)
+
+    console.error
+      [SignOut] Supabase sign 
+out error: { message: 
+'Network error' }
+
+    [0m [90m 765 |[39m     
+  [36mconst[39m { error } 
+[33m=[39m [36mawait[39m su
+pabase[33m.[39mauth[33m.[3
+9msignOut({ scope[33m:[39m 
+[32m'local'[39m 
+})[33m;[39m
+     [90m 766 |[39m       
+[36mif[39m (error) {
+    [31m[1m>[22m[39m[90m 
+767 |[39m         console[33
+m.[39merror([32m'[SignOut] 
+Supabase sign out 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+        [31m[1m^[22m[39m
+     [90m 768 |[39m         
+[36mthrow[39m 
+error[33m;[39m
+     [90m 769 |[39m       }
+     [90m 770 |[39m     } 
+[36mcatch[39m (error) {[0m
+
+      at Object.error (context
+s/AuthContext.tsx:767:17)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [SignOut] Error during 
+sign out: { message: 'Network 
+error' }
+
+    [0m [90m 769 |[39m     
+  }
+     [90m 770 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+771 |[39m       console[33m.
+[39merror([32m'[SignOut] 
+Error during sign 
+out:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 772 |[39m       
+[90m// S'assurer que les 
+├®tats sont r├®initialis├®s 
+m├¬me en cas d'erreur[39m
+     [90m 773 |[39m       se
+tUserProfile([36mnull[39m)[
+33m;[39m
+     [90m 774 |[39m       se
+tUser([36mnull[39m)[33m;[3
+9m[0m
+
+      at Object.error (context
+s/AuthContext.tsx:771:15)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+FAIL __tests__/components/Noti
+ficationCard.test.tsx
+  ÔùÅ Test suite failed to run
+
+    Jest encountered an 
+unexpected token
+
+    Jest failed to parse a 
+file. This happens e.g. when 
+your code or its dependencies 
+use non-standard JavaScript 
+syntax, or when Jest is not 
+configured to support such 
+syntax.
+
+    Out of the box Jest 
+supports Babel, which will be 
+used to transform your files 
+into valid JS based on your 
+Babel configuration.
+
+    By default "node_modules" 
+folder is ignored by 
+transformers.
+
+    Here's what you can do:
+     ÔÇó If you are trying to 
+use ECMAScript Modules, see ht
+tps://jestjs.io/docs/ecmascrip
+t-modules for how to enable 
+it.
+     ÔÇó If you are trying to 
+use TypeScript, see https://je
+stjs.io/docs/getting-started#u
+sing-typescript
+     ÔÇó To have some of your 
+"node_modules" files 
+transformed, you can specify 
+a custom 
+"transformIgnorePatterns" in 
+your config.
+     ÔÇó If you need a custom 
+transformation, specify a 
+"transform" option in your 
+config.
+     ÔÇó If you simply want 
+to mock your non-JS modules 
+(e.g. binary assets) you can 
+stub them out with the 
+"moduleNameMapper" config 
+option.
+
+    You'll find more details 
+and examples of these config 
+options in the docs:
+    https://jestjs.io/docs/con
+figuration
+    For information about 
+custom transformations, see:
+    https://jestjs.io/docs/cod
+e-transformation
+
+    Details:
+
+    C:\Users\maloh\Downloads\1
+-main\node_modules\make-plural
+\plurals.js:26
+    export const af = a;
+    ^^^^^^
+
+    SyntaxError: Unexpected 
+token 'export'
+
+    
+[0m[31m[1m>[22m[39m[90m 
+1 |[39m [36mimport[39m { 
+[33mI18n[39m } 
+[36mfrom[39m 
+[32m'i18n-js'[39m[33m;[39m
+     [90m   |[39m 
+[31m[1m^[22m[39m
+     [90m 2 |[39m 
+[36mimport[39m [33m*[39m 
+[36mas[39m 
+[33mLocalization[39m 
+[36mfrom[39m [32m'expo-loca
+lization'[39m[33m;[39m
+     [90m 3 |[39m
+     [90m 4 |[39m 
+[36mexport[39m 
+[36mconst[39m i18n 
+[33m=[39m [36mnew[39m 
+[33mI18n[39m([0m
+
+      at 
+Runtime.createScriptFromCode (
+node_modules/jest-runtime/buil
+d/index.js:1318:40)
+      at Object.<anonymous> (n
+ode_modules/i18n-js/src/Plural
+ization.ts:1:1)
+      at Object.<anonymous> (n
+ode_modules/i18n-js/src/I18n.t
+s:29:1)
+      at Object.<anonymous> (n
+ode_modules/i18n-js/src/index.
+ts:1:1)
+      at Object.require 
+(i18n/translations.ts:1:1)
+      at Object.require (compo
+nents/NotificationCard.tsx:6:1
+)
+      at Object.require (__tes
+ts__/components/NotificationCa
+rd.test.tsx:3:1)
+
+PASS __tests__/services/n8nWeb
+hook.test.ts (25.131 s)
+  ÔùÅ Console
+
+    console.error
+      [N8n] Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_1): 500 
+Internal Server Error
+
+    [0m [90m  95 |[39m
+     [90m  96 |[39m         
+[36mif[39m ([33m![39mrespo
+nse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 
+ 97 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Webhook request failed (${webh
+ookUrl}):`[39m[33m,[39m res
+ponse[33m.[39mstatus[33m,[
+39m response[33m.[39mstatusT
+ext)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m  98 |[39m         
+  [36mthrow[39m 
+[36mnew[39m 
+[33mError[39m([32m`Webhook 
+request failed 
+(${webhookUrl}): ${response.st
+atusText}`[39m)[33m;[39m
+     [90m  99 |[39m         
+}
+     [90m 100 |[39m[0m
+
+      at error 
+(services/n8nWebhook.ts:97:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+1: Error: Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_1): 
+Internal Server Error
+          at _loop (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:98:17)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at 
+processTicksAndRejections (nod
+e:internal/process/task_queues
+:103:5)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_2): 500 
+Internal Server Error
+
+    [0m [90m  95 |[39m
+     [90m  96 |[39m         
+[36mif[39m ([33m![39mrespo
+nse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 
+ 97 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Webhook request failed (${webh
+ookUrl}):`[39m[33m,[39m res
+ponse[33m.[39mstatus[33m,[
+39m response[33m.[39mstatusT
+ext)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m  98 |[39m         
+  [36mthrow[39m 
+[36mnew[39m 
+[33mError[39m([32m`Webhook 
+request failed 
+(${webhookUrl}): ${response.st
+atusText}`[39m)[33m;[39m
+     [90m  99 |[39m         
+}
+     [90m 100 |[39m[0m
+
+      at error 
+(services/n8nWebhook.ts:97:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+2: Error: Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_2): 
+Internal Server Error
+          at _loop (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:98:17)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_3): 500 
+Internal Server Error
+
+    [0m [90m  95 |[39m
+     [90m  96 |[39m         
+[36mif[39m ([33m![39mrespo
+nse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 
+ 97 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Webhook request failed (${webh
+ookUrl}):`[39m[33m,[39m res
+ponse[33m.[39mstatus[33m,[
+39m response[33m.[39mstatusT
+ext)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m  98 |[39m         
+  [36mthrow[39m 
+[36mnew[39m 
+[33mError[39m([32m`Webhook 
+request failed 
+(${webhookUrl}): ${response.st
+atusText}`[39m)[33m;[39m
+     [90m  99 |[39m         
+}
+     [90m 100 |[39m[0m
+
+      at error 
+(services/n8nWebhook.ts:97:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+3: Error: Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_3): 
+Internal Server Error
+          at _loop (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:98:17)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+1: Error: Network error
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\n8nWebhook.test.ts:
+64:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Error on attempt 
+2: Error: Network error
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\n8nWebhook.test.ts:
+64:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Error on attempt 
+3: Error: Network error
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\n8nWebhook.test.ts:
+64:35)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Request timeout 
+on attempt 1
+
+    [0m [90m 121 |[39m     
+  } [36mcatch[39m (error) {
+     [90m 122 |[39m         
+[36mif[39m (error 
+[36minstanceof[39m 
+[33mError[39m [33m&&[39m 
+error[33m.[39mname 
+[33m===[39m 
+[32m'AbortError'[39m) {
+    [31m[1m>[22m[39m[90m 
+123 |[39m           console[
+33m.[39merror([32m'[N8n] 
+Request timeout on 
+attempt'[39m[33m,[39m 
+attempt [33m+[39m 
+[35m1[39m)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 124 |[39m         
+  lastError [33m=[39m 
+[36mnew[39m 
+[33mError[39m([32m'Request 
+timeout - one of the servers 
+is slow'[39m)[33m;[39m
+     [90m 125 |[39m         
+  [90m// continue loop to 
+try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {[0m
+
+      at error (services/n8nWe
+bhook.ts:123:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Request timeout 
+on attempt 2
+
+    [0m [90m 121 |[39m     
+  } [36mcatch[39m (error) {
+     [90m 122 |[39m         
+[36mif[39m (error 
+[36minstanceof[39m 
+[33mError[39m [33m&&[39m 
+error[33m.[39mname 
+[33m===[39m 
+[32m'AbortError'[39m) {
+    [31m[1m>[22m[39m[90m 
+123 |[39m           console[
+33m.[39merror([32m'[N8n] 
+Request timeout on 
+attempt'[39m[33m,[39m 
+attempt [33m+[39m 
+[35m1[39m)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 124 |[39m         
+  lastError [33m=[39m 
+[36mnew[39m 
+[33mError[39m([32m'Request 
+timeout - one of the servers 
+is slow'[39m)[33m;[39m
+     [90m 125 |[39m         
+  [90m// continue loop to 
+try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {[0m
+
+      at error (services/n8nWe
+bhook.ts:123:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Request timeout 
+on attempt 3
+
+    [0m [90m 121 |[39m     
+  } [36mcatch[39m (error) {
+     [90m 122 |[39m         
+[36mif[39m (error 
+[36minstanceof[39m 
+[33mError[39m [33m&&[39m 
+error[33m.[39mname 
+[33m===[39m 
+[32m'AbortError'[39m) {
+    [31m[1m>[22m[39m[90m 
+123 |[39m           console[
+33m.[39merror([32m'[N8n] 
+Request timeout on 
+attempt'[39m[33m,[39m 
+attempt [33m+[39m 
+[35m1[39m)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 124 |[39m         
+  lastError [33m=[39m 
+[36mnew[39m 
+[33mError[39m([32m'Request 
+timeout - one of the servers 
+is slow'[39m)[33m;[39m
+     [90m 125 |[39m         
+  [90m// continue loop to 
+try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {[0m
+
+      at error (services/n8nWe
+bhook.ts:123:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Error on attempt 
+1: string error
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Error on attempt 
+2: string error
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Error on attempt 
+3: string error
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.throw 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.warn
+      [N8n] Attempt 1 JSON 
+parse failed. Retrying... 
+SyntaxError: Unexpected token 
+'o', "not valid json {" is 
+not valid JSON
+          at JSON.parse 
+(<anonymous>)
+          at parse (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:112:23)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 113 |[39m     
+      [36mreturn[39m 
+data[33m;[39m [90m// 
+Success![39m
+     [90m 114 |[39m         
+} [36mcatch[39m 
+(parseError) {
+    [31m[1m>[22m[39m[90m 
+115 |[39m           console[
+33m.[39mwarn([32m`[N8n] 
+Attempt ${attempt + 1} JSON 
+parse failed. 
+Retrying...`[39m[33m,[39m 
+parseError)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 116 |[39m         
+  lastResponseError 
+[33m=[39m [32m`R├®ponse 
+invalide du webhook n8n: 
+${responseText.substring(0, 
+100)}`[39m[33m;[39m
+     [90m 117 |[39m         
+  [36mif[39m (attempt 
+[33m<[39m maxRetries 
+[33m-[39m [35m1[39m) 
+[36mawait[39m [36mnew[39m 
+[33mPromise[39m(resolve 
+[33m=>[39m 
+setTimeout(resolve[33m,[39m 
+[35m1500[39m))[33m;[39m
+     [90m 118 |[39m         
+  
+[36mcontinue[39m[33m;[39m 
+[90m// Try next 
+server[39m[0m
+
+      at warn (services/n8nWeb
+hook.ts:115:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.warn
+      [N8n] Attempt 2 JSON 
+parse failed. Retrying... 
+SyntaxError: Unexpected token 
+'o', "not valid json {" is 
+not valid JSON
+          at JSON.parse 
+(<anonymous>)
+          at parse (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:112:23)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 113 |[39m     
+      [36mreturn[39m 
+data[33m;[39m [90m// 
+Success![39m
+     [90m 114 |[39m         
+} [36mcatch[39m 
+(parseError) {
+    [31m[1m>[22m[39m[90m 
+115 |[39m           console[
+33m.[39mwarn([32m`[N8n] 
+Attempt ${attempt + 1} JSON 
+parse failed. 
+Retrying...`[39m[33m,[39m 
+parseError)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 116 |[39m         
+  lastResponseError 
+[33m=[39m [32m`R├®ponse 
+invalide du webhook n8n: 
+${responseText.substring(0, 
+100)}`[39m[33m;[39m
+     [90m 117 |[39m         
+  [36mif[39m (attempt 
+[33m<[39m maxRetries 
+[33m-[39m [35m1[39m) 
+[36mawait[39m [36mnew[39m 
+[33mPromise[39m(resolve 
+[33m=>[39m 
+setTimeout(resolve[33m,[39m 
+[35m1500[39m))[33m;[39m
+     [90m 118 |[39m         
+  
+[36mcontinue[39m[33m;[39m 
+[90m// Try next 
+server[39m[0m
+
+      at warn (services/n8nWeb
+hook.ts:115:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.warn
+      [N8n] Attempt 3 JSON 
+parse failed. Retrying... 
+SyntaxError: Unexpected token 
+'o', "not valid json {" is 
+not valid JSON
+          at JSON.parse 
+(<anonymous>)
+          at parse (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:112:23)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 113 |[39m     
+      [36mreturn[39m 
+data[33m;[39m [90m// 
+Success![39m
+     [90m 114 |[39m         
+} [36mcatch[39m 
+(parseError) {
+    [31m[1m>[22m[39m[90m 
+115 |[39m           console[
+33m.[39mwarn([32m`[N8n] 
+Attempt ${attempt + 1} JSON 
+parse failed. 
+Retrying...`[39m[33m,[39m 
+parseError)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 116 |[39m         
+  lastResponseError 
+[33m=[39m [32m`R├®ponse 
+invalide du webhook n8n: 
+${responseText.substring(0, 
+100)}`[39m[33m;[39m
+     [90m 117 |[39m         
+  [36mif[39m (attempt 
+[33m<[39m maxRetries 
+[33m-[39m [35m1[39m) 
+[36mawait[39m [36mnew[39m 
+[33mPromise[39m(resolve 
+[33m=>[39m 
+setTimeout(resolve[33m,[39m 
+[35m1500[39m))[33m;[39m
+     [90m 118 |[39m         
+  
+[36mcontinue[39m[33m;[39m 
+[90m// Try next 
+server[39m[0m
+
+      at warn (services/n8nWeb
+hook.ts:115:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Connection test 
+error: Error: Connection 
+refused
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\__tests_
+_\services\n8nWebhook.test.ts:
+225:39)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\@b
+abel\runtime\helpers\asyncToGe
+nerator.js:22:7
+          at new Promise 
+(<anonymous>)
+          at 
+Object.<anonymous> (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:14:12)
+          at 
+Promise.finally.completed (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:1557:28)
+          at new Promise 
+(<anonymous>)
+          at 
+callAsyncCircusFn (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1497:10)
+          at _callCircusTest (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-circus\bui
+ld\jestAdapterInit.js:1007:40)
+          at _runTest (C:\User
+s\maloh\Downloads\1-main\node_
+modules\jest-circus\build\jest
+AdapterInit.js:947:3)
+          at C:\Users\maloh\Do
+wnloads\1-main\node_modules\je
+st-circus\build\jestAdapterIni
+t.js:849:7
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:862:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at 
+_runTestsForDescribeBlock (C:\
+Users\maloh\Downloads\1-main\n
+ode_modules\jest-circus\build\
+jestAdapterInit.js:857:11)
+          at run (C:\Users\mal
+oh\Downloads\1-main\node_modul
+es\jest-circus\build\jestAdapt
+erInit.js:761:3)
+          at runAndTransformRe
+sultsToJestFormat (C:\Users\ma
+loh\Downloads\1-main\node_modu
+les\jest-circus\build\jestAdap
+terInit.js:1918:21)
+          at jestAdapter (C:\U
+sers\maloh\Downloads\1-main\no
+de_modules\jest-circus\build\r
+unner.js:101:19)
+          at runTestInternal (
+C:\Users\maloh\Downloads\1-mai
+n\node_modules\jest-runner\bui
+ld\testWorker.js:275:16)
+          at runTest (C:\Users
+\maloh\Downloads\1-main\node_m
+odules\jest-runner\build\testW
+orker.js:343:7)
+          at Object.worker (C:
+\Users\maloh\Downloads\1-main\
+node_modules\jest-runner\build
+\testWorker.js:497:12)
+
+    [0m [90m 148 |[39m     
+  [36mreturn[39m response[3
+3m.[39mok[33m;[39m
+     [90m 149 |[39m     } 
+[36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 
+150 |[39m       console[33m.
+[39merror([32m'[N8n] 
+Connection test 
+error:'[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+      [31m[1m^[22m[39m
+     [90m 151 |[39m       
+[36mreturn[39m 
+[36mfalse[39m[33m;[39m
+     [90m 152 |[39m     }
+     [90m 153 |[39m   }[0m
+
+      at 
+N8nWebhookService.error (servi
+ces/n8nWebhook.ts:150:15)
+          at Generator.throw 
+(<anonymous>)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/
+@babel/runtime/helpers/asyncTo
+Generator.js:20:9)
+
+    console.error
+      [N8n] Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_2): 500 
+Internal Server Error
+
+    [0m [90m  95 |[39m
+     [90m  96 |[39m         
+[36mif[39m ([33m![39mrespo
+nse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 
+ 97 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Webhook request failed (${webh
+ookUrl}):`[39m[33m,[39m res
+ponse[33m.[39mstatus[33m,[
+39m response[33m.[39mstatusT
+ext)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m  98 |[39m         
+  [36mthrow[39m 
+[36mnew[39m 
+[33mError[39m([32m`Webhook 
+request failed 
+(${webhookUrl}): ${response.st
+atusText}`[39m)[33m;[39m
+     [90m  99 |[39m         
+}
+     [90m 100 |[39m[0m
+
+      at error 
+(services/n8nWebhook.ts:97:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+1: Error: Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_2): 
+Internal Server Error
+          at _loop (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:98:17)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_4): 500 
+Internal Server Error
+
+    [0m [90m  95 |[39m
+     [90m  96 |[39m         
+[36mif[39m ([33m![39mrespo
+nse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 
+ 97 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Webhook request failed (${webh
+ookUrl}):`[39m[33m,[39m res
+ponse[33m.[39mstatus[33m,[
+39m response[33m.[39mstatusT
+ext)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m  98 |[39m         
+  [36mthrow[39m 
+[36mnew[39m 
+[33mError[39m([32m`Webhook 
+request failed 
+(${webhookUrl}): ${response.st
+atusText}`[39m)[33m;[39m
+     [90m  99 |[39m         
+}
+     [90m 100 |[39m[0m
+
+      at error 
+(services/n8nWebhook.ts:97:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+1: Error: Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_4): 
+Internal Server Error
+          at _loop (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:98:17)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_6): 500 
+Internal Server Error
+
+    [0m [90m  95 |[39m
+     [90m  96 |[39m         
+[36mif[39m ([33m![39mrespo
+nse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 
+ 97 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Webhook request failed (${webh
+ookUrl}):`[39m[33m,[39m res
+ponse[33m.[39mstatus[33m,[
+39m response[33m.[39mstatusT
+ext)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m  98 |[39m         
+  [36mthrow[39m 
+[36mnew[39m 
+[33mError[39m([32m`Webhook 
+request failed 
+(${webhookUrl}): ${response.st
+atusText}`[39m)[33m;[39m
+     [90m  99 |[39m         
+}
+     [90m 100 |[39m[0m
+
+      at error 
+(services/n8nWebhook.ts:97:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+    console.error
+      [N8n] Error on attempt 
+2: Error: Webhook request 
+failed (https://n8n.basedjew.c
+om/webhook/analyse_6): 
+Internal Server Error
+          at _loop (C:\Users\m
+aloh\Downloads\1-main\services
+\n8nWebhook.ts:98:17)
+          at _loop.next 
+(<anonymous>)
+          at 
+N8nWebhookService._loop (C:\Us
+ers\maloh\Downloads\1-main\ser
+vices\n8nWebhook.ts:62:58)
+          at Generator.next 
+(<anonymous>)
+          at 
+asyncGeneratorStep (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:3:17)
+          at _next (C:\Users\m
+aloh\Downloads\1-main\node_mod
+ules\@babel\runtime\helpers\as
+yncToGenerator.js:17:9)
+
+    [0m [90m 125 |[39m     
+      [90m// continue loop 
+to try next server if time 
+(though 60s is long, maybe we 
+should reduce timeout per 
+attempt? keeping 60s for now 
+as safe bet)[39m
+     [90m 126 |[39m         
+} [36melse[39m {
+    [31m[1m>[22m[39m[90m 
+127 |[39m           console[
+33m.[39merror([32m`[N8n] 
+Error on attempt ${attempt + 
+1}:`[39m[33m,[39m 
+error)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 128 |[39m         
+  lastError [33m=[39m error 
+[36minstanceof[39m 
+[33mError[39m [33m?[39m 
+error [33m:[39m 
+[36mnew[39m 
+[33mError[39m([32m'Unknown 
+error'[39m)[33m;[39m
+     [90m 129 |[39m         
+}
+     [90m 130 |[39m[0m
+
+      at error (services/n8nWe
+bhook.ts:127:19)
+          at _loop.next 
+(<anonymous>)
+      at 
+N8nWebhookService._loop 
+(services/n8nWebhook.ts:62:58)
+      at asyncGeneratorStep (n
+ode_modules/@babel/runtime/hel
+pers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@
+babel/runtime/helpers/asyncToG
+enerator.js:17:9)
+
+A worker process has failed 
+to exit gracefully and has 
+been force exited. This is 
+likely caused by tests 
+leaking due to improper 
+teardown. Try running with 
+--detectOpenHandles to find 
+leaks. Active timers can also 
+cause this, ensure that 
+.unref() was called on them.
+
+Summary of all failing tests
+FAIL __tests__/components/Noti
+ficationCard.test.tsx
+  ÔùÅ Test suite failed to run
+
+    Jest encountered an 
+unexpected token
+
+    Jest failed to parse a 
+file. This happens e.g. when 
+your code or its dependencies 
+use non-standard JavaScript 
+syntax, or when Jest is not 
+configured to support such 
+syntax.
+
+    Out of the box Jest 
+supports Babel, which will be 
+used to transform your files 
+into valid JS based on your 
+Babel configuration.
+
+    By default "node_modules" 
+folder is ignored by 
+transformers.
+
+    Here's what you can do:
+     ÔÇó If you are trying to 
+use ECMAScript Modules, see ht
+tps://jestjs.io/docs/ecmascrip
+t-modules for how to enable 
+it.
+     ÔÇó If you are trying to 
+use TypeScript, see https://je
+stjs.io/docs/getting-started#u
+sing-typescript
+     ÔÇó To have some of your 
+"node_modules" files 
+transformed, you can specify 
+a custom 
+"transformIgnorePatterns" in 
+your config.
+     ÔÇó If you need a custom 
+transformation, specify a 
+"transform" option in your 
+config.
+     ÔÇó If you simply want 
+to mock your non-JS modules 
+(e.g. binary assets) you can 
+stub them out with the 
+"moduleNameMapper" config 
+option.
+
+    You'll find more details 
+and examples of these config 
+options in the docs:
+    https://jestjs.io/docs/con
+figuration
+    For information about 
+custom transformations, see:
+    https://jestjs.io/docs/cod
+e-transformation
+
+    Details:
+
+    C:\Users\maloh\Downloads\1
+-main\node_modules\make-plural
+\plurals.js:26
+    export const af = a;
+    ^^^^^^
+
+    SyntaxError: Unexpected 
+token 'export'
+
+    
+[0m[31m[1m>[22m[39m[90m 
+1 |[39m [36mimport[39m { 
+[33mI18n[39m } 
+[36mfrom[39m 
+[32m'i18n-js'[39m[33m;[39m
+     [90m   |[39m 
+[31m[1m^[22m[39m
+     [90m 2 |[39m 
+[36mimport[39m [33m*[39m 
+[36mas[39m 
+[33mLocalization[39m 
+[36mfrom[39m [32m'expo-loca
+lization'[39m[33m;[39m
+     [90m 3 |[39m
+     [90m 4 |[39m 
+[36mexport[39m 
+[36mconst[39m i18n 
+[33m=[39m [36mnew[39m 
+[33mI18n[39m([0m
+
+      at 
+Runtime.createScriptFromCode (
+node_modules/jest-runtime/buil
+d/index.js:1318:40)
+      at Object.<anonymous> (n
+ode_modules/i18n-js/src/Plural
+ization.ts:1:1)
+      at Object.<anonymous> (n
+ode_modules/i18n-js/src/I18n.t
+s:29:1)
+      at Object.<anonymous> (n
+ode_modules/i18n-js/src/index.
+ts:1:1)
+      at Object.require 
+(i18n/translations.ts:1:1)
+      at Object.require (compo
+nents/NotificationCard.tsx:6:1
+)
+      at Object.require (__tes
+ts__/components/NotificationCa
+rd.test.tsx:3:1)
+
+
+Test Suites: 1 failed, 59 
+passed, 60 total
+Tests:       472 passed, 472 
+total
+Snapshots:   0 total
+Time:        26.123 s, 
+estimated 27 s
+Ran all test suites.

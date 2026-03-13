@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1772881303093" clover="3.2.0">
+  <project timestamp="1772881303093" name="All files">
+    <metrics statements="46" coveredstatements="45" conditionals="25" coveredconditionals="22" methods="17" coveredmethods="16" elements="88" coveredelements="83" complexity="0" loc="46" ncloc="46" packages="1" files="4" classes="4"/>
+    <file name="LanguageSelector.tsx" path="C:\Users\maloh\Downloads\1-main\components\LanguageSelector.tsx">
+      <metrics statements="20" coveredstatements="19" conditionals="14" coveredconditionals="12" methods="10" coveredmethods="9"/>
+      <line num="10" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="24" count="14" type="stmt"/>
+      <line num="25" count="14" type="stmt"/>
+      <line num="26" count="14" type="stmt"/>
+      <line num="28" count="14" type="cond" truecount="1" falsecount="1"/>
+      <line num="30" count="14" type="stmt"/>
+      <line num="31" count="1" type="stmt"/>
+      <line num="32" count="1" type="stmt"/>
+      <line num="35" count="14" type="stmt"/>
+      <line num="36" count="30" type="stmt"/>
+      <line num="37" count="30" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="63" count="14" type="stmt"/>
+      <line num="74" count="5" type="stmt"/>
+      <line num="85" count="0" type="stmt"/>
+      <line num="92" count="1" type="stmt"/>
+      <line num="97" count="1" type="stmt"/>
+      <line num="105" count="35" type="stmt"/>
+      <line num="115" count="1" type="stmt"/>
+    </file>
+    <file name="MetricCard.tsx" path="C:\Users\maloh\Downloads\1-main\components\MetricCard.tsx">
+      <metrics statements="8" coveredstatements="8" conditionals="9" coveredconditionals="9" methods="2" coveredmethods="2"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="22" count="4" type="stmt"/>
+      <line num="24" count="4" type="stmt"/>
+      <line num="25" count="4" type="stmt"/>
+      <line num="52" count="4" type="cond" truecount="4" falsecount="0"/>
+      <line num="53" count="1" type="stmt"/>
+      <line num="60" count="3" type="stmt"/>
+      <line num="63" count="1" type="stmt"/>
+    </file>
+    <file name="RadialScoreGauge.tsx" path="C:\Users\maloh\Downloads\1-main\components\RadialScoreGauge.tsx">
+      <metrics statements="13" coveredstatements="13" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="2"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="24" count="3" type="stmt"/>
+      <line num="25" count="3" type="stmt"/>
+      <line num="27" count="3" type="stmt"/>
+      <line num="28" count="3" type="stmt"/>
+      <line num="29" count="3" type="stmt"/>
+      <line num="30" count="3" type="stmt"/>
+      <line num="32" count="3" type="stmt"/>
+      <line num="33" count="3" type="stmt"/>
+      <line num="40" count="3" type="stmt"/>
+      <line num="45" count="3" type="stmt"/>
+      <line num="86" count="1" type="stmt"/>
+    </file>
+    <file name="UrgencyModal.tsx" path="C:\Users\maloh\Downloads\1-main\components\UrgencyModal.tsx">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <line num="20" count="3" type="stmt"/>
+      <line num="21" count="3" type="stmt"/>
+      <line num="22" count="3" type="stmt"/>
+      <line num="24" count="3" type="stmt"/>
+      <line num="60" count="3" type="stmt"/>
+    </file>
+  </project>
+</coverage>

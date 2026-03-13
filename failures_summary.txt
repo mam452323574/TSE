@@ -1,0 +1,706 @@
+Total failures: 88
+
+FILE: useScanEligibility.test.ts
+TEST: fetches eligibility for all scan types
+ERROR: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledTimes[2m([22m[32mexpected[39m[2m)[22m
+
+Expected number of calls: [32m3[39m
+Received number of calls: [31m4[39m
+    at Object.toHaveBeenCalledTimes (C:\Users\maloh\Downloads\1-main\__tests__\hooks\queries\useScanEligibility.test.ts:129:49)
+
+FILE: api.test.ts
+TEST: throws error when user is not authenticated
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"User not authenticated"[39m
+Received message:   [31m"api_errors.unauthorized"[39m
+
+
+FILE: api.test.ts
+TEST: returns analytics for 7 days period
+ERROR: TypeError: _supabase.supabase.from(...).select(...).eq(...).gte(...).order(...).limit is not a function
+    at ApiService.limit (C:\Users\maloh\Downloads\1-main\services\api.ts:142:10)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+FILE: api.test.ts
+TEST: returns analytics for 30 days period
+ERROR: TypeError: _supabase.supabase.from(...).select(...).eq(...).gte(...).order(...).limit is not a function
+    at ApiService.limit (C:\Users\maloh\Downloads\1-main\services\api.ts:142:10)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+FILE: api.test.ts
+TEST: returns empty arrays when no data
+ERROR: TypeError: _supabase.supabase.from(...).select(...).eq(...).gte(...).order(...).limit is not a function
+    at ApiService.limit (C:\Users\maloh\Downloads\1-main\services\api.ts:142:10)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+FILE: api.test.ts
+TEST: throws error when user not authenticated
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"User not authenticated"[39m
+Received message:   [31m"api_errors.unauthorized"[39m
+
+
+FILE: api.test.ts
+TEST: throws error when not authenticated
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"User not authenticated"[39m
+Received message:   [31m"api_errors.unauthorized"[39m
+
+
+FILE: api.test.ts
+TEST: analyzes scan and updates database
+ERROR: ApiError: api_errors.validation
+    at ApiService.<anonymous> (C:\Users\maloh\Downloads\1-main\services\api.ts:769:13)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+FILE: api.test.ts
+TEST: throws error when user not authenticated
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"Utilisateur non authentifié"[39m
+Received message:   [31m"api_errors.validation"[39m
+
+
+FILE: api.test.ts
+TEST: throws error when analysis fails
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"Analysis service unavailable"[39m
+Received message:   [31m"api_errors.validation"[39m
+
+
+FILE: api.test.ts
+TEST: returns scan without analysis when analysis fails
+ERROR: TypeError: _supabase.supabase.storage.from(...).createSignedUrl is not a function
+    at ApiService.createSignedUrl (C:\Users\maloh\Downloads\1-main\services\api.ts:733:8)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+FILE: api.test.ts
+TEST: uploads image using ImageManipulator base64
+ERROR: TypeError: _supabase.supabase.storage.from(...).createSignedUrl is not a function
+    at ApiService.createSignedUrl (C:\Users\maloh\Downloads\1-main\services\api.ts:733:8)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+FILE: AccountBadge.test.tsx
+TEST: renders free tier badge correctly
+ERROR: Error: Unable to find an element with text: Compte Gratuit
+
+[36m<View>[39m
+  [36m<Text>[39m
+    [0mcommon.account_free[0m
+
+FILE: AccountBadge.test.tsx
+TEST: renders premium tier badge correctly
+ERROR: Error: Unable to find an element with text: Compte Premium
+
+[36m<View>[39m
+  [36m<Crown />[39m
+  [36m<Text>[39m
+
+FILE: AccountBadge.test.tsx
+TEST: renders with small size
+ERROR: Error: Unable to find an element with text: Compte Gratuit
+
+[36m<View>[39m
+  [36m<Text>[39m
+    [0mcommon.account_free[0m
+
+FILE: AccountBadge.test.tsx
+TEST: renders with medium size (default)
+ERROR: Error: Unable to find an element with text: Compte Premium
+
+[36m<View>[39m
+  [36m<Crown />[39m
+  [36m<Text>[39m
+
+FILE: AccountBadge.test.tsx
+TEST: renders with large size
+ERROR: Error: Unable to find an element with text: Compte Premium
+
+[36m<View>[39m
+  [36m<Crown />[39m
+  [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays feature names
+ERROR: Error: Unable to find an element with text: Scan illimité
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays feature descriptions
+ERROR: Error: Unable to find an element with text: Scannez autant de produits que vous voulez
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays category titles
+ERROR: Error: Unable to find an element with text: Scans
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays tier labels
+ERROR: Error: Unable to find an element with text: Gratuit
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays tier descriptions
+ERROR: Error: Unable to find an element with text: 3 par jour
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: groups features by category
+ERROR: Error: Unable to find an element with text: Scans
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: AuthContext.test.tsx
+TEST: throws error when user creation fails
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"Erreur lors de la creation du compte"[39m
+Received message:   [31m"auth.error_account_creation"[39m
+
+
+FILE: FeatureGate.test.tsx
+TEST: renders gate UI when user is not premium and no fallback
+ERROR: Error: Unable to find an element with text: Fonctionnalité Premium
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: FeatureGate.test.tsx
+TEST: navigates to premium upgrade when button is pressed
+ERROR: Error: Unable to find an element with text: Passer à Premium
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: FeatureGate.test.tsx
+TEST: displays hint text for premium upgrade
+ERROR: Error: Unable to find an element with text: Débloquez cette fonctionnalité et bien plus encore
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: EmailVerificationScreen.test.tsx
+TEST: displays email verification title
+ERROR: Error: Unable to find an element with text: Verifiez votre email
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+
+FILE: EmailVerificationScreen.test.tsx
+TEST: displays verify button
+ERROR: Error: Unable to find an element with text: Verifier
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+
+FILE: EmailVerificationScreen.test.tsx
+TEST: displays resend code button
+ERROR: Error: Unable to find an element with text: Renvoyer le code
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+
+FILE: FeatureComparisonTable.test.tsx
+TEST: displays table headers
+ERROR: Error: Unable to find an element with text: Fonctionnalité
+
+[36m<RCTScrollView>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: renders empty state when no recipes
+ERROR: Error: Unable to find an element with text: Aucune recette trouvée
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: renders recipes list
+ERROR: Error: Unable to find an element with text: Nos Recettes
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: filters recipes by search query
+ERROR: Error: Unable to find an element with placeholder: Rechercher une recette...
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: displays preparation time
+ERROR: Error: Unable to find an element with text: 10 min
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: displays difficulty badges
+ERROR: Error: Unable to find an element with text: Facile
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: ExercisesScreen.test.tsx
+TEST: renders empty state when no exercises
+ERROR: Error: Unable to find an element with text: Aucun exercice trouvé
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: ExercisesScreen.test.tsx
+TEST: renders exercises list
+ERROR: Error: Unable to find an element with text: Nos Exercices
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: ExercisesScreen.test.tsx
+TEST: filters exercises by search query
+ERROR: Error: Unable to find an element with placeholder: Rechercher un exercice...
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: ExercisesScreen.test.tsx
+TEST: displays difficulty badges
+ERROR: Error: Unable to find an element with text: Facile
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: renders without crashing
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays premium title
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays subtitle
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays price
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays subscribe button
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays benefits section
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays back button
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: navigates back when back button is pressed
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: AvatarPicker.test.tsx
+TEST: displays hint text
+ERROR: Error: Unable to find an element with text: Appuyez pour modifier
+
+[36m<View>[39m
+  [36m<View[39m
+    [33maccessibilityState[39m=[32m{
+
+FILE: AvatarPicker.test.tsx
+TEST: shows options alert when pressed
+ERROR: Error: Unable to find an element with text: Appuyez pour modifier
+
+[36m<View>[39m
+  [36m<View[39m
+    [33maccessibilityState[39m=[32m{
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: renders without crashing
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays welcome title
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays subtitle
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays username input
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays next button (Suivant)
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: validates username format
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: checks username availability
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: transitions to theme selection step
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: allows theme selection
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: renders without crashing
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: displays app title
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: displays login subtitle
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: displays email and password inputs
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: displays login button
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: displays signup link
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: allows email input
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: allows password input
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: shows error when submitting empty form
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: LoginScreen.test.tsx
+TEST: navigates to signup when link is pressed
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: renders without crashing
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays app title
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays signup subtitle
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays email input
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays password inputs
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays continue button
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays login link
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: button is disabled when form is empty
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: allows filling the form
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: can toggle password visibility
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: navigates back when login link is pressed
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: SignUpScreen.test.tsx
+TEST: displays info text about verification email
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `LanguageSelector`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: n8nWebhook.test.ts
+TEST: sends POST request with correct body
+ERROR: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mStringContaining "n8n.basedjew.com/webhook/analyse"[39m, [32mObjectContaining {"body": "{\"imageUrl\":\"https://example.com/image.jpg\",\"userId\":\"user-123\",\"scanType\":\"nutrition\"}", "headers": {"Content-Type": "application/json"}, "method": "POST"}[39m
+Received: [2m"https://n8n.basedjew.com/webhook/analyse_1"[22m, [31m{"body": "{\"imageBase64\":\"https://example.com/image.jpg\",\"userId\":\"user-123\",\"scanType\":\"nutrition\"}", "headers": {"Accept": "application/json", "Content-Type": "application/json"}, "method": "POST", "signal": {Symbol(kEvents): Map {}, Symbol(events.maxEventTargetListeners): 0, Symbol(events.maxEventTargetListenersWarned): false, Symbol(kHandlers): Map {}, Symbol(kAborted): false, Symbol(kReason): undefined, Symbol(kComposite): false}}[39m
+
+
+FILE: n8nWebhook.test.ts
+TEST: handles HTTP errors
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"Internal Server Error"[39m
+Received string:    [31m"Cannot read properties of undefined (reading 'ok')"[39m
+    at Object.toContain (C:\Users\maloh\Downloads\1-main\__tests__\services\n8nWebhook.test.ts:59:28)
+
+FILE: n8nWebhook.test.ts
+TEST: handles network errors
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"Network error"[39m
+Received: [31m"Cannot read properties of undefined (reading 'ok')"[39m
+    at Object.toBe (C:\Users\maloh\Downloads\1-main\__tests__\services\n8nWebhook.test.ts:72:28)
+
+FILE: n8nWebhook.test.ts
+TEST: handles timeout errors
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"timeout"[39m
+Received string:    [31m"Cannot read properties of undefined (reading 'ok')"[39m
+    at Object.toContain (C:\Users\maloh\Downloads\1-main\__tests__\services\n8nWebhook.test.ts:87:28)
+
+FILE: n8nWebhook.test.ts
+TEST: rotates through webhooks (round-robin)
+ERROR: Error: thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+    at it (C:\Users\maloh\Downloads\1-main\__tests__\services\n8nWebhook.test.ts:90:5)
+    at _dispatchDescribe (C:\Users\maloh\Downloads\1-main\node_modules\jest-circus\build\jestAdapterInit.js:604:26)
+    at describe (C:\Users\maloh\Downloads\1-main\node_modules\jest-circus\build\jestAdapterInit.js:572:44)
+
+FILE: n8nWebhook.test.ts
+TEST: handles unknown errors
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"Unknown error occurred"[39m
+Received: [31m"Cannot read properties of undefined (reading 'ok')"[39m
+    at Object.toBe (C:\Users\maloh\Downloads\1-main\__tests__\services\n8nWebhook.test.ts:122:28)
+
+FILE: n8nWebhook.test.ts
+TEST: handles mixed success and failure in parallel requests
+ERROR: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m2[39m
+Received: [31m4[39m
+    at Object.toBe (C:\Users\maloh\Downloads\1-main\__tests__\services\n8nWebhook.test.ts:319:25)
+

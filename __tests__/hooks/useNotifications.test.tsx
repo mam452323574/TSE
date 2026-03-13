@@ -1,0 +1,220 @@
+import React from 'react';
+import { renderHook, waitFor } from '@testing-library/react-native';
+import { useNotifications } from '@/hooks/useNotifications';
+
+// Mock expo-notifications
+jest.mock('expo-notifications', () => ({
+  setNotificationHandler: jest.fn(),
+  getPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  requestPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  getExpoPushTokenAsync: jest.fn().mockResolvedValue({ data: 'mock-token' }),
+  addNotificationReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
+  addNotificationResponseReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
+  removeNotificationSubscription: jest.fn(),
+  scheduleNotificationAsync: jest.fn().mockResolvedValue('notification-id'),
+  setNotificationChannelAsync: jest.fn(),
+  AndroidImportance: { MAX: 5 },
+  SchedulableTriggerInputTypes: { TIME_INTERVAL: 'timeInterval' },
+}));
+
+// Mock expo-device
+jest.mock('expo-device', () => ({
+  isDevice: true,
+}));
+
+// Mock supabase
+jest.mock('@/services/supabase', () => ({
+  supabase: {
+    from: jest.fn().mockReturnValue({
+      update: jest.fn().mockReturnValue({
+        eq: jest.fn().mockResolvedValue({ error: null }),
+      }),
+    }),
+  },
+}));
+
+// Mock useAuth
+const mockUser = { id: 'user-123', email: 'test@example.com' };
+const mockUseAuth = jest.fn();
+
+jest.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => mockUseAuth(),
+}));
+
+describe('useNotifications', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseAuth.mockReturnValue({ user: null });
+  });
+
+  it('returns expoPushToken as null initially', () => {
+    mockUseAuth.mockReturnValue({ user: null });
+
+    const { result } = renderHook(() => useNotifications());
+
+    expect(result.current.expoPushToken).toBeNull();
+  });
+
+  it('returns notification as null initially', () => {
+    mockUseAuth.mockReturnValue({ user: null });
+
+    const { result } = renderHook(() => useNotifications());
+
+    expect(result.current.notification).toBeNull();
+  });
+
+  it('exposes scheduleLocalNotification function', () => {
+    mockUseAuth.mockReturnValue({ user: null });
+
+    const { result } = renderHook(() => useNotifications());
+
+    expect(typeof result.current.scheduleLocalNotification).toBe('function');
+  });
+
+  it('does not register for notifications without user', () => {
+    const Notifications = require('expo-notifications');
+    mockUseAuth.mockReturnValue({ user: null });
+
+    renderHook(() => useNotifications());
+
+    expect(Notifications.addNotificationReceivedListener).not.toHaveBeenCalled();
+  });
+
+  it('registers for notifications when user is present', async () => {
+    const Notifications = require('expo-notifications');
+    mockUseAuth.mockReturnValue({ user: mockUser });
+
+    renderHook(() => useNotifications());
+
+    await waitFor(() => {
+      expect(Notifications.addNotificationReceivedListener).toHaveBeenCalled();
+    });
+  });
+
+  it('registers response listener when user is present', async () => {
+    const Notifications = require('expo-notifications');
+    mockUseAuth.mockReturnValue({ user: mockUser });
+
+    renderHook(() => useNotifications());
+
+    await waitFor(() => {
+      expect(Notifications.addNotificationResponseReceivedListener).toHaveBeenCalled();
+    });
+  });
+
+  it('cleans up listeners on unmount', async () => {
+    const Notifications = require('expo-notifications');
+    mockUseAuth.mockReturnValue({ user: mockUser });
+
+    const { unmount } = renderHook(() => useNotifications());
+
+    await waitFor(() => {
+      expect(Notifications.addNotificationReceivedListener).toHaveBeenCalled();
+    });
+
+    unmount();
+
+    expect(Notifications.removeNotificationSubscription).toHaveBeenCalled();
+  });
+
+  it('scheduleLocalNotification calls Notifications.scheduleNotificationAsync', async () => {
+    const Notifications = require('expo-notifications');
+    mockUseAuth.mockReturnValue({ user: null });
+
+    const { result } = renderHook(() => useNotifications());
+
+    await result.current.scheduleLocalNotification('Test Title', 'Test Body', { key: 'value' });
+
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
+      content: {
+        title: 'Test Title',
+        body: 'Test Body',
+        data: { key: 'value' },
+        sound: true,
+      },
+      trigger: { type: 'timeInterval', seconds: 1 },
+    });
+  });
+
+  describe('memory cleanup', () => {
+    it('does not update state after unmount', async () => {
+      const Notifications = require('expo-notifications');
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+
+      // Create a delayed token resolution using a controllable promise
+      let resolveTokenFn: ((value: { data: string }) => void) | null = null;
+      const tokenPromise = new Promise<{ data: string }>(resolve => {
+        resolveTokenFn = resolve;
+      });
+      Notifications.getExpoPushTokenAsync.mockReturnValue(tokenPromise);
+
+      mockUseAuth.mockReturnValue({ user: mockUser });
+
+      const { unmount } = renderHook(() => useNotifications());
+
+      // Unmount before the token resolves
+      unmount();
+
+      // Now resolve the token - this should not cause a state update warning
+      if (resolveTokenFn) {
+        // @ts-ignore
+        (resolveTokenFn as any)({ data: 'late-token' });
+      }
+
+      // Wait a bit to ensure no warnings are triggered
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Should not have any "Can't perform a React state update" warnings
+      const stateUpdateWarnings = consoleSpy.mock.calls.filter(
+        call => call[0]?.toString().includes("Can't perform a React state update")
+      );
+      expect(stateUpdateWarnings.length).toBe(0);
+
+      consoleSpy.mockRestore();
+    });
+
+    it('saves push token to database when user is present', async () => {
+      const { supabase } = require('@/services/supabase');
+      const Notifications = require('expo-notifications');
+
+      // Ensure getExpoPushTokenAsync resolves with a token
+      Notifications.getExpoPushTokenAsync.mockResolvedValue({ data: 'test-push-token' });
+
+      mockUseAuth.mockReturnValue({ user: mockUser });
+
+      renderHook(() => useNotifications());
+
+      await waitFor(() => {
+        expect(supabase.from).toHaveBeenCalledWith('user_profiles');
+      });
+    });
+  });
+
+  describe('notification listeners', () => {
+    it('sets up notification received listener with callback', async () => {
+      const Notifications = require('expo-notifications');
+      mockUseAuth.mockReturnValue({ user: mockUser });
+
+      renderHook(() => useNotifications());
+
+      await waitFor(() => {
+        expect(Notifications.addNotificationReceivedListener).toHaveBeenCalledWith(
+          expect.any(Function)
+        );
+      });
+    });
+
+    it('sets up notification response listener with callback', async () => {
+      const Notifications = require('expo-notifications');
+      mockUseAuth.mockReturnValue({ user: mockUser });
+
+      renderHook(() => useNotifications());
+
+      await waitFor(() => {
+        expect(Notifications.addNotificationResponseReceivedListener).toHaveBeenCalledWith(
+          expect.any(Function)
+        );
+      });
+    });
+  });
+});

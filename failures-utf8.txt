@@ -1,0 +1,50 @@
+﻿Total test suites: 60
+Failing test suites: 1
+--- FAILING TESTS ---
+=============
+File: C:\Users\maloh\Downloads\1-main\__tests__\components\NotificationCard.test.tsx
+Error Message: 
+  ├ö├╣├à Test suite failed to run
+
+    Jest encountered an unexpected token
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     ├ö├ç├│ If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     ├ö├ç├│ If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     ├ö├ç├│ To have some of your "node_modules" files transformed, you can specify a custom "transformIgnorePatterns" in your config.
+     ├ö├ç├│ If you need a custom transformation, specify a "transform" option in your config.
+     ├ö├ç├│ If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the "moduleNameMapper" config option.
+
+    You'll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    C:\Users\maloh\Downloads\1-main\node_modules\make-plural\plurals.js:26
+    export const af = a;
+    ^^^^^^
+
+    SyntaxError: Unexpected token 'export'
+
+    [0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m { [33mI18n[39m } [36mfrom[39m [32m'i18n-js'[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 2 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mLocalization[39m [36mfrom[39m [32m'expo-localization'[39m[33m;[39m
+     [90m 3 |[39m
+     [90m 4 |[39m [36mexport[39m [36mconst[39m i18n [33m=[39m [36mnew[39m [33mI18n[39m([0m
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1318:40)
+      at Object.<anonymous> (node_modules/i18n-js/src/Pluralization.ts:1:1)
+      at Object.<anonymous> (node_modules/i18n-js/src/I18n.ts:29:1)
+      at Object.<anonymous> (node_modules/i18n-js/src/index.ts:1:1)
+      at Object.require (i18n/translations.ts:1:1)
+      at Object.require (components/NotificationCard.tsx:6:1)
+      at Object.require (__tests__/components/NotificationCard.test.tsx:3:1)
+

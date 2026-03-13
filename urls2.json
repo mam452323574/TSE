@@ -1,0 +1,71 @@
+{
+  "tunnels": [
+    {
+      "name": "fa10156a-72f7-4100-b71a-f8fe013261b5 (http)",
+      "uri": "/api/tunnels/fa10156a-72f7-4100-b71a-f8fe013261b5%20%28http%29",
+      "public_url": "http://wiriubg-malo6002-8081.exp.direct",
+      "proto": "http",
+      "config": {
+        "addr": "http://localhost:8081",
+        "inspect": true
+      },
+      "metrics": {
+        "conns": {
+          "count": 0,
+          "gauge": 0,
+          "rate1": 0,
+          "rate5": 0,
+          "rate15": 0,
+          "p50": 0,
+          "p90": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "http": {
+          "count": 0,
+          "rate1": 0,
+          "rate5": 0,
+          "rate15": 0,
+          "p50": 0,
+          "p90": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      }
+    },
+    {
+      "name": "fa10156a-72f7-4100-b71a-f8fe013261b5",
+      "uri": "/api/tunnels/fa10156a-72f7-4100-b71a-f8fe013261b5",
+      "public_url": "https://wiriubg-malo6002-8081.exp.direct",
+      "proto": "https",
+      "config": {
+        "addr": "http://localhost:8081",
+        "inspect": true
+      },
+      "metrics": {
+        "conns": {
+          "count": 0,
+          "gauge": 0,
+          "rate1": 0,
+          "rate5": 0,
+          "rate15": 0,
+          "p50": 0,
+          "p90": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "http": {
+          "count": 0,
+          "rate1": 0,
+          "rate5": 0,
+          "rate15": 0,
+          "p50": 0,
+          "p90": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      }
+    }
+  ],
+  "uri": "/api/tunnels"
+}

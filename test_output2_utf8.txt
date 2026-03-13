@@ -1,0 +1,2942 @@
+﻿
+> bolt-expo-starter@1.0.0 test
+> jest __tests__/screens/ScanPreviewScreen.test.tsx --watchAll=false
+
+node.exe : FAIL __tests
+__/screens/ScanPreviewS
+creen.test.tsx
+Au caractère Ligne:1 : 
+1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (FAIL __tests_   
+ _/...Screen.test.t    
+sx:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  ScanPreviewScreen
+    ├ù displays the 
+preview image (19 ms)
+    ├ù displays the 
+scan type label (1 ms)
+    ├ù displays 
+confirm button (1 ms)
+    ├ù displays cancel 
+button (1 ms)
+    ├ù navigates back 
+when X button is 
+pressed
+    ├ù navigates back 
+when cancel button is 
+pressed (1 ms)
+    confirm action
+      ├ù shows loading 
+state when confirming
+      ├ù prevents 
+double-click 
+submission (4 ms)
+      ├ù calls 
+createScanWithAnalysis 
+with correct params (1 
+ms)
+      ├ù sets badge 
+after successful scan
+      ├ù shows error 
+alert when analysis 
+fails
+      ├ù keeps loading 
+state during success 
+animation
+      ├ù navigates to 
+scan result after 
+successful scan (1 ms)
+    error handling
+      ├ù shows error 
+alert when scan 
+creation fails
+      ├ù shows generic 
+error message for 
+unknown errors (1 ms)
+      ├ù returns to 
+normal state after 
+error (1 ms)
+    different scan 
+types
+      ├ù displays body 
+scan type correctly
+      ├ù displays 
+nutrition scan type 
+correctly
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+displays the preview 
+image
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:108:
+11)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+displays the scan type 
+label
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:115:
+11)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+displays confirm button
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:122:
+11)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+displays cancel button
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:128:
+11)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+navigates back when X 
+button is pressed
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:134:
+11)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+navigates back when 
+cancel button is 
+pressed
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:142:
+11)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+shows loading state 
+when confirming
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:153:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+prevents double-click 
+submission
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:168:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+calls 
+createScanWithAnalysis 
+with correct params
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:188:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+sets badge after 
+successful scan
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:206:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+shows error alert when 
+analysis fails
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:222:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+keeps loading state 
+during success 
+animation
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:248:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+navigates to scan 
+result after 
+successful scan
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:292:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+error handling ÔÇ║ 
+shows error alert when 
+scan creation fails
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:317:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+error handling ÔÇ║ 
+shows generic error 
+message for unknown 
+errors
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:329:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+error handling ÔÇ║ 
+returns to normal 
+state after error
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:341:
+13)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+different scan types 
+ÔÇ║ displays body scan 
+type correctly
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:363:
+13)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+different scan types 
+ÔÇ║ displays nutrition 
+scan type correctly
+
+    No QueryClient 
+set, use 
+QueryClientProvider to 
+set one
+
+    [0m [90m 62 
+|[39m   
+[36mconst[39m { 
+colors } [33m=[39m 
+useTheme()[33m;[39m
+     [90m 63 |[39m   
+[36mconst[39m { 
+t[33m,[39m locale } 
+[33m=[39m useLanguage
+()[33m;[39m
+    [31m[1m>[22m[39
+m[90m 64 |[39m   
+[36mconst[39m 
+queryClient 
+[33m=[39m useQueryCli
+ent()[33m;[39m
+     [90m    |[39m   
+                       
+           
+[31m[1m^[22m[39m
+     [90m 65 |[39m   
+[36mconst[39m params 
+[33m=[39m useLocalSea
+rchParams()[33m;[39m
+     [90m 66 |[39m   
+[36mconst[39m 
+imageUri [33m=[39m pa
+rams[33m.[39mimageUri
+ [36mas[39m 
+string[33m;[39m
+     [90m 67 |[39m   
+[36mconst[39m 
+scanType [33m=[39m pa
+rams[33m.[39mscanType
+ [36mas[39m [33mScan
+Type[39m[33m;[39m[0
+m
+
+      at 
+useQueryClient (node_mo
+dules/@tanstack/react-q
+uery/src/QueryClientPro
+vider.tsx:18:11)
+      at 
+ScanPreviewScreen (scre
+ens/ScanPreviewScreen.t
+sx:64:37)
+      at Object.react-s
+tack-bottom-frame (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+3976:20)
+      at 
+renderWithHooks (node_m
+odules/react-test-rende
+rer/cjs/react-test-rend
+erer.development.js:286
+6:22)
+      at updateFunction
+Component (node_modules
+/react-test-renderer/cj
+s/react-test-renderer.d
+evelopment.js:6006:19)
+      at beginWork (nod
+e_modules/react-test-re
+nderer/cjs/react-test-r
+enderer.development.js:
+7474:18)
+      at 
+runWithFiberInDEV (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+574:13)
+      at 
+performUnitOfWork (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0980:22)
+      at workLoopSync (
+node_modules/react-test
+-renderer/cjs/react-tes
+t-renderer.development.
+js:10816:41)
+      at 
+renderRootSync (node_mo
+dules/react-test-render
+er/cjs/react-test-rende
+rer.development.js:1079
+7:11)
+      at 
+performWorkOnRoot (node
+_modules/react-test-ren
+derer/cjs/react-test-re
+nderer.development.js:1
+0384:39)
+      at performWorkOnR
+ootViaSchedulerTask (no
+de_modules/react-test-r
+enderer/cjs/react-test-
+renderer.development.js
+:2094:7)
+      at flushActQueue 
+(node_modules/react/cjs
+/react.development.js:5
+66:34)
+      at process.env.NO
+DE_ENV.exports.act (nod
+e_modules/react/cjs/rea
+ct.development.js:859:1
+0)
+      at 
+actImplementation (node
+_modules/@testing-libra
+ry/react-native/src/act
+.ts:30:25)
+      at renderWithAct 
+(node_modules/@testing-
+library/react-native/sr
+c/render-act.ts:13:11)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:69:33)
+      at 
+renderInternal (node_mo
+dules/@testing-library/
+react-native/src/render
+.tsx:44:10)
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:374:
+13)
+
+Test Suites: 1 failed, 
+1 total
+Tests:       18 
+failed, 18 total
+Snapshots:   0 total
+Time:        0.649 s, 
+estimated 1 s
+Ran all test suites 
+matching __tests__/scre
+ens/ScanPreviewScreen.t
+est.tsx.

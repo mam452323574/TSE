@@ -1,0 +1,136 @@
+
+> bolt-expo-starter@1.0.0 test
+> jest AuthContext
+
+  console.error
+    [Verification] Error: Code incorrect
+
+    [0m [90m 512 |[39m
+     [90m 513 |[39m       [36mif[39m ([33m![39mresponse[33m.[39mok) {
+    [31m[1m>[22m[39m[90m 514 |[39m         console[33m.[39merror([32m'[Verification] Error:'[39m[33m,[39m data[33m.[39merror)[33m;[39m
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 515 |[39m         [36mthrow[39m [36mnew[39m [33mError[39m(data[33m.[39merror [33m||[39m [32m'Code incorrect'[39m)[33m;[39m
+     [90m 516 |[39m       }
+     [90m 517 |[39m[0m
+
+      at Object.error (contexts/AuthContext.tsx:514:17)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  console.error
+    [Verification] Error verifying code: Error: Code incorrect
+        at Object.<anonymous> (C:\Users\maloh\Downloads\1-main\contexts\AuthContext.tsx:515:15)
+        at Generator.next (<anonymous>)
+        at asyncGeneratorStep (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+        at _next (C:\Users\maloh\Downloads\1-main\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+
+    [0m [90m 518 |[39m       [36mreturn[39m data[33m.[39mverified [33m===[39m [36mtrue[39m[33m;[39m
+     [90m 519 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 520 |[39m       console[33m.[39merror([32m'[Verification] Error verifying code:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 521 |[39m       [36mthrow[39m error[33m;[39m
+     [90m 522 |[39m     }
+     [90m 523 |[39m   }[33m;[39m[0m
+
+      at Object.error (contexts/AuthContext.tsx:520:15)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  console.error
+    [SignOut] Supabase sign out error: { message: 'Sign out failed' }
+
+    [0m [90m 621 |[39m       [36mconst[39m { error } [33m=[39m [36mawait[39m supabase[33m.[39mauth[33m.[39msignOut({ scope[33m:[39m [32m'local'[39m })[33m;[39m
+     [90m 622 |[39m       [36mif[39m (error) {
+    [31m[1m>[22m[39m[90m 623 |[39m         console[33m.[39merror([32m'[SignOut] Supabase sign out error:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 624 |[39m         [36mthrow[39m error[33m;[39m
+     [90m 625 |[39m       }
+     [90m 626 |[39m     } [36mcatch[39m (error) {[0m
+
+      at Object.error (contexts/AuthContext.tsx:623:17)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  console.error
+    [SignOut] Error during sign out: { message: 'Sign out failed' }
+
+    [0m [90m 625 |[39m       }
+     [90m 626 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 627 |[39m       console[33m.[39merror([32m'[SignOut] Error during sign out:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 628 |[39m       setUserProfile([36mnull[39m)[33m;[39m
+     [90m 629 |[39m       setUser([36mnull[39m)[33m;[39m
+     [90m 630 |[39m       setSession([36mnull[39m)[33m;[39m[0m
+
+      at Object.error (contexts/AuthContext.tsx:627:15)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  console.error
+    [TrustedDevice] Error adding device: { message: 'Insert failed' }
+
+    [0m [90m 567 |[39m
+     [90m 568 |[39m       [36mif[39m (error) {
+    [31m[1m>[22m[39m[90m 569 |[39m         console[33m.[39merror([32m'[TrustedDevice] Error adding device:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 570 |[39m         [36mthrow[39m error[33m;[39m
+     [90m 571 |[39m       }
+     [90m 572 |[39m     } [36mcatch[39m (error) {[0m
+
+      at Object.error (contexts/AuthContext.tsx:569:17)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  console.error
+    [TrustedDevice] Error adding device: { message: 'Insert failed' }
+
+    [0m [90m 571 |[39m       }
+     [90m 572 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 573 |[39m       console[33m.[39merror([32m'[TrustedDevice] Error adding device:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 574 |[39m       [36mthrow[39m error[33m;[39m
+     [90m 575 |[39m     }
+     [90m 576 |[39m   }[33m;[39m[0m
+
+      at Object.error (contexts/AuthContext.tsx:573:15)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+PASS __tests__/contexts/AuthContext.test.tsx
+  AuthContext
+    useAuth hook
+      √ throws error when used outside provider (32 ms)
+      √ provides initial state (61 ms)
+    signIn
+      √ signs in successfully with trusted device (64 ms)
+      √ requires verification for untrusted device (63 ms)
+      √ throws error on sign in failure (63 ms)
+    signUp
+      √ creates user and profile successfully (66 ms)
+      √ throws error when user creation fails (62 ms)
+    checkUsernameAvailability
+      √ returns true for available username (61 ms)
+      √ returns false for taken username (63 ms)
+      √ returns false for username shorter than 3 characters (63 ms)
+    isDisposableEmail
+      √ returns true for disposable email (64 ms)
+      √ returns false for valid email (63 ms)
+      √ returns false for invalid email format (62 ms)
+    verifyEmailCode
+      √ returns true for valid code (62 ms)
+      √ throws error for invalid code (89 ms)
+    signOut
+      √ clears user state and signs out (52 ms)
+      √ throws error but still clears state on sign out failure (68 ms)
+    addTrustedDevice
+      √ adds device successfully (58 ms)
+      √ throws error on failure (70 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        1.604 s, estimated 3 s
+Ran all test suites matching AuthContext.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.

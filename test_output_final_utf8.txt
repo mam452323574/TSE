@@ -1,0 +1,461 @@
+﻿
+> bolt-expo-starter@1.0.0 test
+> jest __tests__/screens/ScanPreviewScreen.test.tsx --watchAll=false
+
+node.exe : FAIL __tests
+__/screens/ScanPreviewS
+creen.test.tsx
+Au caractère Ligne:1 : 
+1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (FAIL __tests_   
+ _/...Screen.test.t    
+sx:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  ScanPreviewScreen
+    ÔêÜ displays the 
+preview image (153 ms)
+    ÔêÜ displays the 
+scan type label (4 ms)
+    ÔêÜ displays 
+confirm button (8 ms)
+    ÔêÜ displays 
+cancel button (3 ms)
+    ÔêÜ navigates back 
+when X button is 
+pressed (3 ms)
+    ÔêÜ navigates back 
+when cancel button is 
+pressed (3 ms)
+    confirm action
+      ÔêÜ shows 
+loading state when 
+confirming (40 ms)
+      ÔêÜ prevents 
+double-click 
+submission (7 ms)
+      ÔêÜ calls 
+createScanWithAnalysis 
+with correct params (7 
+ms)
+      ├ù sets badge 
+after successful scan 
+(62 ms)
+      ├ù shows error 
+alert when analysis 
+fails (49 ms)
+      ÔêÜ keeps 
+loading state during 
+success animation (17 
+ms)
+      ÔêÜ navigates to 
+scan result after 
+successful scan (28 ms)
+    error handling
+      ÔêÜ shows error 
+alert when scan 
+creation fails (10 ms)
+      ÔêÜ shows 
+generic error message 
+for unknown errors (10 
+ms)
+      ÔêÜ returns to 
+normal state after 
+error (11 ms)
+    different scan 
+types
+      ├ù displays body 
+scan type correctly (4 
+ms)
+      ├ù displays 
+nutrition scan type 
+correctly (2 ms)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+sets badge after 
+successful scan
+
+    expect(jest.fn()).t
+oHaveBeenCalledWith(...
+expected)
+
+    Expected: 
+"analytics"
+
+    Number of calls: 0
+
+    [0m [90m 220 
+|[39m       fireEvent
+[33m.[39mpress(screen
+[33m.[39mgetByText([3
+2m'scan_preview.confirm
+_button'[39m))[33m;[
+39m
+     [90m 221 |[39m
+    [31m[1m>[22m[39
+m[90m 222 |[39m      
+ [36mawait[39m 
+waitFor(() 
+[33m=>[39m {
+     [90m     |[39m  
+                  
+[31m[1m^[22m[39m
+     [90m 223 |[39m  
+       expect(mockSetBa
+dge)[33m.[39mtoHaveBe
+enCalledWith([32m'anal
+ytics'[39m)[33m;[39m
+     [90m 224 |[39m  
+     })[33m;[39m
+     [90m 225 |[39m  
+   })[33m;[39m[0m
+
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:222:
+20)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+shows error alert when 
+analysis fails
+
+    expect(jest.fn()).t
+oHaveBeenCalledWith(...
+expected)
+
+    Expected: "scan_pre
+view.error_title_analys
+is", Any<String>, 
+Any<Array>
+
+    Number of calls: 0
+
+    [0m [90m 243 
+|[39m       
+})[33m;[39m
+     [90m 244 |[39m
+    [31m[1m>[22m[39
+m[90m 245 |[39m      
+ [36mawait[39m 
+waitFor(() 
+[33m=>[39m {
+     [90m     |[39m  
+                  
+[31m[1m^[22m[39m
+     [90m 246 |[39m  
+       expect(alertSpy)
+[33m.[39mtoHaveBeenCa
+lledWith(
+     [90m 247 |[39m  
+         [32m'scan_pre
+view.error_title_analys
+is'[39m[33m,[39m
+     [90m 248 |[39m  
+         expect[33m.[
+39many([33mString[39m
+)[33m,[39m[0m
+
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:245:
+20)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+different scan types 
+ÔÇ║ displays body scan 
+type correctly
+
+    Unable to find an 
+element with text: 
+scan_types.body
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<View[39m
+          [33maccessib
+le[39m=[32m{true}[39
+m
+        [36m>[39m
+          [36m<X 
+/>[39m
+        
+[36m</View>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<Image 
+/>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        
+[36m<View>[39m
+          
+[36m<View>[39m
+            
+[36m<Text>[39m
+              [0mscan_
+preview.type_label[0m
+            
+[36m</Text>[39m
+            
+[36m<Text>[39m
+              
+[0mCorps[0m
+            
+[36m</Text>[39m
+          
+[36m</View>[39m
+          
+[36m<View[39m
+            [33maccess
+ibilityState[39m=[32m
+{
+              {
+                
+"disabled": false,
+              }
+            }[39m
+            [33maccess
+ible[39m=[32m{true}[
+39m
+            [33mtestID
+[39m=[32m"confirm-but
+ton"[39m
+          [36m>[39m
+            
+[36m<Text>[39m
+              [0mscan_
+preview.confirm_button
+[0m
+            
+[36m</Text>[39m
+          
+[36m</View>[39m
+          
+[36m<View[39m
+            [33maccess
+ible[39m=[32m{true}[
+39m
+          [36m>[39m
+            
+[36m<Text>[39m
+              
+[0mcommon.cancel[0m
+            
+[36m</Text>[39m
+          
+[36m</View>[39m
+        
+[36m</View>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+    [0m [90m 375 
+|[39m       render([3
+3m<[39m[33mScanPrevie
+wScreen[39m [33m/[39
+m[33m>[39m)[33m;[39
+m
+     [90m 376 |[39m
+    [31m[1m>[22m[39
+m[90m 377 |[39m      
+ expect(screen[33m.[3
+9mgetByText([32m'scan_
+types.body'[39m))[33m
+.[39mtoBeTruthy()[33m
+;[39m
+     [90m     |[39m  
+                   
+[31m[1m^[22m[39m
+     [90m 378 |[39m  
+   })[33m;[39m
+     [90m 379 |[39m
+     [90m 380 |[39m  
+   it([32m'displays 
+nutrition scan type cor
+rectly'[39m[33m,[39m
+ () [33m=>[39m {[0m
+
+      at 
+Object.getByText (__tes
+ts__/screens/ScanPrevie
+wScreen.test.tsx:377:21
+)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+different scan types 
+ÔÇ║ displays nutrition 
+scan type correctly
+
+    Unable to find an 
+element with text: 
+scan_types.nutrition
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<View[39m
+          [33maccessib
+le[39m=[32m{true}[39
+m
+        [36m>[39m
+          [36m<X 
+/>[39m
+        
+[36m</View>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<Image 
+/>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        
+[36m<View>[39m
+          
+[36m<View>[39m
+            
+[36m<Text>[39m
+              [0mscan_
+preview.type_label[0m
+            
+[36m</Text>[39m
+            
+[36m<Text>[39m
+              
+[0mNutrition[0m
+            
+[36m</Text>[39m
+          
+[36m</View>[39m
+          
+[36m<View[39m
+            [33maccess
+ibilityState[39m=[32m
+{
+              {
+                
+"disabled": false,
+              }
+            }[39m
+            [33maccess
+ible[39m=[32m{true}[
+39m
+            [33mtestID
+[39m=[32m"confirm-but
+ton"[39m
+          [36m>[39m
+            
+[36m<Text>[39m
+              [0mscan_
+preview.confirm_button
+[0m
+            
+[36m</Text>[39m
+          
+[36m</View>[39m
+          
+[36m<View[39m
+            [33maccess
+ible[39m=[32m{true}[
+39m
+          [36m>[39m
+            
+[36m<Text>[39m
+              
+[0mcommon.cancel[0m
+            
+[36m</Text>[39m
+          
+[36m</View>[39m
+        
+[36m</View>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+    [0m [90m 386 
+|[39m       render([3
+3m<[39m[33mScanPrevie
+wScreen[39m [33m/[39
+m[33m>[39m)[33m;[39
+m
+     [90m 387 |[39m
+    [31m[1m>[22m[39
+m[90m 388 |[39m      
+ expect(screen[33m.[3
+9mgetByText([32m'scan_
+types.nutrition'[39m))
+[33m.[39mtoBeTruthy()
+[33m;[39m
+     [90m     |[39m  
+                   
+[31m[1m^[22m[39m
+     [90m 389 |[39m  
+   })[33m;[39m
+     [90m 390 |[39m  
+ })[33m;[39m
+     [90m 391 |[39m 
+})[33m;[39m[0m
+
+      at 
+Object.getByText (__tes
+ts__/screens/ScanPrevie
+wScreen.test.tsx:388:21
+)
+
+Test Suites: 1 failed, 
+1 total
+Tests:       4 failed, 
+14 passed, 18 total
+Snapshots:   0 total
+Time:        0.909 s, 
+estimated 2 s
+Ran all test suites 
+matching __tests__/scre
+ens/ScanPreviewScreen.t
+est.tsx.

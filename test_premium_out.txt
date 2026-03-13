@@ -1,0 +1,6627 @@
+﻿node.exe : FAIL __tests__/scre
+ens/PremiumUpgradeScreen.test.
+tsx
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (FAIL __te  
+  sts__/...Screen.test.tsx:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+  PremiumUpgradeScreen
+    ÔêÜ renders without 
+crashing (247 ms)
+    ÔêÜ displays premium 
+title (16 ms)
+    ├ù displays hero title 
+(12 ms)
+    ├ù displays hero subtitle 
+(11 ms)
+    ├ù displays the three 
+plan titles (10 ms)
+    ├ù displays prices (10 ms)
+    ├ù displays best value 
+badge (10 ms)
+    ├ù displays crossed-out 
+annual price (10 ms)
+    ├ù displays monthly CTA 
+button (10 ms)
+    ├ù displays annual CTA 
+button (12 ms)
+    ├ù displays legal text 
+(10 ms)
+    ├ù displays restore 
+purchases button (10 ms)
+  PremiumUpgradeScreen - 
+Already Premium
+    ÔêÜ displays already 
+premium message when user is 
+premium
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays hero title
+
+    Unable to find an element 
+with text: D├®bloquez tout 
+votre potentiel sant├®
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 78 |[39m     r
+ender([33m<[39m[33mPremiumU
+pgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 79 |[39m
+    [31m[1m>[22m[39m[90m 
+80 |[39m     expect(screen[3
+3m.[39mgetByText([32m'D├®blo
+quez tout votre potentiel sant
+├®'[39m))[33m.[39mtoBeTruth
+y()[33m;[39m
+     [90m    |[39m          
+         [31m[1m^[22m[39m
+     [90m 81 |[39m   
+})[33m;[39m
+     [90m 82 |[39m
+     [90m 83 |[39m   
+it([32m'displays hero 
+subtitle'[39m[33m,[39m () 
+[33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:80:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays hero subtitle
+
+    Unable to find an element 
+with text: Choisissez la 
+formule qui vous correspond
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 84 |[39m     r
+ender([33m<[39m[33mPremiumU
+pgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 85 |[39m
+    [31m[1m>[22m[39m[90m 
+86 |[39m     expect(screen[3
+3m.[39mgetByText([32m'Choisi
+ssez la formule qui vous corre
+spond'[39m))[33m.[39mtoBeTr
+uthy()[33m;[39m
+     [90m    |[39m          
+         [31m[1m^[22m[39m
+     [90m 87 |[39m   
+})[33m;[39m
+     [90m 88 |[39m
+     [90m 89 |[39m   
+it([32m'displays the three 
+plan titles'[39m[33m,[39m 
+() [33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:86:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays the three plan 
+titles
+
+    Unable to find an element 
+with text: Gratuit
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 91 |[39m
+     [90m 92 |[39m     
+[90m// Free card[39m
+    [31m[1m>[22m[39m[90m 
+93 |[39m     expect(screen[3
+3m.[39mgetByText([32m'Gratui
+t'[39m))[33m.[39mtoBeTruthy
+()[33m;[39m
+     [90m    |[39m          
+         [31m[1m^[22m[39m
+     [90m 94 |[39m     
+[90m// Monthly card[39m
+     [90m 95 |[39m     expec
+t(screen[33m.[39mgetByText(
+[32m'Premium'[39m))[33m.[39
+mtoBeTruthy()[33m;[39m
+     [90m 96 |[39m     
+[90m// Annual card[39m[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:93:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays prices
+
+    Unable to find an element 
+with text: 0 Ôé¼
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 101 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 102 |[39m
+    [31m[1m>[22m[39m[90m 
+103 |[39m     expect(screen[
+33m.[39mgetByText([32m'0 Ôé¼
+'[39m))[33m.[39mtoBeTruthy(
+)[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 104 |[39m     expe
+ct(screen[33m.[39mgetByText(
+[32m'9,99 Ôé¼/mois'[39m))[3
+3m.[39mtoBeTruthy()[33m;[39
+m
+     [90m 105 |[39m     expe
+ct(screen[33m.[39mgetByText(
+[32m'79,99 Ôé¼/an'[39m))[33
+m.[39mtoBeTruthy()[33m;[39m
+     [90m 106 |[39m   
+})[33m;[39m[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:103:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays best value badge
+
+    Unable to find an element 
+with text: MEILLEURE OFFRE
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 109 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 110 |[39m
+    [31m[1m>[22m[39m[90m 
+111 |[39m     expect(screen[
+33m.[39mgetByText([32m'MEILL
+EURE OFFRE'[39m))[33m.[39mt
+oBeTruthy()[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 112 |[39m   
+})[33m;[39m
+     [90m 113 |[39m
+     [90m 114 |[39m   
+it([32m'displays crossed-out 
+annual price'[39m[33m,[39m 
+() [33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:111:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays crossed-out 
+annual price
+
+    Unable to find an element 
+with text: 119,88 Ôé¼
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 115 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 116 |[39m
+    [31m[1m>[22m[39m[90m 
+117 |[39m     expect(screen[
+33m.[39mgetByText([32m'119,8
+8 Ôé¼'[39m))[33m.[39mtoBeTr
+uthy()[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 118 |[39m   
+})[33m;[39m
+     [90m 119 |[39m
+     [90m 120 |[39m   
+it([32m'displays monthly CTA 
+button'[39m[33m,[39m () 
+[33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:117:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays monthly CTA 
+button
+
+    Unable to find an element 
+with text: S'abonner ÔÇö 9,99 
+Ôé¼/mois
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 121 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 122 |[39m
+    [31m[1m>[22m[39m[90m 
+123 |[39m     expect(screen[
+33m.[39mgetByText([32m"S'abo
+nner ÔÇö 9,99 Ôé¼/mois"[39m))
+[33m.[39mtoBeTruthy()[33m;
+[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 124 |[39m   
+})[33m;[39m
+     [90m 125 |[39m
+     [90m 126 |[39m   
+it([32m'displays annual CTA 
+button'[39m[33m,[39m () 
+[33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:123:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays annual CTA button
+
+    Unable to find an element 
+with text: S'abonner ÔÇö 
+79,99 Ôé¼/an
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 127 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 128 |[39m
+    [31m[1m>[22m[39m[90m 
+129 |[39m     expect(screen[
+33m.[39mgetByText([32m"S'abo
+nner ÔÇö 79,99 Ôé¼/an"[39m))
+[33m.[39mtoBeTruthy()[33m;[
+39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 130 |[39m   
+})[33m;[39m
+     [90m 131 |[39m
+     [90m 132 |[39m   
+it([32m'displays legal 
+text'[39m[33m,[39m () 
+[33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:129:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays legal text
+
+    Unable to find an element 
+with text: Abonnement 
+renouvel├® automatiquement. 
+Annulable ├á tout moment.
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 133 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 134 |[39m
+    [31m[1m>[22m[39m[90m 
+135 |[39m     expect(screen[
+33m.[39mgetByText([32m'Abonn
+ement renouvel├® 
+automatiquement. Annulable ├á 
+tout moment.'[39m))[33m.[39
+mtoBeTruthy()[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 136 |[39m   
+})[33m;[39m
+     [90m 137 |[39m
+     [90m 138 |[39m   
+it([32m'displays restore 
+purchases 
+button'[39m[33m,[39m () 
+[33m=>[39m {[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:135:19)
+
+  ÔùÅ PremiumUpgradeScreen 
+ÔÇ║ displays restore 
+purchases button
+
+    Unable to find an element 
+with text: Restaurer mes 
+achats
+
+    [36m<View>[39m
+      [0mModalHandle[0m
+      [36m<View>[39m
+        [36m<View />[39m
+        [36m<Text>[39m
+          [0mHealth Scan 
+Premium[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessible[39m
+=[32m{true}[39m
+        [36m>[39m
+          [36m<X />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      
+[36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            
+[33mstyle[39m=[32m{
+              {
+                "opacity": 0,
+              }
+            }[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Crown 
+/>[39m
+                
+[36m<View>[39m
+                  
+[36m<Sparkles />[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_title[0m
+              
+[36m</Text>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.hero_subtitle
+[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+            
+[36m<RCTScrollView>[39m
+              [36m<View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_tit
+le[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.free_pri
+ce[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_partial[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<X />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.free_f
+eat_no_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+title[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.monthly_
+price[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_mont
+hly[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+                
+[36m<View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Star />[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_b
+adge[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_t
+itle[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_p
+rice[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_m
+onthly[0m
+                    
+[36m</Text>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.annual_c
+rossed[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                  [36m<View 
+/>[39m
+                  
+[36m<View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_face[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_body[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_nutrition[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_super[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_unlocked[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_history[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                    
+[36m<View>[39m
+                      
+[36m<View>[39m
+                        
+[36m<Check />[39m
+                      
+[36m</View>[39m
+                      
+[36m<Text>[39m
+                        [0mpr
+emium.subscription_page.prem_f
+eat_ai[0m
+                      
+[36m</Text>[39m
+                    
+[36m</View>[39m
+                  
+[36m</View>[39m
+                  
+[36m<View[39m
+                    [33macces
+sibilityState[39m=[32m{
+                      {
+                        
+"disabled": false,
+                      }
+                    }[39m
+                    [33macces
+sible[39m=[32m{true}[39m
+                  [36m>[39m
+                    
+[36m<Text>[39m
+                      [0mprem
+ium.subscription_page.cta_annu
+al[0m
+                    
+[36m</Text>[39m
+                  
+[36m</View>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+            
+[36m</RCTScrollView>[39m
+            [36m<View>[39m
+              [36m<View[39m
+                [33maccessibi
+lityState[39m=[32m{
+                  {
+                    
+"disabled": false,
+                  }
+                }[39m
+                [33maccessibl
+e[39m=[32m{true}[39m
+              [36m>[39m
+                
+[36m<RefreshCw />[39m
+                
+[36m<Text>[39m
+                  
+[0mRestaurer les achats[0m
+                
+[36m</Text>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                [0mpremium.su
+bscription_page.legal[0m
+              
+[36m</Text>[39m
+              [36m<View>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.privacy_li
+nk[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+                
+[36m<Text>[39m
+                  [0mÔÇó[0m
+                
+[36m</Text>[39m
+                
+[36m<View[39m
+                  [33maccessi
+ble[39m=[32m{true}[39m
+                [36m>[39m
+                  
+[36m<Text>[39m
+                    [0mpremiu
+m.subscription_page.terms_link
+[0m
+                  
+[36m</Text>[39m
+                
+[36m</View>[39m
+              
+[36m</View>[39m
+              [36m<Text>[39m
+                
+[0mpremium.store_note[0m
+              
+[36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      
+[36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+    [0m [90m 139 |[39m     
+render([33m<[39m[33mPremium
+UpgradeScreen[39m [33m/[39m
+[33m>[39m)[33m;[39m
+     [90m 140 |[39m
+    [31m[1m>[22m[39m[90m 
+141 |[39m     expect(screen[
+33m.[39mgetByText([32m'Resta
+urer mes achats'[39m))[33m.
+[39mtoBeTruthy()[33m;[39m
+     [90m     |[39m         
+          [31m[1m^[22m[39m
+     [90m 142 |[39m   
+})[33m;[39m
+     [90m 143 |[39m 
+})[33m;[39m
+     [90m 144 |[39m[0m
+
+      at Object.getByText (__t
+ests__/screens/PremiumUpgradeS
+creen.test.tsx:141:19)
+
+Test Suites: 1 failed, 1 total
+Tests:       10 failed, 3 
+passed, 13 total
+Snapshots:   0 total
+Time:        1.186 s, 
+estimated 2 s
+Ran all test suites matching _
+_tests__/screens/PremiumUpgrad
+eScreen.test.tsx.

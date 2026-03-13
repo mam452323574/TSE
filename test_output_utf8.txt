@@ -1,0 +1,161 @@
+﻿
+> bolt-expo-starter@1.0.0 test
+> jest __tests__/screens/ScanPreviewScreen.test.tsx --watchAll=false
+
+  console.warn
+    The "EXNativeModulesProxy" native module is not exported through NativeModules; verify that expo-modules-core's native code is linked properly
+
+    [0m [90m 4 |[39m [36mimport[39m { [33mX[39m[33m,[39m [33mSparkles[39m[33m,[39m [33mActivity[39m[33m,[39m [33mUtensils[39m[33m,[39m [33mPersonStanding[39m[33m,[39m [33mSmile[39m } [36mfrom[39m [32m'lucide-react-native'[39m[33m;[39m
+     [90m 5 |[39m [36mimport[39m { [33mLinearGradient[39m } [36mfrom[39m [32m'expo-linear-gradient'[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { [33mBlurView[39m } [36mfrom[39m [32m'expo-blur'[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 7 |[39m [36mimport[39m { [33mApiService[39m[33m,[39m [33mApiError[39m } [36mfrom[39m [32m'@/services/api'[39m[33m;[39m
+     [90m 8 |[39m [36mimport[39m { useQueryClient } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m
+     [90m 9 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/Button'[39m[33m;[39m[0m
+
+      at Object.warn (node_modules/expo-modules-core/src/NativeModulesProxy.native.ts:81:11)
+      at Object.require (node_modules/expo-modules-core/src/requireNativeModule.ts:3:1)
+      at Object.require (node_modules/expo-modules-core/src/sweet/NativeJSLogger.ts:1:1)
+      at Object.require (node_modules/expo-modules-core/src/sweet/setUpJsLogger.fx.ts:1:1)
+      at Object.require (node_modules/expo-modules-core/src/index.ts:1:1)
+      at Object.require (node_modules/expo-blur/src/BlurView.tsx:5:1)
+      at Object.require (node_modules/expo-blur/src/index.ts:1:1)
+      at Object.require (screens/ScanPreviewScreen.tsx:6:1)
+      at Object.require (__tests__/screens/ScanPreviewScreen.test.tsx:4:1)
+
+  console.warn
+    The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.
+
+    [0m [90m 4 |[39m [36mimport[39m { [33mX[39m[33m,[39m [33mSparkles[39m[33m,[39m [33mActivity[39m[33m,[39m [33mUtensils[39m[33m,[39m [33mPersonStanding[39m[33m,[39m [33mSmile[39m } [36mfrom[39m [32m'lucide-react-native'[39m[33m;[39m
+     [90m 5 |[39m [36mimport[39m { [33mLinearGradient[39m } [36mfrom[39m [32m'expo-linear-gradient'[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { [33mBlurView[39m } [36mfrom[39m [32m'expo-blur'[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 7 |[39m [36mimport[39m { [33mApiService[39m[33m,[39m [33mApiError[39m } [36mfrom[39m [32m'@/services/api'[39m[33m;[39m
+     [90m 8 |[39m [36mimport[39m { useQueryClient } [36mfrom[39m [32m'@tanstack/react-query'[39m[33m;[39m
+     [90m 9 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/Button'[39m[33m;[39m[0m
+
+      at Object.warn (node_modules/expo-modules-core/src/Platform.ts:15:11)
+      at Object.require (node_modules/expo-modules-core/src/sweet/setUpJsLogger.fx.ts:2:1)
+      at Object.require (node_modules/expo-modules-core/src/index.ts:1:1)
+      at Object.require (node_modules/expo-blur/src/BlurView.tsx:5:1)
+      at Object.require (node_modules/expo-blur/src/index.ts:1:1)
+      at Object.require (screens/ScanPreviewScreen.tsx:6:1)
+      at Object.require (__tests__/screens/ScanPreviewScreen.test.tsx:4:1)
+
+node.exe : FAIL __tests
+__/screens/ScanPreviewS
+creen.test.tsx
+Au caractère Ligne:1 : 
+1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (FAIL __tests_   
+ _/...Screen.test.t    
+sx:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  ÔùÅ Test suite 
+failed to run
+
+    TypeError: Cannot 
+read properties of 
+undefined (reading 
+'EventEmitter')
+
+    [0m [90m 4 
+|[39m 
+[36mimport[39m { 
+[33mX[39m[33m,[39m 
+[33mSparkles[39m[33m
+,[39m [33mActivity[3
+9m[33m,[39m [33mUten
+sils[39m[33m,[39m [
+33mPersonStanding[39m
+[33m,[39m 
+[33mSmile[39m } 
+[36mfrom[39m [32m'lu
+cide-react-native'[39m
+[33m;[39m
+     [90m 5 |[39m 
+[36mimport[39m { [33
+mLinearGradient[39m } 
+[36mfrom[39m [32m'ex
+po-linear-gradient'[39
+m[33m;[39m
+    [31m[1m>[22m[39
+m[90m 6 |[39m 
+[36mimport[39m { 
+[33mBlurView[39m } 
+[36mfrom[39m [32m'ex
+po-blur'[39m[33m;[39
+m
+     [90m   |[39m 
+[31m[1m^[22m[39m
+     [90m 7 |[39m 
+[36mimport[39m { [33
+mApiService[39m[33m,
+[39m 
+[33mApiError[39m } 
+[36mfrom[39m [32m'@/
+services/api'[39m[33m
+;[39m
+     [90m 8 |[39m 
+[36mimport[39m { 
+useQueryClient } 
+[36mfrom[39m [32m'@t
+anstack/react-query'[3
+9m[33m;[39m
+     [90m 9 |[39m 
+[36mimport[39m { 
+[33mButton[39m } 
+[36mfrom[39m [32m'@/
+components/Button'[39m
+[33m;[39m[0m
+
+      at 
+Object.EventEmitter (no
+de_modules/expo-modules
+-core/src/EventEmitter.
+ts:22:77)
+      at 
+Object.require (node_mo
+dules/expo-modules-core
+/src/index.ts:6:1)
+      at 
+Object.require (node_mo
+dules/expo-blur/src/Blu
+rView.tsx:5:1)
+      at 
+Object.require (node_mo
+dules/expo-blur/src/ind
+ex.ts:1:1)
+      at 
+Object.require (screens
+/ScanPreviewScreen.tsx:
+6:1)
+      at 
+Object.require (__tests
+__/screens/ScanPreviewS
+creen.test.tsx:4:1)
+
+Test Suites: 1 failed, 
+1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.471 s
+Ran all test suites 
+matching __tests__/scre
+ens/ScanPreviewScreen.t
+est.tsx.

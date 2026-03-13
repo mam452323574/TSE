@@ -1,0 +1,133 @@
+﻿  console.warn
+    The "EXNativeModulesProxy" native module is not exported through NativeModules; verify that expo-modules-core's native code is linked properly
+
+    [0m [90m 1 |[39m [36mimport[39m [33mReact[39m[33m,[39m { createContext[33m,[39m useState[33m,[39m useContext[33m,[39m useEffect[33m,[39m useCallback[33m,[39m useMemo } [36mfrom[39m [32m'react'[39m[33m;[39m
+     [90m 2 |[39m [36mimport[39m [33mAsyncStorage[39m [36mfrom[39m [32m'@react-native-async-storage/async-storage'[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mLocalization[39m [36mfrom[39m [32m'expo-localization'[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 4 |[39m [36mimport[39m { i18n } [36mfrom[39m [32m'@/i18n/translations'[39m[33m;[39m
+     [90m 5 |[39m
+     [90m 6 |[39m type [33mLanguage[39m [33m=[39m [32m'fr'[39m [33m|[39m [32m'en'[39m [33m|[39m [32m'de'[39m [33m|[39m [32m'it'[39m [33m|[39m [32m'es'[39m [33m|[39m [32m'pt'[39m[33m;[39m[0m
+
+      at Object.warn (node_modules/expo-modules-core/src/NativeModulesProxy.native.ts:81:11)
+      at Object.require (node_modules/expo-modules-core/src/requireNativeModule.ts:3:1)
+      at Object.require (node_modules/expo-modules-core/src/sweet/NativeJSLogger.ts:1:1)
+      at Object.require (node_modules/expo-modules-core/src/sweet/setUpJsLogger.fx.ts:1:1)
+      at Object.require (node_modules/expo-modules-core/src/index.ts:1:1)
+      at Object.require (node_modules/expo-localization/src/ExpoLocalization.native.ts:1:1)
+      at Object.require (node_modules/expo-localization/src/Localization.ts:3:1)
+      at Object.require (contexts/LanguageContext.tsx:3:1)
+      at Object.require (screens/AnalyticsScreen.tsx:10:1)
+      at Object.require (__tests__/screens/AnalyticsScreen.test.tsx:3:1)
+
+  console.warn
+    The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.
+
+    [0m [90m 1 |[39m [36mimport[39m [33mReact[39m[33m,[39m { createContext[33m,[39m useState[33m,[39m useContext[33m,[39m useEffect[33m,[39m useCallback[33m,[39m useMemo } [36mfrom[39m [32m'react'[39m[33m;[39m
+     [90m 2 |[39m [36mimport[39m [33mAsyncStorage[39m [36mfrom[39m [32m'@react-native-async-storage/async-storage'[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m [33m*[39m [36mas[39m [33mLocalization[39m [36mfrom[39m [32m'expo-localization'[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 4 |[39m [36mimport[39m { i18n } [36mfrom[39m [32m'@/i18n/translations'[39m[33m;[39m
+     [90m 5 |[39m
+     [90m 6 |[39m type [33mLanguage[39m [33m=[39m [32m'fr'[39m [33m|[39m [32m'en'[39m [33m|[39m [32m'de'[39m [33m|[39m [32m'it'[39m [33m|[39m [32m'es'[39m [33m|[39m [32m'pt'[39m[33m;[39m[0m
+
+      at Object.warn (node_modules/expo-modules-core/src/Platform.ts:15:11)
+      at Object.require (node_modules/expo-modules-core/src/sweet/setUpJsLogger.fx.ts:2:1)
+      at Object.require (node_modules/expo-modules-core/src/index.ts:1:1)
+      at Object.require (node_modules/expo-localization/src/ExpoLocalization.native.ts:1:1)
+      at Object.require (node_modules/expo-localization/src/Localization.ts:3:1)
+      at Object.require (contexts/LanguageContext.tsx:3:1)
+      at Object.require (screens/AnalyticsScreen.tsx:10:1)
+      at Object.require (__tests__/screens/AnalyticsScreen.test.tsx:3:1)
+
+node.exe : FAIL __tests__/scre
+ens/AnalyticsScreen.test.tsx
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (FAIL __te  
+  sts__/...Screen.test.tsx:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+  ÔùÅ Test suite failed to run
+
+    TypeError: Cannot read 
+properties of undefined 
+(reading 'EventEmitter')
+
+    [0m [90m 1 |[39m 
+[36mimport[39m 
+[33mReact[39m[33m,[39m { 
+createContext[33m,[39m 
+useState[33m,[39m 
+useContext[33m,[39m 
+useEffect[33m,[39m 
+useCallback[33m,[39m 
+useMemo } [36mfrom[39m 
+[32m'react'[39m[33m;[39m
+     [90m 2 |[39m 
+[36mimport[39m 
+[33mAsyncStorage[39m 
+[36mfrom[39m [32m'@react-na
+tive-async-storage/async-stora
+ge'[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 
+3 |[39m [36mimport[39m 
+[33m*[39m [36mas[39m 
+[33mLocalization[39m 
+[36mfrom[39m [32m'expo-loca
+lization'[39m[33m;[39m
+     [90m   |[39m 
+[31m[1m^[22m[39m
+     [90m 4 |[39m 
+[36mimport[39m { i18n } 
+[36mfrom[39m [32m'@/i18n/tr
+anslations'[39m[33m;[39m
+     [90m 5 |[39m
+     [90m 6 |[39m type 
+[33mLanguage[39m 
+[33m=[39m [32m'fr'[39m 
+[33m|[39m [32m'en'[39m 
+[33m|[39m [32m'de'[39m 
+[33m|[39m [32m'it'[39m 
+[33m|[39m [32m'es'[39m 
+[33m|[39m 
+[32m'pt'[39m[33m;[39m[0m
+
+      at Object.EventEmitter (
+node_modules/expo-modules-core
+/src/EventEmitter.ts:22:77)
+      at Object.require (node_
+modules/expo-modules-core/src/
+index.ts:6:1)
+      at Object.require (node_
+modules/expo-localization/src/
+ExpoLocalization.native.ts:1:1
+)
+      at Object.require (node_
+modules/expo-localization/src/
+Localization.ts:3:1)
+      at Object.require (conte
+xts/LanguageContext.tsx:3:1)
+      at Object.require (scree
+ns/AnalyticsScreen.tsx:10:1)
+      at Object.require (__tes
+ts__/screens/AnalyticsScreen.t
+est.tsx:3:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.466 s
+Ran all test suites matching _
+_tests__/screens/AnalyticsScre
+en.test.tsx.

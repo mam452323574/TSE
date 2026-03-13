@@ -1,0 +1,13 @@
+fr scanner: Scanner
+en scanner: Scan
+de scanner: Scannen
+it scanner: Scansiona
+es scanner: Escáner
+pt scanner: Escanear
+[fr] line 515: "features_title": "Fonctionnalités Premium",
+[en] line 974: "features_title": "Premium Features",
+[de] line 1710: "already_premium_desc": "Du hast Zugriff auf alle Premium-Funktionen.",
+[de] line 1713: "features_title": "Premium-Funktionen",
+[it] line 2454: "features_title": "Funzionalità Premium",
+[es] line 3200: "features_title": "Funciones Premium",
+[pt] line 4243: "features_title": "Recursos Premium",

@@ -1,0 +1,145 @@
+Total failures: 13
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: displays the scan type label
+ERROR: Error: Unable to find an element with text: scan_preview.type_label
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: displays confirm button
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: displays cancel button
+ERROR: Error: Unable to find an element with text: common.cancel
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: navigates back when cancel button is pressed
+ERROR: Error: Unable to find an element with text: common.cancel
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: shows loading state when confirming
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: calls createScanWithAnalysis with correct params
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: sets badge after successful scan
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: shows error alert when analysis fails
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: keeps loading state during success animation
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_loading
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: navigates to scan result after successful scan
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: shows error alert when scan creation fails
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: shows generic error message for unknown errors
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: returns to normal state after error
+ERROR: Error: Unable to find an element with text: scan_preview.confirm_button
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+      [33maccessible[39m=[32m{true}[39m
+    [36m>[39m
+      [36m<X />[39m
+

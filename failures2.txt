@@ -1,0 +1,346 @@
+Total failures: 43
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays feature names
+ERROR: Error: Unable to find an element with text: Scan illimité
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays feature descriptions
+ERROR: Error: Unable to find an element with text: Scannez autant de produits que vous voulez
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays category titles
+ERROR: Error: Unable to find an element with text: Scans
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays tier labels
+ERROR: Error: Unable to find an element with text: Gratuit
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: displays tier descriptions
+ERROR: Error: Unable to find an element with text: 3 par jour
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureComparisonList.test.tsx
+TEST: groups features by category
+ERROR: Error: Unable to find an element with text: Scans
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<Text>[39m
+
+FILE: FeatureGate.test.tsx
+TEST: renders gate UI when user is not premium and no fallback
+ERROR: Error: Unable to find an element with text: Fonctionnalité Premium
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: FeatureGate.test.tsx
+TEST: navigates to premium upgrade when button is pressed
+ERROR: Error: Unable to find an element with text: Passer à Premium
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: FeatureGate.test.tsx
+TEST: displays hint text for premium upgrade
+ERROR: Error: Unable to find an element with text: Débloquez cette fonctionnalité et bien plus encore
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays welcome title
+ERROR: Error: Unable to find an element with text: Bienvenue !
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays subtitle
+ERROR: Error: Unable to find an element with text: Configurez votre profil
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays username input
+ERROR: Error: Unable to find an element with placeholder: pseudo123
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: displays next button (Suivant)
+ERROR: Error: Unable to find an element with text: Suivant
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: validates username format
+ERROR: Error: Unable to find an element with placeholder: pseudo123
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: checks username availability
+ERROR: Error: Unable to find an element with placeholder: pseudo123
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: transitions to theme selection step
+ERROR: Error: Unable to find an element with placeholder: pseudo123
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: UsernameSetupScreen.test.tsx
+TEST: allows theme selection
+ERROR: Error: Unable to find an element with placeholder: pseudo123
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: AvatarPicker.test.tsx
+TEST: displays hint text
+ERROR: Error: Unable to find an element with text: Appuyez pour modifier
+
+[36m<View>[39m
+  [36m<View[39m
+    [33maccessibilityState[39m=[32m{
+
+FILE: AvatarPicker.test.tsx
+TEST: shows options alert when pressed
+ERROR: Error: Unable to find an element with text: Appuyez pour modifier
+
+[36m<View>[39m
+  [36m<View[39m
+    [33maccessibilityState[39m=[32m{
+
+FILE: FeatureComparisonTable.test.tsx
+TEST: displays table headers
+ERROR: Error: Unable to find an element with text: Fonctionnalité
+
+[36m<RCTScrollView>[39m
+  [36m<View>[39m
+    [36m<View>[39m
+
+FILE: EmailVerificationScreen.test.tsx
+TEST: displays email verification title
+ERROR: Error: Unable to find an element with text: Verifiez votre email
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+
+FILE: EmailVerificationScreen.test.tsx
+TEST: displays verify button
+ERROR: Error: Unable to find an element with text: Verifier
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+
+FILE: EmailVerificationScreen.test.tsx
+TEST: displays resend code button
+ERROR: Error: Unable to find an element with text: Renvoyer le code
+
+[36m<View>[39m
+  [36m<View>[39m
+    [36m<View[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: renders empty state when no recipes
+ERROR: Error: Unable to find an element with text: Aucune recette trouvée
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: RecipesScreen.test.tsx
+TEST: displays preparation time
+ERROR: Error: Unable to find an element with text: 10 min
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: ExercisesScreen.test.tsx
+TEST: renders empty state when no exercises
+ERROR: Error: Unable to find an element with text: Aucun exercice trouvé
+
+[36m<View>[39m
+  [0mModalHandle[0m
+  [36m<View>[39m
+
+FILE: SignUpScreen.test.tsx
+TEST: displays signup subtitle
+ERROR: Error: Unable to find an element with text: Creez votre compte
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: SignUpScreen.test.tsx
+TEST: displays password inputs
+ERROR: Error: Unable to find an element with placeholder: Minimum 6 caracteres
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: SignUpScreen.test.tsx
+TEST: displays login link
+ERROR: Error: Unable to find an element with text: /Deja un compte/
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: SignUpScreen.test.tsx
+TEST: allows filling the form
+ERROR: Error: Unable to find an element with placeholder: Minimum 6 caracteres
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: SignUpScreen.test.tsx
+TEST: can toggle password visibility
+ERROR: Error: Unable to find an element with placeholder: Minimum 6 caracteres
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: SignUpScreen.test.tsx
+TEST: navigates back when login link is pressed
+ERROR: Error: Unable to find an element with text: /Deja un compte/
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: SignUpScreen.test.tsx
+TEST: displays info text about verification email
+ERROR: Error: Unable to find an element with text: Un code de verification sera envoye a votre adresse email.
+
+[36m<View>[39m
+  [36m<View>[39m
+    [0mLanguageSelector[0m
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: renders without crashing
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays premium title
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays subtitle
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays price
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays subscribe button
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays benefits section
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: displays back button
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: PremiumUpgradeScreen.test.tsx
+TEST: navigates back when back button is pressed
+ERROR: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `PremiumUpgradeScreen`.
+    at createFiberFromTypeAndProps (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12185:28)
+    at createFiberFromElement (C:\Users\maloh\Downloads\1-main\node_modules\react-test-renderer\cjs\react-test-renderer.development.js:12199:14)
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: shows error alert when scan creation fails
+ERROR: Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: "common.error", "Upload failed", Any<Array>
+Received: "Erreur", "Upload failed", [{"onPress": [Function onPress], "text": "common.ok"}]
+
+
+FILE: ScanPreviewScreen.test.tsx
+TEST: shows generic error message for unknown errors
+ERROR: Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: "common.error", Any<String>, Any<Array>
+Received: "Erreur", "Erreur", [{"onPress": [Function onPress], "text": "common.ok"}]
+
+

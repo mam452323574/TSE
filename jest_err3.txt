@@ -1,0 +1,920 @@
+PASS __tests__/screens/HomeScreen.test.tsx
+FAIL __tests__/screens/ScannerScreen.test.tsx
+  ● ScannerScreen › camera permissions › shows permission request UI when not granted
+
+    Unable to find an element with text: Nous avons besoin d'accéder à votre caméra
+
+    [36m<View>[39m
+      [36m<Camera />[39m
+      [36m<Text>[39m
+        [0mscanner.camera_permission_msg[0m
+      [36m</Text>[39m
+      [36m<View[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mtestID[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<Text>[39m
+          [0mscanner.authorize_camera[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+    [0m [90m 141 |[39m
+     [90m 142 |[39m       [90m// Wait for the eligibility check to complete (sets loading to false)[39m
+    [31m[1m>[22m[39m[90m 143 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m     |[39m                    [31m[1m^[22m[39m
+     [90m 144 |[39m         expect(screen[33m.[39mgetByText([32m"Nous avons besoin d'accéder à votre caméra"[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m 145 |[39m       })[33m;[39m
+     [90m 146 |[39m       expect(screen[33m.[39mgetByText([32m'Autoriser'[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:143:20)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › camera permissions › calls requestPermission when Autoriser button is pressed
+
+    Unable to find an element with text: Autoriser
+
+    [36m<View>[39m
+      [36m<Camera />[39m
+      [36m<Text>[39m
+        [0mscanner.camera_permission_msg[0m
+      [36m</Text>[39m
+      [36m<View[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mtestID[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<Text>[39m
+          [0mscanner.authorize_camera[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+    [0m [90m 156 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m 157 |[39m
+    [31m[1m>[22m[39m[90m 158 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m     |[39m                    [31m[1m^[22m[39m
+     [90m 159 |[39m         expect(screen[33m.[39mgetByText([32m'Autoriser'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m 160 |[39m       })[33m;[39m
+     [90m 161 |[39m[0m
+
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:158:20)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › scan type selection › renders all scan type buttons
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 175 |[39m
+     [90m 176 |[39m     it([32m'renders all scan type buttons'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 177 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 178 |[39m
+     [90m 179 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 180 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:177:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › scan type selection › disables scan type buttons when limit is reached
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 200 |[39m       })[33m;[39m
+     [90m 201 |[39m
+    [31m[1m>[22m[39m[90m 202 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 203 |[39m
+     [90m 204 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 205 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:202:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › welcome credits › shows welcome credits banner when available
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 237 |[39m       })[33m;[39m
+     [90m 238 |[39m
+    [31m[1m>[22m[39m[90m 239 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 240 |[39m
+     [90m 241 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 242 |[39m         expect(screen[33m.[39mgetAllByTestId([32m'welcome-gift'[39m)[33m.[39mlength)[33m.[39mtoBeGreaterThan([35m0[39m)[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:239:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › welcome credits › allows scan selection with welcome credits even if not otherwise allowed
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 258 |[39m       })[33m;[39m
+     [90m 259 |[39m
+    [31m[1m>[22m[39m[90m 260 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 261 |[39m
+     [90m 262 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 263 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:260:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › capture actions › shows alert when trying to capture without selecting scan type
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 282 |[39m
+     [90m 283 |[39m     it([32m'shows alert when trying to capture without selecting scan type'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 284 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 285 |[39m
+     [90m 286 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 287 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:284:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › capture actions › checks eligibility before proceeding with scan
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 294 |[39m     it([32m'checks eligibility before proceeding with scan'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 295 |[39m       [90m// Default eligibility is already set in beforeEach[39m
+    [31m[1m>[22m[39m[90m 296 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 297 |[39m
+     [90m 298 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 299 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:296:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › capture actions › allows selecting scan type when eligibility check passes
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 310 |[39m     it([32m'allows selecting scan type when eligibility check passes'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 311 |[39m       [90m// Default eligibility is already set in beforeEach[39m
+    [31m[1m>[22m[39m[90m 312 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 313 |[39m
+     [90m 314 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 315 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:312:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › capture actions › allows scan when welcome credits are available
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 337 |[39m       })[33m;[39m
+     [90m 338 |[39m
+    [31m[1m>[22m[39m[90m 339 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 340 |[39m
+     [90m 341 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 342 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:339:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › image picker › requires scan type selection before picking image
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 366 |[39m       [36mconst[39m [33mImagePicker[39m [33m=[39m require([32m'expo-image-picker'[39m)[33m;[39m
+     [90m 367 |[39m
+    [31m[1m>[22m[39m[90m 368 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 369 |[39m
+     [90m 370 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 371 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:368:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › scan eligibility refresh › refreshes eligibility when screen gains focus
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 387 |[39m     it([32m'refreshes eligibility when screen gains focus'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 388 |[39m       [90m// Default eligibility is already set in beforeEach[39m
+    [31m[1m>[22m[39m[90m 389 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 390 |[39m
+     [90m 391 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 392 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:389:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › scan eligibility refresh › displays updated eligibility counts
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 411 |[39m       })[33m;[39m
+     [90m 412 |[39m
+    [31m[1m>[22m[39m[90m 413 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 414 |[39m
+     [90m 415 |[39m       [90m// All scan types will show 2/3 since mock returns the same value[39m
+     [90m 416 |[39m       [36mawait[39m waitFor(() [33m=>[39m {[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:413:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › error handling › handles eligibility check error gracefully
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 433 |[39m       mockScanEligibilityData[33m.[39mmockReturnValue([36mnull[39m)[33m;[39m
+     [90m 434 |[39m
+    [31m[1m>[22m[39m[90m 435 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 436 |[39m
+     [90m 437 |[39m       [90m// Should still render without crashing[39m
+     [90m 438 |[39m       [36mawait[39m waitFor(() [33m=>[39m {[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:435:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● ScannerScreen › error handling › shows scan types even when eligibility data is unavailable
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `CameraFlipIcon`.
+
+    [0m [90m 455 |[39m       })[33m;[39m
+     [90m 456 |[39m
+    [31m[1m>[22m[39m[90m 457 |[39m       render([33m<[39m[33mScannerScreen[39m [33m/[39m[33m>[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 458 |[39m
+     [90m 459 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m 460 |[39m         expect(screen[33m.[39mgetByText([35m/Visage/[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m
+
+      at createFiberFromTypeAndProps (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12185:28)
+      at createFiberFromElement (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12199:14)
+      at createChild (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4475:26)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4805:25)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10980:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:457:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+FAIL __tests__/components/ScanLimitIndicator.test.tsx
+  ● ScanLimitIndicator › displays "Limite atteinte" when allowed is false
+
+    Unable to find an element with text: Limite atteinte
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0m0[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m/[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m3[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mscan_limit.limit_reached[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 16 |[39m     render([33m<[39m[33mScanLimitIndicator[39m eligibility[33m=[39m{eligibility} [33m/[39m[33m>[39m)[33m;[39m
+     [90m 17 |[39m
+    [31m[1m>[22m[39m[90m 18 |[39m     expect(screen[33m.[39mgetByText([32m'Limite atteinte'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 19 |[39m   })[33m;[39m
+     [90m 20 |[39m
+     [90m 21 |[39m   it([32m'displays "disponible" when 1 scan remaining'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/ScanLimitIndicator.test.tsx:18:19)
+
+  ● ScanLimitIndicator › displays "disponible" when 1 scan remaining
+
+    Unable to find an element with text: disponible
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0m1[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m/[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m3[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mscan_limit.available[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 30 |[39m     render([33m<[39m[33mScanLimitIndicator[39m eligibility[33m=[39m{eligibility} [33m/[39m[33m>[39m)[33m;[39m
+     [90m 31 |[39m
+    [31m[1m>[22m[39m[90m 32 |[39m     expect(screen[33m.[39mgetByText([32m'disponible'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 33 |[39m     expect(screen[33m.[39mgetByText([32m'1'[39m))[33m.[39mtoBeTruthy()[33m;[39m [90m// remaining count[39m
+     [90m 34 |[39m   })[33m;[39m
+     [90m 35 |[39m[0m
+
+      at Object.getByText (__tests__/components/ScanLimitIndicator.test.tsx:32:19)
+
+  ● ScanLimitIndicator › displays "disponible" when 2 scans remaining
+
+    Unable to find an element with text: disponible
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0m2[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m/[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m3[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mscan_limit.available[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 45 |[39m     render([33m<[39m[33mScanLimitIndicator[39m eligibility[33m=[39m{eligibility} [33m/[39m[33m>[39m)[33m;[39m
+     [90m 46 |[39m
+    [31m[1m>[22m[39m[90m 47 |[39m     expect(screen[33m.[39mgetByText([32m'disponible'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 48 |[39m     expect(screen[33m.[39mgetByText([32m'2'[39m))[33m.[39mtoBeTruthy()[33m;[39m [90m// remaining count[39m
+     [90m 49 |[39m   })[33m;[39m
+     [90m 50 |[39m[0m
+
+      at Object.getByText (__tests__/components/ScanLimitIndicator.test.tsx:47:19)
+
+  ● ScanLimitIndicator › displays "disponible" when no scans used
+
+    Unable to find an element with text: disponible
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0m3[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m/[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m3[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mscan_limit.available[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 60 |[39m     render([33m<[39m[33mScanLimitIndicator[39m eligibility[33m=[39m{eligibility} [33m/[39m[33m>[39m)[33m;[39m
+     [90m 61 |[39m
+    [31m[1m>[22m[39m[90m 62 |[39m     expect(screen[33m.[39mgetByText([32m'disponible'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 63 |[39m     [90m// When remaining equals limit, both show '3', so use getAllByText[39m
+     [90m 64 |[39m     expect(screen[33m.[39mgetAllByText([32m'3'[39m)[33m.[39mlength)[33m.[39mtoBeGreaterThanOrEqual([35m1[39m)[33m;[39m
+     [90m 65 |[39m   })[33m;[39m[0m
+
+      at Object.getByText (__tests__/components/ScanLimitIndicator.test.tsx:62:19)
+
+  ● ScanLimitIndicator › handles single scan limit correctly
+
+    Unable to find an element with text: disponible
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0m1[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m/[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0m1[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mscan_limit.available[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 76 |[39m     render([33m<[39m[33mScanLimitIndicator[39m eligibility[33m=[39m{eligibility} [33m/[39m[33m>[39m)[33m;[39m
+     [90m 77 |[39m
+    [31m[1m>[22m[39m[90m 78 |[39m     expect(screen[33m.[39mgetByText([32m'disponible'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 79 |[39m   })[33m;[39m
+     [90m 80 |[39m
+     [90m 81 |[39m   it([32m'renders without crashing with minimal data'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/ScanLimitIndicator.test.tsx:78:19)
+
+FAIL __tests__/components/NextScanTimer.test.tsx
+  ● NextScanTimer › shows "Disponible" when time has passed
+
+    Unable to find an element with text: Disponible
+
+    [36m<View>[39m
+      [36m<Clock />[39m
+      [36m<Text>[39m
+        [0mcommon.available[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 32 |[39m     )[33m;[39m
+     [90m 33 |[39m     
+    [31m[1m>[22m[39m[90m 34 |[39m     expect(screen[33m.[39mgetByText([32m'Disponible'[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 35 |[39m   })[33m;[39m
+     [90m 36 |[39m
+     [90m 37 |[39m   it([32m'shows time remaining when not available'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/NextScanTimer.test.tsx:34:19)
+
+  ● NextScanTimer › shows time remaining when not available
+
+    Unable to find an element with text: /dans/
+
+    [36m<View>[39m
+      [36m<Clock />[39m
+      [36m<Text>[39m
+        [0mNutrition [0m
+        [0mcommon.in[0m
+        [0m [0m
+        [0m1common.time.h00[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 42 |[39m     
+     [90m 43 |[39m     [90m// Should show "dans X" format[39m
+    [31m[1m>[22m[39m[90m 44 |[39m     expect(screen[33m.[39mgetByText([35m/dans/[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 45 |[39m   })[33m;[39m
+     [90m 46 |[39m
+     [90m 47 |[39m   it([32m'shows hours and minutes format for hour+ durations'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/NextScanTimer.test.tsx:44:19)
+
+  ● NextScanTimer › shows hours and minutes format for hour+ durations
+
+    Unable to find an element with text: /dans/
+
+    [36m<View>[39m
+      [36m<Clock />[39m
+      [36m<Text>[39m
+        [0mNutrition [0m
+        [0mcommon.in[0m
+        [0m [0m
+        [0m2common.time.h30[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 51 |[39m     )[33m;[39m
+     [90m 52 |[39m     
+    [31m[1m>[22m[39m[90m 53 |[39m     expect(screen[33m.[39mgetByText([35m/dans/[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 54 |[39m   })[33m;[39m
+     [90m 55 |[39m
+     [90m 56 |[39m   it([32m'shows minutes format for sub-hour durations'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/NextScanTimer.test.tsx:53:19)
+
+  ● NextScanTimer › shows minutes format for sub-hour durations
+
+    Unable to find an element with text: /dans/
+
+    [36m<View>[39m
+      [36m<Clock />[39m
+      [36m<Text>[39m
+        [0mNutrition [0m
+        [0mcommon.in[0m
+        [0m [0m
+        [0m30 common.time.min[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 60 |[39m     )[33m;[39m
+     [90m 61 |[39m     
+    [31m[1m>[22m[39m[90m 62 |[39m     expect(screen[33m.[39mgetByText([35m/dans/[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 63 |[39m   })[33m;[39m
+     [90m 64 |[39m
+     [90m 65 |[39m   it([32m'shows days format for day+ durations'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/NextScanTimer.test.tsx:62:19)
+
+  ● NextScanTimer › shows days format for day+ durations
+
+    Unable to find an element with text: /dans/
+
+    [36m<View>[39m
+      [36m<Clock />[39m
+      [36m<Text>[39m
+        [0mNutrition [0m
+        [0mcommon.in[0m
+        [0m [0m
+        [0m2common.time.d 0common.time.h[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 69 |[39m     )[33m;[39m
+     [90m 70 |[39m     
+    [31m[1m>[22m[39m[90m 71 |[39m     expect(screen[33m.[39mgetByText([35m/dans/[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 72 |[39m   })[33m;[39m
+     [90m 73 |[39m
+     [90m 74 |[39m   it([32m'updates when time passes'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/NextScanTimer.test.tsx:71:19)
+
+  ● NextScanTimer › updates when time passes
+
+    Unable to find an element with text: /dans/
+
+    [36m<View>[39m
+      [36m<Clock />[39m
+      [36m<Text>[39m
+        [0mNutrition [0m
+        [0mcommon.in[0m
+        [0m [0m
+        [0m5common.time.s[0m
+      [36m</Text>[39m
+    [36m</View>[39m
+
+    [0m [90m 79 |[39m     
+     [90m 80 |[39m     [90m// Initially should show countdown[39m
+    [31m[1m>[22m[39m[90m 81 |[39m     expect(screen[33m.[39mgetByText([35m/dans/[39m))[33m.[39mtoBeTruthy()[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 82 |[39m     
+     [90m 83 |[39m     [90m// Fast-forward time[39m
+     [90m 84 |[39m     [36mawait[39m act([36masync[39m () [33m=>[39m {[0m
+
+      at Object.getByText (__tests__/components/NextScanTimer.test.tsx:81:19)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 3 failed, 1 passed, 4 total
+Tests:       26 failed, 7 passed, 33 total
+Snapshots:   0 total
+Time:        5.253 s
+Ran all test suites matching __tests__/components/ScanLimitIndicator.test.tsx|__tests__/components/SuperScanIndicator.test.tsx|__tests__/components/NextScanTimer.test.tsx|__tests__/screens/ScannerScreen.test.tsx|__tests__/screens/HomeScreen.test.tsx.

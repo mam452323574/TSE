@@ -1,0 +1,363 @@
+[1m[31m  [1m● [22m[1mLoginScreen › renders without crashing[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 53 |[39m[22m
+[2m     [90m 54 |[39m   it([32m'renders without crashing'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 55 |[39m     [36mconst[39m { toJSON } [33m=[39m render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m                              [31m[1m^[22m[2m[39m[22m
+[2m     [90m 56 |[39m     [22m
+[2m     [90m 57 |[39m     expect(toJSON())[33m.[39mtoBeTruthy()[33m;[39m[22m
+[2m     [90m 58 |[39m   })[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:55:30)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › displays app title[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 59 |[39m[22m
+[2m     [90m 60 |[39m   it([32m'displays app title'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 61 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 62 |[39m     [22m
+[2m     [90m 63 |[39m     expect(screen[33m.[39mgetByText([32m'Health Scan'[39m))[33m.[39mtoBeTruthy()[33m;[39m[22m
+[2m     [90m 64 |[39m   })[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:61:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › displays login subtitle[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 65 |[39m[22m
+[2m     [90m 66 |[39m   it([32m'displays login subtitle'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 67 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 68 |[39m     [22m
+[2m     [90m 69 |[39m     expect(screen[33m.[39mgetByText([32m'Connectez-vous à votre compte'[39m))[33m.[39mtoBeTruthy()[33m;[39m[22m
+[2m     [90m 70 |[39m   })[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:67:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › displays email and password inputs[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 71 |[39m[22m
+[2m     [90m 72 |[39m   it([32m'displays email and password inputs'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 73 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 74 |[39m     [22m
+[2m     [90m 75 |[39m     expect(screen[33m.[39mgetByPlaceholderText([32m'votre@email.com'[39m))[33m.[39mtoBeTruthy()[33m;[39m[22m
+[2m     [90m 76 |[39m     expect(screen[33m.[39mgetByPlaceholderText([32m'Entrez votre mot de passe'[39m))[33m.[39mtoBeTruthy()[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:73:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › displays login button[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 78 |[39m[22m
+[2m     [90m 79 |[39m   it([32m'displays login button'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 80 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 81 |[39m     [22m
+[2m     [90m 82 |[39m     expect(screen[33m.[39mgetByText([32m'Se connecter'[39m))[33m.[39mtoBeTruthy()[33m;[39m[22m
+[2m     [90m 83 |[39m   })[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:80:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › displays signup link[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 84 |[39m[22m
+[2m     [90m 85 |[39m   it([32m'displays signup link'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 86 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 87 |[39m     [22m
+[2m     [90m 88 |[39m     expect(screen[33m.[39mgetByText([35m/Pas encore de compte/[39m))[33m.[39mtoBeTruthy()[33m;[39m[22m
+[2m     [90m 89 |[39m   })[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:86:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › allows email input[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 90 |[39m[22m
+[2m     [90m 91 |[39m   it([32m'allows email input'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 92 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m    |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 93 |[39m     [22m
+[2m     [90m 94 |[39m     [36mconst[39m emailInput [33m=[39m screen[33m.[39mgetByPlaceholderText([32m'votre@email.com'[39m)[33m;[39m[22m
+[2m     [90m 95 |[39m     fireEvent[33m.[39mchangeText(emailInput[33m,[39m [32m'test@example.com'[39m)[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:92:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › allows password input[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m  99 |[39m[22m
+[2m     [90m 100 |[39m   it([32m'allows password input'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 101 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m     |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 102 |[39m     [22m
+[2m     [90m 103 |[39m     [36mconst[39m passwordInput [33m=[39m screen[33m.[39mgetByPlaceholderText([32m'Entrez votre mot de passe'[39m)[33m;[39m[22m
+[2m     [90m 104 |[39m     fireEvent[33m.[39mchangeText(passwordInput[33m,[39m [32m'password123'[39m)[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:101:11)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › shows error when submitting empty form[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 108 |[39m[22m
+[2m     [90m 109 |[39m   it([32m'shows error when submitting empty form'[39m[33m,[39m [36masync[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 110 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m     |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 111 |[39m     [22m
+[2m     [90m 112 |[39m     fireEvent[33m.[39mpress(screen[33m.[39mgetByText([32m'Se connecter'[39m))[33m;[39m[22m
+[2m     [90m 113 |[39m     [0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:110:11)[22m[2m[22m
+[2m      [2mat asyncGeneratorStep ([22m[2mnode_modules/@babel/runtime/helpers/asyncToGenerator.js[2m:3:17)[22m[2m[22m
+[2m      [2mat _next ([22m[2mnode_modules/@babel/runtime/helpers/asyncToGenerator.js[2m:17:9)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/@babel/runtime/helpers/asyncToGenerator.js[2m:22:7[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2mnode_modules/@babel/runtime/helpers/asyncToGenerator.js[2m:14:12)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mLoginScreen › navigates to signup when link is pressed[39m[22m
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `LanguageSelector`.
+[2m[22m
+[2m    [0m [90m 116 |[39m[22m
+[2m     [90m 117 |[39m   it([32m'navigates to signup when link is pressed'[39m[33m,[39m () [33m=>[39m {[22m
+[2m    [31m[1m>[22m[2m[39m[90m 118 |[39m     render([33m<[39m[33mLoginScreen[39m [33m/[39m[33m>[39m)[33m;[39m[22m
+[2m     [90m     |[39m           [31m[1m^[22m[2m[39m[22m
+[2m     [90m 119 |[39m     [22m
+[2m     [90m 120 |[39m     [36mconst[39m signupText [33m=[39m screen[33m.[39mgetByText([35m/Pas encore de compte/[39m)[33m;[39m[22m
+[2m     [90m 121 |[39m     fireEvent[33m.[39mpress(signupText[33m.[39mparent[33m![39m)[33m;[39m[0m[22m
+[2m[22m
+[2m      [2mat createFiberFromTypeAndProps ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12185:28)[22m[2m[22m
+[2m      [2mat createFiberFromElement ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:12199:14)[22m[2m[22m
+[2m      [2mat createChild ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4475:26)[22m[2m[22m
+[2m      [2mat reconcileChildrenArray ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:4805:25)[22m[2m[22m
+[2m      [2mat reconcileChildFibersImpl ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5122:30)[22m[2m[22m
+[2m      [2mat [22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5227:33[22m[2m[22m
+[2m      [2mat reconcileChildren ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:5735:13)[22m[2m[22m
+[2m      [2mat beginWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:7595:13)[22m[2m[22m
+[2m      [2mat runWithFiberInDEV ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:1574:13)[22m[2m[22m
+[2m      [2mat performUnitOfWork ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10980:22)[22m[2m[22m
+[2m      [2mat workLoopSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10816:41)[22m[2m[22m
+[2m      [2mat renderRootSync ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10797:11)[22m[2m[22m
+[2m      [2mat performWorkOnRoot ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:10384:39)[22m[2m[22m
+[2m      [2mat performWorkOnRootViaSchedulerTask ([22m[2mnode_modules/react-test-renderer/cjs/react-test-renderer.development.js[2m:2094:7)[22m[2m[22m
+[2m      [2mat flushActQueue ([22m[2mnode_modules/react/cjs/react.development.js[2m:566:34)[22m[2m[22m
+[2m      [2mat process.env.NODE_ENV.exports.act ([22m[2mnode_modules/react/cjs/react.development.js[2m:859:10)[22m[2m[22m
+[2m      [2mat actImplementation ([22m[2mnode_modules/@testing-library/react-native/src/act.ts[2m:30:25)[22m[2m[22m
+[2m      [2mat renderWithAct ([22m[2mnode_modules/@testing-library/react-native/src/render-act.ts[2m:13:11)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:69:33)[22m[2m[22m
+[2m      [2mat renderInternal ([22m[2mnode_modules/@testing-library/react-native/src/render.tsx[2m:44:10)[22m[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36m__tests__/screens/LoginScreen.test.tsx[39m[0m[2m:118:11)[22m[2m[22m

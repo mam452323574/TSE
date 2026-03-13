@@ -1,0 +1,158 @@
+PASS __tests__/components/NextScanTimer.test.tsx
+PASS __tests__/screens/HomeScreen.test.tsx
+PASS __tests__/components/ScanLimitIndicator.test.tsx
+FAIL __tests__/screens/ScannerScreen.test.tsx
+  ● ScannerScreen › scan eligibility refresh › displays updated eligibility counts
+
+    Unable to find an element with text: 2/3
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<CameraView />[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mVisage[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0mscan_limits.week_1[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0m1[0m
+                [0m/[0m
+                [0m3[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mCorps[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0mscan_limits.month_1[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0m1[0m
+                [0m/[0m
+                [0m3[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mNutrition[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0mscan_limits.days_3_1[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0m1[0m
+                [0m/[0m
+                [0m3[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Sparkles />[39m
+                [36m<Text>[39m
+                  [0mSuper[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Crown />[39m
+                [36m<Text>[39m
+                  [0msuper_scan_features.premium_badge[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<Image />[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<View />[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<RefreshCcw />[39m
+              [36m<View>[39m
+                [36m<Camera />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+    [0m [90m 415 |[39m
+     [90m 416 |[39m       [90m// All scan types will show 2/3 since mock returns the same value[39m
+    [31m[1m>[22m[39m[90m 417 |[39m       [36mawait[39m waitFor(() [33m=>[39m {
+     [90m     |[39m                    [31m[1m^[22m[39m
+     [90m 418 |[39m         [36mconst[39m countElements [33m=[39m screen[33m.[39mgetAllByText([32m'2/3'[39m)[33m;[39m
+     [90m 419 |[39m         expect(countElements[33m.[39mlength)[33m.[39mtoBeGreaterThan([35m0[39m)[33m;[39m
+     [90m 420 |[39m       })[33m;[39m[0m
+
+      at Object.<anonymous> (__tests__/screens/ScannerScreen.test.tsx:417:20)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       1 failed, 32 passed, 33 total
+Snapshots:   0 total
+Time:        2.647 s, estimated 3 s
+Ran all test suites matching __tests__/components/ScanLimitIndicator.test.tsx|__tests__/components/SuperScanIndicator.test.tsx|__tests__/components/NextScanTimer.test.tsx|__tests__/screens/ScannerScreen.test.tsx|__tests__/screens/HomeScreen.test.tsx.

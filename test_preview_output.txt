@@ -1,0 +1,219 @@
+﻿
+> bolt-expo-starter@1.0.0 test
+> jest __tests__/screens/ScanPreviewScreen.test.tsx
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+  console.log
+    [LANG-DEBUG] ScanPreviewScreen locale: fr
+
+      at log (screens/ScanPreviewScreen.tsx:180:15)
+
+node.exe : FAIL __tests
+__/screens/ScanPreviewS
+creen.test.tsx
+Au caractère Ligne:1 : 
+1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (FAIL __tests_   
+ _/...Screen.test.t    
+sx:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  ScanPreviewScreen
+    ÔêÜ displays the 
+preview image (165 ms)
+    ÔêÜ displays the 
+scan type label (4 ms)
+    ÔêÜ displays 
+confirm button (7 ms)
+    ÔêÜ displays 
+cancel button (3 ms)
+    ÔêÜ navigates back 
+when X button is 
+pressed (3 ms)
+    ÔêÜ navigates back 
+when cancel button is 
+pressed (3 ms)
+    confirm action
+      ÔêÜ shows 
+loading state when 
+confirming (69 ms)
+      ÔêÜ prevents 
+double-click 
+submission (9 ms)
+      ├ù calls 
+createScanWithAnalysis 
+with correct params 
+(70 ms)
+      ÔêÜ sets badge 
+after successful scan 
+(108 ms)
+      ÔêÜ shows error 
+alert when analysis 
+fails (75 ms)
+      ÔêÜ keeps 
+loading state during 
+success animation (18 
+ms)
+      ÔêÜ navigates to 
+scan result after 
+successful scan (27 ms)
+    error handling
+      ÔêÜ shows error 
+alert when scan 
+creation fails (12 ms)
+      ÔêÜ shows 
+generic error message 
+for unknown errors (11 
+ms)
+      ÔêÜ returns to 
+normal state after 
+error (12 ms)
+    different scan 
+types
+      ÔêÜ displays 
+body scan type 
+correctly (3 ms)
+      ÔêÜ displays 
+nutrition scan type 
+correctly (2 ms)
+
+  ÔùÅ 
+ScanPreviewScreen ÔÇ║ 
+confirm action ÔÇ║ 
+calls 
+createScanWithAnalysis 
+with correct params
+
+    expect(jest.fn()).t
+oHaveBeenCalledWith(...
+expected)
+
+    Expected: "file:///
+test-image.jpg", 
+"health"
+    Received: "file:///
+test-image.jpg", 
+"health", "fr"
+
+    Number of calls: 1
+
+    [0m [90m 202 
+|[39m       fireEvent
+[33m.[39mpress(screen
+[33m.[39mgetByText([3
+2m'Confirmer'[39m))[3
+3m;[39m
+     [90m 203 |[39m
+    [31m[1m>[22m[39
+m[90m 204 |[39m      
+ [36mawait[39m 
+waitFor(() 
+[33m=>[39m {
+     [90m     |[39m  
+                  
+[31m[1m^[22m[39m
+     [90m 205 |[39m  
+       expect(mockCreat
+eScanWithAnalysis)[33m
+.[39mtoHaveBeenCalledW
+ith(
+     [90m 206 |[39m  
+         [32m'file:///
+test-image.jpg'[39m[3
+3m,[39m
+     [90m 207 |[39m  
+         
+[32m'health'[39m[0m
+
+      at 
+Object.<anonymous> (__t
+ests__/screens/ScanPrev
+iewScreen.test.tsx:204:
+20)
+      at 
+asyncGeneratorStep (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:3:17)
+      at _next (node_mo
+dules/@babel/runtime/he
+lpers/asyncToGenerator.
+js:17:9)
+      at node_modules/@
+babel/runtime/helpers/a
+syncToGenerator.js:22:7
+      at 
+Object.<anonymous> (nod
+e_modules/@babel/runtim
+e/helpers/asyncToGenera
+tor.js:14:12)
+
+Test Suites: 1 failed, 
+1 total
+Tests:       1 failed, 
+17 passed, 18 total
+Snapshots:   0 total
+Time:        1.103 s, 
+estimated 3 s
+Ran all test suites 
+matching __tests__/scre
+ens/ScanPreviewScreen.t
+est.tsx.

@@ -1,0 +1,77 @@
+env: load .env
+env: export EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_ANON_KEY
+Starting project at C:\Users\maloh\Downloads\1-main
+Starting Metro Bundler
+Tunnel connected.
+Tunnel ready.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 1180ms node_modules\expo-router\entry.js (2937 modules)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 57ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 57ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 51ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 58ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 52ms node_modules\expo-router\entry.js (1 module)
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 63ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 65ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 55ms node_modules\expo-router\entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+iOS node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 1264ms node_modules\expo-router\entry.js (3294 modules)
+ WARN  expo-notifications: Push notifications (remote notifications) functionality provided by expo-notifications will be removed from Expo Go in SDK 53. Instead, use a development build. Read more at https://docs.expo.dev/develop/development-builds/introduction/.
+ WARN  `expo-notifications` functionality is not fully supported in Expo Go:
+We recommend you instead use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.
+ LOG  [useNotifications] Expo Go détecté : Notifications push désactivées via EAS.
+ LOG  [NotificationContext] Mise à jour des notifications planifiées (Langue/Init)...
+ LOG  [NotificationContext] Mise à jour des notifications planifiées (Langue/Init)...
+ LOG  [Notifications] Rappel quotidien planifie pour 10h
+ LOG  [Notifications] Rappel quotidien planifie pour 10h
+ LOG  [Notifications] Motivation planifiee dans 4 jours a 14h
+ LOG  [NotificationContext] Notifications reprogrammées avec succès
+ LOG  [Notifications] Motivation planifiee dans 2 jours a 14h
+ LOG  [NotificationContext] Notifications reprogrammées avec succès
+ LOG  [LANG-DEBUG] ScanPreviewScreen locale: fr
+ LOG  [API] Création du scan avec analyse: {"scanType": "health"}
+ LOG  [LANG-DEBUG] createScanWithAnalysis language: fr
+ LOG  [API] Démarrage analyse N8n: {"scanId": "c54ed468-1333-4ab8-8e47-f7e4ce38bbe0", "scanType": "health"}
+ LOG  [LANG-DEBUG] N8n webhook requestBody.language: fr | scanType: health
+ LOG  [API] Analyse N8n réussie, mise à jour de la base de données...
+ LOG  [API] Analyse sauvegardée avec succès: {"scanId": "c54ed468-1333-4ab8-8e47-f7e4ce38bbe0"}
+ LOG  [LANG-DEBUG] ScanPreviewScreen locale: fr
+ LOG  [API] Création du scan avec analyse: {"scanType": "body"}
+ LOG  [LANG-DEBUG] createScanWithAnalysis language: fr
+ LOG  [API] Démarrage analyse N8n: {"scanId": "040f3063-b81c-4f17-96b2-b84c2d4ac1ce", "scanType": "body"}
+ LOG  [LANG-DEBUG] N8n webhook requestBody.language: fr | scanType: body
+ LOG  [API] Analyse N8n réussie, mise à jour de la base de données...
+ LOG  [API] Analyse sauvegardée avec succès: {"scanId": "040f3063-b81c-4f17-96b2-b84c2d4ac1ce"}
+ LOG  [LANG-DEBUG] ScanPreviewScreen locale: fr
+ LOG  [API] Création du scan avec analyse: {"scanType": "nutrition"}
+ LOG  [LANG-DEBUG] createScanWithAnalysis language: fr
+ LOG  [API] Démarrage analyse N8n: {"scanId": "c14eda7b-7f03-455e-bab4-e4439a333fab", "scanType": "nutrition"}
+ LOG  [LANG-DEBUG] N8n webhook requestBody.language: fr | scanType: nutrition
+ LOG  [API] Analyse N8n réussie, mise à jour de la base de données...
+ LOG  [API] Analyse sauvegardée avec succès: {"scanId": "c14eda7b-7f03-455e-bab4-e4439a333fab"}
+ LOG  [Notifications] Reset Super Scan planifie pour demain 8h
+ LOG  [LANG-DEBUG] ScanPreviewScreen locale: fr
+ LOG  [API] Création du scan avec analyse: {"scanType": "super"}
+ LOG  [LANG-DEBUG] createScanWithAnalysis language: fr
+ LOG  [API] Démarrage analyse N8n: {"scanId": "61a44fcb-e5f0-458e-afe6-39f013cbe6c9", "scanType": "super"}
+ LOG  [LANG-DEBUG] N8n webhook requestBody.language: fr | scanType: super
+ LOG  [API] Analyse N8n réussie, mise à jour de la base de données...
+ LOG  [API] Analyse sauvegardée avec succès: {"scanId": "61a44fcb-e5f0-458e-afe6-39f013cbe6c9"}
