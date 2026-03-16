@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { supabase } from '@/services/supabase';
 
 interface Notification {
@@ -15,7 +15,7 @@ type FilterType = 'all' | 'unread' | 'read';
 export const NOTIFICATIONS_QUERY_KEY = (userId: string | undefined, filter: FilterType) => 
   ['notifications', userId, filter] as const;
 
-const fetchNotifications = async (
+export const fetchNotifications = async (
   userId: string | undefined, 
   filter: FilterType
 ): Promise<Notification[]> => {
@@ -23,9 +23,10 @@ const fetchNotifications = async (
 
   let query = supabase
     .from('notification_logs')
-    .select('*')
+    .select('id, notification_type, title, body, created_at, read_at')
     .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(50);
 
   if (filter === 'unread') {
     query = query.is('read_at', null);
@@ -44,6 +45,8 @@ export const useNotificationsQuery = (userId: string | undefined, filter: Filter
     queryKey: NOTIFICATIONS_QUERY_KEY(userId, filter),
     queryFn: () => fetchNotifications(userId, filter),
     enabled: !!userId,
-    staleTime: 1000 * 60, // 1 minute
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
+    placeholderData: keepPreviousData,
   });
 };

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Alert,
   Platform,
   Animated,
   Dimensions,
@@ -20,10 +19,14 @@ import { ModalHandle } from '@/components/ModalHandle';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS, SHADOWS } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { paymentService } from '@/services/payment';
+import Constants from 'expo-constants';
+import Purchases from 'react-native-purchases';
+import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_MIN_WIDTH = 280;
+const isExpoGo = Constants.appOwnership === 'expo';
 
 // ─── Feature list types ───
 interface FeatureItem {
@@ -40,17 +43,14 @@ export default function PremiumUpgradeScreen() {
   const styles = useMemo(() => createStyles(colors, insets, isDark), [colors, insets, isDark]);
 
   const [purchasing, setPurchasing] = useState(false);
-  const [purchasingAnnual, setPurchasingAnnual] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [productPrice, setProductPrice] = useState<string>('9,99 €');
+  const { showAlert, alertElement } = useCustomAlert();
 
   // Animations
   const slideAnim = useRef(new Animated.Value(40)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    initializePayment();
-
     Animated.parallel([
       Animated.spring(slideAnim, {
         toValue: 0,
@@ -64,23 +64,7 @@ export default function PremiumUpgradeScreen() {
         useNativeDriver: true,
       }),
     ]).start();
-
-    return () => {
-      paymentService.cleanup();
-    };
   }, []);
-
-  const initializePayment = async () => {
-    try {
-      await paymentService.initialize();
-      const product = await paymentService.getProductDetails();
-      if (product && product.localizedPrice) {
-        setProductPrice(product.localizedPrice);
-      }
-    } catch (error) {
-      console.error('Error initializing payment:', error);
-    }
-  };
 
   const handleClose = () => {
     if (router.canDismiss()) {
@@ -90,12 +74,14 @@ export default function PremiumUpgradeScreen() {
     }
   };
 
-  // ─── Monthly purchase (existing logic) ───
+  // ─── Present RevenueCat Paywall ───
   const handlePurchase = async () => {
-    if (Platform.OS === 'web') {
-      Alert.alert(
+    if (Platform.OS === 'web' || isExpoGo) {
+      showAlert(
         t('premium.web_unavailable_title'),
-        t('premium.web_disclaimer')
+        Platform.OS === 'web'
+          ? t('premium.web_disclaimer')
+          : 'In-app purchases are not available in Expo Go. Please use a development build.'
       );
       return;
     }
@@ -103,38 +89,44 @@ export default function PremiumUpgradeScreen() {
     try {
       setPurchasing(true);
 
-      const result = await paymentService.purchaseProduct();
+      const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
 
-      if (result.success) {
-        Alert.alert(
-          t('premium.validation_title'),
-          t('premium.processing')
-        );
+      switch (paywallResult) {
+        case PAYWALL_RESULT.PURCHASED:
+        case PAYWALL_RESULT.RESTORED:
+          // Purchase or restore succeeded — refresh profile to sync premium status
+          await refreshUserProfile();
 
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await refreshUserProfile();
+          showAlert(
+            t('premium.purchase_success_title'),
+            t('premium.purchase_success_msg'),
+            [
+              {
+                text: t('common.ok'),
+                onPress: () => router.back(),
+              },
+            ]
+          );
+          break;
 
-        Alert.alert(
-          t('premium.purchase_success_title'),
-          t('premium.purchase_success_msg'),
-          [
-            {
-              text: t('common.ok'),
-              onPress: () => router.back(),
-            },
-          ]
-        );
-      } else if (result.error === 'cancelled') {
-        // Purchase cancelled by user
-      } else {
-        Alert.alert(
-          t('common.error'),
-          result.message || t('premium.purchase_error_default')
-        );
+        case PAYWALL_RESULT.NOT_PRESENTED:
+        case PAYWALL_RESULT.ERROR:
+          showAlert(
+            t('common.error'),
+            t('premium.purchase_error_default')
+          );
+          break;
+
+        case PAYWALL_RESULT.CANCELLED:
+          // User dismissed the paywall — do nothing
+          break;
+
+        default:
+          break;
       }
     } catch (error) {
-      console.error('Purchase error:', error);
-      Alert.alert(
+      console.error('Paywall error:', error);
+      showAlert(
         t('common.error'),
         t('premium.purchase_error_generic')
       );
@@ -143,65 +135,17 @@ export default function PremiumUpgradeScreen() {
     }
   };
 
-  // ─── Annual purchase ───
-  const handlePurchaseAnnual = async () => {
-    if (Platform.OS === 'web') {
-      Alert.alert(
-        t('premium.web_unavailable_title'),
-        t('premium.web_disclaimer')
-      );
-      return;
-    }
+  // ─── Annual purchase (uses same RevenueCat paywall — plan selection is handled there) ───
+  const handlePurchaseAnnual = handlePurchase;
 
-    try {
-      setPurchasingAnnual(true);
-
-      const result = await paymentService.purchaseProductAnnual();
-
-      if (result.success) {
-        Alert.alert(
-          t('premium.validation_title'),
-          t('premium.processing')
-        );
-
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await refreshUserProfile();
-
-        Alert.alert(
-          t('premium.purchase_success_title'),
-          t('premium.purchase_success_msg'),
-          [
-            {
-              text: t('common.ok'),
-              onPress: () => router.back(),
-            },
-          ]
-        );
-      } else if (result.error === 'cancelled') {
-        // Annual purchase cancelled by user
-      } else {
-        Alert.alert(
-          t('common.error'),
-          result.message || t('premium.purchase_error_default')
-        );
-      }
-    } catch (error) {
-      console.error('Annual purchase error:', error);
-      Alert.alert(
-        t('common.error'),
-        t('premium.purchase_error_generic')
-      );
-    } finally {
-      setPurchasingAnnual(false);
-    }
-  };
-
-  // ─── Restore purchases ───
+  // ─── Restore purchases via RevenueCat ───
   const handleRestorePurchases = async () => {
-    if (Platform.OS === 'web') {
-      Alert.alert(
+    if (Platform.OS === 'web' || isExpoGo) {
+      showAlert(
         t('premium.web_unavailable_title'),
-        t('premium.web_disclaimer')
+        Platform.OS === 'web'
+          ? t('premium.web_disclaimer')
+          : 'In-app purchases are not available in Expo Go. Please use a development build.'
       );
       return;
     }
@@ -209,12 +153,12 @@ export default function PremiumUpgradeScreen() {
     try {
       setRestoring(true);
 
-      const result = await paymentService.restorePurchases();
+      const customerInfo = await Purchases.restorePurchases();
 
-      if (result.success) {
+      if (typeof customerInfo.entitlements.active['Health Scan Pro'] !== 'undefined') {
         await refreshUserProfile();
 
-        Alert.alert(
+        showAlert(
           t('premium.restore_success_title'),
           t('premium.restore_success_msg'),
           [
@@ -224,20 +168,15 @@ export default function PremiumUpgradeScreen() {
             },
           ]
         );
-      } else if (result.error === 'no_purchases' || result.error === 'no_premium_purchase') {
-        Alert.alert(
+      } else {
+        showAlert(
           t('premium.restore_empty_title'),
           t('premium.restore_empty')
-        );
-      } else {
-        Alert.alert(
-          t('common.error'),
-          result.message || t('premium.restore_error_default')
         );
       }
     } catch (error) {
       console.error('Restore error:', error);
-      Alert.alert(
+      showAlert(
         t('common.error'),
         t('premium.restore_error_generic')
       );
@@ -275,7 +214,7 @@ export default function PremiumUpgradeScreen() {
     } else if (Platform.OS === 'android') {
       Linking.openURL('https://play.google.com/store/account/subscriptions?package=com.healthscan.app');
     } else {
-      Alert.alert(
+      showAlert(
         t('premium.web_unavailable_title'),
         t('premium.web_disclaimer')
       );
@@ -300,6 +239,7 @@ export default function PremiumUpgradeScreen() {
 
     return (
       <View style={styles.container}>
+        {alertElement}
         <View style={styles.alreadyPremiumContainer}>
           <View style={styles.premiumBadge}>
             <Crown color={colors.white} size={64} fill={colors.white} />
@@ -369,6 +309,7 @@ export default function PremiumUpgradeScreen() {
   // ─── Main render ───
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {alertElement}
       <ModalHandle />
 
       {/* Header bar */}
@@ -414,6 +355,7 @@ export default function PremiumUpgradeScreen() {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.cardsContainer}
+            style={{ overflow: 'visible' }}
             snapToInterval={CARD_MIN_WIDTH + SPACING.md}
             decelerationRate="fast"
           >
@@ -455,7 +397,7 @@ export default function PremiumUpgradeScreen() {
               <TouchableOpacity
                 style={[styles.ctaButton, { backgroundColor: colors.primary, opacity: purchasing ? 0.7 : 1 }, SHADOWS.button]}
                 onPress={handlePurchase}
-                disabled={purchasing || restoring || purchasingAnnual}
+                disabled={purchasing || restoring}
               >
                 {purchasing ? (
                   <ActivityIndicator color={colors.white} />
@@ -499,11 +441,11 @@ export default function PremiumUpgradeScreen() {
               </View>
 
               <TouchableOpacity
-                style={[styles.ctaButton, styles.ctaButtonAnnual, { backgroundColor: colors.primary, opacity: purchasingAnnual ? 0.7 : 1 }, SHADOWS.button]}
+                style={[styles.ctaButton, styles.ctaButtonAnnual, { backgroundColor: colors.primary, opacity: purchasing ? 0.7 : 1 }, SHADOWS.button]}
                 onPress={handlePurchaseAnnual}
-                disabled={purchasing || restoring || purchasingAnnual}
+                disabled={purchasing || restoring}
               >
-                {purchasingAnnual ? (
+                {purchasing ? (
                   <ActivityIndicator color={colors.white} />
                 ) : (
                   <Text style={styles.ctaButtonText}>
@@ -521,7 +463,7 @@ export default function PremiumUpgradeScreen() {
               <TouchableOpacity
                 style={styles.restoreButton}
                 onPress={handleRestorePurchases}
-                disabled={purchasing || restoring || purchasingAnnual}
+                disabled={purchasing || restoring}
               >
                 <RefreshCw color={colors.primary} size={16} />
                 <Text style={[styles.restoreButtonText, { color: colors.primary }]}>
@@ -629,7 +571,8 @@ const createStyles = (colors: any, insets: any, isDark: boolean) => StyleSheet.c
   cardsContainer: {
     paddingHorizontal: SPACING.page,
     gap: SPACING.md,
-    paddingVertical: SPACING.sm,
+    paddingTop: SPACING.lg,
+    paddingBottom: SPACING.sm,
   },
 
   // ─── Card base ───

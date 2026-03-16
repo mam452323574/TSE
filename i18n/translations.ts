@@ -55,11 +55,14 @@ export const i18n = new I18n(
                 "items_available": "Scans disponibles",
                 "items_advised": "Compléments Conseillés",
                 "global_score": "Score Global",
-                "hero_title": "Global Score"
+                "hero_title": "Global Score",
+                "premium_banner_title": "Débloquer toutes les fonctionnalités",
+                "premium_banner_subtitle": "Scans illimités, Super Scan & plus"
             },
             "scan_limit": {
                 "limit_reached": "Limite atteinte",
-                "available": "disponible"
+                "available": "disponible",
+                "upgrade": "Passer Premium"
             },
             "scan_preview": {
                 "title": "Choisir l'analyse",
@@ -396,6 +399,7 @@ export const i18n = new I18n(
                 "title": "Paramètres",
                 "section_subscription": "Abonnement",
                 "upgrade_premium": "Passer Premium",
+                "upgrade_subtitle": "Débloquer tous les scans et fonctionnalités",
                 "section_preferences": "Préférences",
                 "language": "Langue",
                 "notifications": "Notifications",
@@ -831,11 +835,14 @@ export const i18n = new I18n(
                 "items_available": "Available Scans",
                 "items_advised": "Recommended Supplements",
                 "global_score": "Global Score",
-                "hero_title": "Global Score"
+                "hero_title": "Global Score",
+                "premium_banner_title": "Unlock All Features",
+                "premium_banner_subtitle": "Unlimited scans, Super Scan & more"
             },
             "scan_limit": {
                 "limit_reached": "Limit reached",
-                "available": "available"
+                "available": "available",
+                "upgrade": "Go Premium"
             },
             "scan_values": {
                 "face_shape": {
@@ -1251,6 +1258,7 @@ export const i18n = new I18n(
                 "title": "Settings",
                 "section_subscription": "Subscription",
                 "upgrade_premium": "Upgrade Premium",
+                "upgrade_subtitle": "Unlock all scans & features",
                 "section_preferences": "Preferences",
                 "language": "Language",
                 "notifications": "Notifications",
@@ -1621,11 +1629,14 @@ export const i18n = new I18n(
                 "items_available": "Verfügbare Scans",
                 "items_advised": "Empfohlene Ergänzungsmittel",
                 "global_score": "Gesamtpunktzahl",
-                "hero_title": "Global Score"
+                "hero_title": "Global Score",
+                "premium_banner_title": "Alle Funktionen freischalten",
+                "premium_banner_subtitle": "Unbegrenzte Scans, Super Scan & mehr"
             },
             "scan_limit": {
                 "limit_reached": "Limit erreicht",
-                "available": "verfügbar"
+                "available": "verfügbar",
+                "upgrade": "Premium werden"
             },
             "scan_preview": {
                 "title": "Analyse wählen",
@@ -2274,6 +2285,7 @@ export const i18n = new I18n(
                 "title": "Einstellungen",
                 "section_subscription": "Abonnement",
                 "upgrade_premium": "Upgrade auf Premium",
+                "upgrade_subtitle": "Alle Scans und Funktionen freischalten",
                 "section_preferences": "Präferenzen",
                 "language": "Sprache",
                 "notifications": "Benachrichtigungen",
@@ -2368,11 +2380,14 @@ export const i18n = new I18n(
                 "items_available": "Scansioni disponibili",
                 "items_advised": "Integratori Consigliati",
                 "global_score": "Punteggio Globale",
-                "hero_title": "Global Score"
+                "hero_title": "Global Score",
+                "premium_banner_title": "Sblocca tutte le funzionalità",
+                "premium_banner_subtitle": "Scansioni illimitate, Super Scan e altro"
             },
             "scan_limit": {
                 "limit_reached": "Limite raggiunto",
-                "available": "disponibile"
+                "available": "disponibile",
+                "upgrade": "Passa a Premium"
             },
             "scan_preview": {
                 "title": "Scegli Analisi",
@@ -3015,6 +3030,7 @@ export const i18n = new I18n(
                 "title": "Impostazioni",
                 "section_subscription": "Sottoscrizione",
                 "upgrade_premium": "Passa a Premium",
+                "upgrade_subtitle": "Sblocca tutte le scansioni e funzionalità",
                 "section_preferences": "Preferenze",
                 "language": "Lingua",
                 "notifications": "Notifiche",
@@ -3103,6 +3119,7 @@ export const i18n = new I18n(
                 "sign_out_error_title": "Error",
                 "sign_out_error_msg": "Ocurrió un error al cerrar sesión. Por favor, inténtelo de nuevo.",
                 "upgrade_premium": "Ver beneficios Premium",
+                "upgrade_subtitle": "Desbloquea todos los escaneos y funciones",
                 "new_notifications": "nuevo",
                 "footer_version": "Health Scan v1.0.0",
                 "language": "Idioma",
@@ -3114,11 +3131,14 @@ export const i18n = new I18n(
                 "items_available": "Escaneos disponibles",
                 "items_advised": "Suplementos Recomendados",
                 "global_score": "Puntuación Global",
-                "hero_title": "Global Score"
+                "hero_title": "Global Score",
+                "premium_banner_title": "Desbloquea todas las funciones",
+                "premium_banner_subtitle": "Escaneos ilimitados, Super Scan y más"
             },
             "scan_limit": {
                 "limit_reached": "Límite alcanzado",
-                "available": "disponible"
+                "available": "disponible",
+                "upgrade": "Hazte Premium"
             },
             "scan_preview": {
                 "title": "Elegir Análisis",
@@ -3836,11 +3856,14 @@ export const i18n = new I18n(
                 "items_available": "Scans disponíveis",
                 "items_advised": "Suplementos Recomendados",
                 "global_score": "Pontuação Global",
-                "hero_title": "Global Score"
+                "hero_title": "Global Score",
+                "premium_banner_title": "Desbloquear todas as funcionalidades",
+                "premium_banner_subtitle": "Scans ilimitados, Super Scan e mais"
             },
             "scan_limit": {
                 "limit_reached": "Limite atingido",
-                "available": "disponível"
+                "available": "disponível",
+                "upgrade": "Ser Premium"
             },
             "scan_preview": {
                 "title": "Escolher Análise",
@@ -4124,6 +4147,7 @@ export const i18n = new I18n(
                 "title": "Configurações",
                 "section_subscription": "Assinatura",
                 "upgrade_premium": "Mudar para Premium",
+                "upgrade_subtitle": "Desbloquear todos os scans e funcionalidades",
                 "section_preferences": "Preferências",
                 "language": "Idioma",
                 "notifications": "Notificações",

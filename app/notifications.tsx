@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
-import { useNotificationsQuery, NOTIFICATIONS_QUERY_KEY } from '@/hooks/queries';
+import { useNotificationsQuery, NOTIFICATIONS_QUERY_KEY, fetchNotifications } from '@/hooks/queries';
 import { NotificationCard } from '@/components/NotificationCard';
 import { supabase } from '@/services/supabase';
 import { SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS } from '@/constants/theme';
@@ -21,7 +21,7 @@ export default function NotificationsScreen() {
   const { colors } = useTheme();
   const { t } = useLanguage();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const { markNotificationAsRead } = useNotificationContext();
+  const { markNotificationAsRead, notificationCount: unreadCount } = useNotificationContext();
   const [filter, setFilter] = useState<FilterType>('all');
   const [markingAllAsRead, setMarkingAllAsRead] = useState(false);
 
@@ -29,6 +29,7 @@ export default function NotificationsScreen() {
   const {
     data: notifications = [],
     isLoading,
+    isFetching,
     isRefetching,
     refetch,
   } = useNotificationsQuery(user?.id, filter);
@@ -38,8 +39,16 @@ export default function NotificationsScreen() {
   }, [refetch]);
 
   const handleMarkAsRead = async (notificationId: string) => {
+    // Optimistic update
+    queryClient.setQueryData(
+      NOTIFICATIONS_QUERY_KEY(user?.id, filter),
+      (old: any[] | undefined) =>
+        old?.map(n => n.id === notificationId
+          ? { ...n, read_at: new Date().toISOString() }
+          : n
+        )
+    );
     await markNotificationAsRead(notificationId);
-    // Invalider le cache pour rafraîchir les données
     queryClient.invalidateQueries({ queryKey: ['notifications'] });
   };
 
@@ -82,8 +91,6 @@ export default function NotificationsScreen() {
       </Text>
     </TouchableOpacity>
   );
-
-  const unreadCount = notifications.filter((n) => !n.read_at).length;
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
@@ -134,7 +141,7 @@ export default function NotificationsScreen() {
         {renderFilterButton('read', t('notifications.filter_read'))}
       </View>
 
-      {isLoading ? (
+      {isLoading && !notifications.length ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>{t('notifications.loading')}</Text>

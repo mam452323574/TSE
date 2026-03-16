@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Platform, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Heart, Check, X, AlertCircle, Sun, Moon } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,12 +9,14 @@ import { Button } from '@/components/Button';
 import { SIZES, SPACING, BORDER_RADIUS, SHADOWS } from '@/constants/theme';
 import { supabase } from '@/services/supabase';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 export default function UsernameSetupScreen() {
   const router = useRouter();
   const { user, userProfile, isEmailVerified, checkUsernameAvailability, updateUserProfile, completeSignUp } = useAuth();
   const { colors, setTheme, isDark } = useTheme();
   const { t } = useLanguage();
+  const { showAlert, alertElement } = useCustomAlert();
 
   const [step, setStep] = useState<'username' | 'theme'>('username');
   const [username, setUsername] = useState('');
@@ -174,7 +176,7 @@ export default function UsernameSetupScreen() {
 
       setError(errorMessage);
 
-      Alert.alert(
+      showAlert(
         t('common.error'),
         `Error: ${errorMessage}.`,
         [
@@ -235,6 +237,7 @@ export default function UsernameSetupScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      {alertElement}
       <View style={styles.languageContainer}>
         <LanguageSelector />
       </View>

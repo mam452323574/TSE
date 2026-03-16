@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { X, Sparkles, Activity, Utensils, PersonStanding, Smile } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,6 +14,7 @@ import { SCAN_TYPE_LABELS } from '@/constants/scan';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS } from '@/constants/theme';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 // Loading step messages for different languages and scan types (with emojis)
 const LOADING_STEPS: Record<string, Record<ScanType, string[]>> = {
@@ -68,6 +69,7 @@ export default function ScanPreviewScreen() {
 
   const [loading, setLoading] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const { showAlert, alertElement } = useCustomAlert();
   const { setBadge } = useBadges();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -95,7 +97,7 @@ export default function ScanPreviewScreen() {
   // Validation des parametres requis
   useEffect(() => {
     if (!imageUri || !scanType || !VALID_SCAN_TYPES.includes(scanType)) {
-      Alert.alert(t('common.error'), t('scan_preview.error_validation'), [
+      showAlert(t('common.error'), t('scan_preview.error_validation'), [
         {
           text: t('common.ok'),
           onPress: () => router.back(),
@@ -252,7 +254,7 @@ export default function ScanPreviewScreen() {
           }
         }
 
-        Alert.alert(title, message, [
+        showAlert(title, message, [
           {
             text: t('common.retry'),
             onPress: () => {
@@ -284,7 +286,7 @@ export default function ScanPreviewScreen() {
         errorMessage = err.message || errorMessage;
       }
 
-      Alert.alert(t('common.error'), errorMessage, [
+      showAlert(t('common.error'), errorMessage, [
         {
           text: t('common.ok'),
           onPress: () => router.back(),
@@ -295,6 +297,7 @@ export default function ScanPreviewScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: '#050505' }]}>
+      {alertElement}
       <SuccessConfetti active={showConfetti} onAnimationEnd={() => setShowConfetti(false)} />
 
       <View style={styles.header}>

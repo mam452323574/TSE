@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Bell, Award, Sparkles, Save } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,6 +8,7 @@ import { Button } from '@/components/Button';
 import { SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS } from '@/constants/theme';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 export default function NotificationSettingsScreen() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function NotificationSettingsScreen() {
   const { t } = useLanguage();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
   const [saving, setSaving] = useState(false);
+  const { showAlert, alertElement } = useCustomAlert();
 
   const [settings, setSettings] = useState({
     reminders: true,
@@ -44,7 +46,7 @@ export default function NotificationSettingsScreen() {
         notification_settings: settings,
       });
 
-      Alert.alert(
+      showAlert(
         t('notification_settings.saved_title'),
         t('notification_settings.saved_message'),
         [
@@ -56,7 +58,7 @@ export default function NotificationSettingsScreen() {
       );
     } catch (error) {
       console.error('Error saving notification settings:', error);
-      Alert.alert(
+      showAlert(
         t('common.error'),
         t('notification_settings.error_save')
       );
@@ -67,6 +69,7 @@ export default function NotificationSettingsScreen() {
 
   return (
     <View style={styles.container}>
+      {alertElement}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}

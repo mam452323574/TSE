@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Upload, User } from 'lucide-react-native';
 import { supabase } from '@/services/supabase';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SIZES, SPACING, BORDER_RADIUS } from '@/constants/theme';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 interface AvatarPickerProps {
   userId: string;
@@ -21,6 +22,7 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
   const [localUri, setLocalUri] = useState<string | null>(null);
   const { colors } = useTheme();
   const { t } = useLanguage();
+  const { showAlert, alertElement } = useCustomAlert();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   const displayAvatar = localUri || currentAvatarUrl || DEFAULT_AVATAR;
@@ -74,7 +76,7 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
       onAvatarSelected(publicUrl);
     } catch (error) {
       console.error('Error uploading avatar:', error);
-      Alert.alert(t('components.avatar.error_title'), error instanceof Error ? error.message : t('components.avatar.error_download'));
+      showAlert(t('components.avatar.error_title'), error instanceof Error ? error.message : t('components.avatar.error_download'));
     } finally {
       setUploading(false);
     }
@@ -83,7 +85,7 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
   const pickImageFromLibrary = async () => {
     const hasPermission = await requestPermissions();
     if (!hasPermission) {
-      Alert.alert(t('components.avatar.perm_title'), t('components.avatar.perm_gallery'));
+      showAlert(t('components.avatar.perm_title'), t('components.avatar.perm_gallery'));
       return;
     }
 
@@ -102,7 +104,7 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
   const takePhoto = async () => {
     const hasPermission = await requestPermissions();
     if (!hasPermission) {
-      Alert.alert(t('components.avatar.perm_title'), t('components.avatar.perm_camera'));
+      showAlert(t('components.avatar.perm_title'), t('components.avatar.perm_camera'));
       return;
     }
 
@@ -118,7 +120,7 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
   };
 
   const showOptions = () => {
-    Alert.alert(
+    showAlert(
       t('components.avatar.options_title'),
       t('components.avatar.options_msg'),
       [
@@ -140,6 +142,7 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
 
   return (
     <View style={styles.container}>
+      {alertElement}
       <TouchableOpacity
         style={[styles.avatarContainer, { width: size, height: size }]}
         onPress={showOptions}

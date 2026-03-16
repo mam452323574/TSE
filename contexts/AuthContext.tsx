@@ -9,6 +9,8 @@ import { UserProfile, OAuthProvider } from '@/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getDeviceFingerprint } from '@/services/deviceFingerprint';
 
+import Purchases from 'react-native-purchases';
+
 WebBrowser.maybeCompleteAuthSession();
 
 interface AuthContextType {
@@ -108,17 +110,70 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       if (data) {
-        // Check for expiration immediately
-        if (data.account_tier === 'premium' && data.subscription_expiry_date) {
-          const expiryDate = new Date(data.subscription_expiry_date);
-          const now = new Date();
+        // Admin users get permanent premium — skip RevenueCat check entirely
+        if (data.account_tier === 'admin') {
+          console.log('[Auth] Admin user detected, skipping RevenueCat check');
+        } else if (Platform.OS !== 'web') {
+          // Check RevenueCat entitlements for premium status (native only)
+          try {
+            // Fetch customer info with retry on 429 (rate limit from concurrent requests after configure())
+            let customerInfo;
+            try {
+              customerInfo = await Purchases.getCustomerInfo();
+            } catch (rcError: any) {
+              if (rcError?.code === 16) {
+                // Rate limited — retry once after short delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                customerInfo = await Purchases.getCustomerInfo();
+              } else {
+                throw rcError;
+              }
+            }
 
-          if (expiryDate < now) {
-            console.log('[Auth] Subscription expired locally, downgrading state...');
-            data.account_tier = 'free'; // Optimistic update
+            if (typeof customerInfo.entitlements.active['Health Scan Pro'] !== 'undefined') {
+              // User has active 'Health Scan Pro' entitlement via RevenueCat
+              if (data.account_tier !== 'premium') {
+                console.log('[Auth] RevenueCat: Health Scan Pro active, upgrading to premium');
+                data.account_tier = 'premium';
 
-            // Sync with server in background
-            syncSubscriptionStatus();
+                // Sync premium status to Supabase in background
+                supabase
+                  .from('user_profiles')
+                  .update({ account_tier: 'premium' })
+                  .eq('id', userId)
+                  .then(({ error: syncError }) => {
+                    if (syncError) console.error('[Auth] Error syncing premium to Supabase:', syncError);
+                  });
+              }
+            } else {
+              // No active entitlement — downgrade to free (but never admin)
+              if (data.account_tier === 'premium') {
+                console.log('[Auth] RevenueCat: No active entitlement, downgrading to free');
+                data.account_tier = 'free';
+
+                // Sync free status to Supabase in background
+                supabase
+                  .from('user_profiles')
+                  .update({ account_tier: 'free' })
+                  .eq('id', userId)
+                  .then(({ error: syncError }) => {
+                    if (syncError) console.error('[Auth] Error syncing free tier to Supabase:', syncError);
+                  });
+              }
+            }
+          } catch (e) {
+            console.error('[Auth] Error fetching RevenueCat customer info:', e);
+            // Fallback: use existing Supabase expiry check if RevenueCat is unavailable
+            if (data.account_tier === 'premium' && data.subscription_expiry_date) {
+              const expiryDate = new Date(data.subscription_expiry_date);
+              const now = new Date();
+
+              if (expiryDate < now) {
+                console.log('[Auth] Subscription expired locally, downgrading state...');
+                data.account_tier = 'free';
+                syncSubscriptionStatus();
+              }
+            }
           }
         }
 

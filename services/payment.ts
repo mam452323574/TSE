@@ -1,19 +1,33 @@
-import {
-  initConnection,
-  endConnection,
-  getProducts,
-  requestPurchase,
-  getAvailablePurchases,
-  finishTransaction,
-  purchaseUpdatedListener,
-  purchaseErrorListener,
-  Product,
-  Purchase,
-  PurchaseError,
-  SubscriptionPurchase,
-} from 'react-native-iap';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { supabase } from './supabase';
+
+// Check if we are running in Expo Go
+const isExpoGo = Constants.appOwnership === 'expo';
+
+// Dynamic import type definitions for IAP
+let IAP: any = null;
+
+const getIAP = async () => {
+  if (IAP) return IAP;
+  if (isExpoGo) {
+    console.log('[PaymentService] Running in Expo Go, IAP native modules disabled');
+    return null;
+  }
+  
+  try {
+    IAP = await import('react-native-iap');
+    return IAP;
+  } catch (error) {
+    console.error('[PaymentService] Failed to load react-native-iap:', error);
+    return null;
+  }
+};
+
+export type Product = any;
+export type Purchase = any;
+export type PurchaseError = any;
+
 
 const MONTHLY_PRODUCT_IDS = {
   android: ['health_scan_premium_monthly'],
@@ -28,7 +42,7 @@ const ANNUAL_PRODUCT_IDS = {
 export interface PurchaseResult {
   success: boolean;
   message: string;
-  purchase?: Purchase | SubscriptionPurchase;
+  purchase?: Purchase;
   error?: string;
 }
 
@@ -43,9 +57,12 @@ class PaymentService {
     }
 
     try {
-      await initConnection();
+      const iap = await getIAP();
+      if (!iap) return;
+
+      await iap.initConnection();
       this.isInitialized = true;
-      this.setupPurchaseListeners();
+      this.setupPurchaseListeners(iap);
     } catch (error: any) {
       // E_IAP_NOT_AVAILABLE is expected in Expo Go - fail silently
       if (error?.code === 'E_IAP_NOT_AVAILABLE' || error?.message?.includes('E_IAP_NOT_AVAILABLE')) {
@@ -57,10 +74,10 @@ class PaymentService {
     }
   }
 
-  private setupPurchaseListeners(): void {
-    this.purchaseUpdateSubscription = purchaseUpdatedListener(
-      async (purchase: Purchase | SubscriptionPurchase) => {
-        const receipt = purchase.transactionReceipt;
+  private setupPurchaseListeners(iap: any): void {
+    this.purchaseUpdateSubscription = iap.purchaseUpdatedListener(
+      async (purchase: Purchase) => {
+        const receipt = purchase.purchaseToken;
         if (receipt) {
           try {
             await this.verifyAndFinalizePurchase(purchase);
@@ -71,7 +88,7 @@ class PaymentService {
       }
     );
 
-    this.purchaseErrorSubscription = purchaseErrorListener(
+    this.purchaseErrorSubscription = iap.purchaseErrorListener(
       (error: PurchaseError) => {
         console.error('[PaymentService] Purchase error:', error.code, error.message);
       }
@@ -85,8 +102,9 @@ class PaymentService {
         await this.initialize();
       }
 
+      const iap = await getIAP();
       // If still not initialized (e.g., Expo Go), return null gracefully
-      if (!this.isInitialized) {
+      if (!this.isInitialized || !iap) {
         console.log('[PaymentService] IAP not initialized, cannot fetch products');
         return null;
       }
@@ -95,10 +113,10 @@ class PaymentService {
         ? MONTHLY_PRODUCT_IDS.android
         : MONTHLY_PRODUCT_IDS.ios;
 
-      const products = await getProducts({ skus: productIds });
+      const products = await iap.fetchProducts({ skus: productIds, type: 'subs' });
 
-      if (products.length > 0) {
-        return products[0];
+      if (products && products.length > 0) {
+        return products[0] as Product;
       }
 
       return null;
@@ -114,11 +132,25 @@ class PaymentService {
         await this.initialize();
       }
 
+      const iap = await getIAP();
+      if (!iap) {
+        return {
+          success: false,
+          message: 'In-app purchases are not available in Expo Go. Please use a development build.',
+          error: 'iap_unavailable',
+        };
+      }
+
       const productId = Platform.OS === 'android'
         ? MONTHLY_PRODUCT_IDS.android[0]
         : MONTHLY_PRODUCT_IDS.ios[0];
 
-      await requestPurchase({ sku: productId });
+      await iap.requestPurchase({
+        request: Platform.OS === 'android'
+          ? { google: { skus: [productId] } }
+          : { apple: { sku: productId } },
+        type: 'subs',
+      });
 
       return {
         success: true,
@@ -149,11 +181,25 @@ class PaymentService {
         await this.initialize();
       }
 
+      const iap = await getIAP();
+      if (!iap) {
+        return {
+          success: false,
+          message: 'In-app purchases are not available in Expo Go. Please use a development build.',
+          error: 'iap_unavailable',
+        };
+      }
+
       const productId = Platform.OS === 'android'
         ? ANNUAL_PRODUCT_IDS.android[0]
         : ANNUAL_PRODUCT_IDS.ios[0];
 
-      await requestPurchase({ sku: productId });
+      await iap.requestPurchase({
+        request: Platform.OS === 'android'
+          ? { google: { skus: [productId] } }
+          : { apple: { sku: productId } },
+        type: 'subs',
+      });
 
       return {
         success: true,
@@ -179,12 +225,10 @@ class PaymentService {
   }
 
   private async verifyAndFinalizePurchase(
-    purchase: Purchase | SubscriptionPurchase
+    purchase: Purchase
   ): Promise<void> {
     try {
-      const purchaseToken = Platform.OS === 'android'
-        ? purchase.purchaseToken
-        : purchase.transactionReceipt;
+      const purchaseToken = purchase.purchaseToken;
 
       if (!purchaseToken) {
         throw new Error('No purchase token found');
@@ -221,7 +265,10 @@ class PaymentService {
       const result = await response.json();
 
       if (result.success) {
-        await finishTransaction({ purchase, isConsumable: false });
+        const iap = await getIAP();
+        if (iap) {
+          await iap.finishTransaction({ purchase, isConsumable: false });
+        }
       } else {
         console.error('[PaymentService] Verification failed:', result.error);
         throw new Error(result.error || 'Verification failed');
@@ -238,7 +285,16 @@ class PaymentService {
         await this.initialize();
       }
 
-      const availablePurchases = await getAvailablePurchases();
+      const iap = await getIAP();
+      if (!iap) {
+        return {
+          success: false,
+          message: 'Restore purchases is not available in Expo Go. Please use a development build.',
+          error: 'iap_unavailable',
+        };
+      }
+
+      const availablePurchases = await iap.getAvailablePurchases();
 
       if (availablePurchases.length === 0) {
         return {
@@ -249,7 +305,7 @@ class PaymentService {
       }
 
       const premiumPurchase = availablePurchases.find(
-        (p) => MONTHLY_PRODUCT_IDS.android.includes(p.productId) || 
+        (p: Purchase) => MONTHLY_PRODUCT_IDS.android.includes(p.productId) || 
                MONTHLY_PRODUCT_IDS.ios.includes(p.productId) ||
                ANNUAL_PRODUCT_IDS.android.includes(p.productId) ||
                ANNUAL_PRODUCT_IDS.ios.includes(p.productId)
@@ -292,7 +348,10 @@ class PaymentService {
     }
 
     if (this.isInitialized) {
-      await endConnection();
+      const iap = await getIAP();
+      if (iap) {
+        await iap.endConnection();
+      }
       this.isInitialized = false;
     }
   }

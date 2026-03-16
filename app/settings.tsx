@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Image, ActivityIndicator, Platform, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator, Platform, Modal } from 'react-native';
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -12,6 +12,7 @@ import { Button } from '@/components/Button';
 import { ModalHandle } from '@/components/ModalHandle';
 import { navigationService } from '@/services/navigation';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS } from '@/constants/theme';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function SettingsScreen() {
   const { t, locale, changeLanguage } = useLanguage();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const { showAlert, alertElement } = useCustomAlert();
 
   useEffect(() => {
     setIsSigningOut(false);
@@ -76,7 +78,7 @@ export default function SettingsScreen() {
       if (Platform.OS === 'web') {
         alert(t('settings.sign_out_error_msg'));
       } else {
-        Alert.alert(
+        showAlert(
           t('settings.sign_out_error_title'),
           t('settings.sign_out_error_msg'),
           [{ text: t('settings.ok') }]
@@ -101,7 +103,7 @@ export default function SettingsScreen() {
       }
     } else {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      Alert.alert(
+      showAlert(
         t('settings.sign_out_confirm_title'),
         t('settings.sign_out_confirm_msg'),
         [
@@ -122,6 +124,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
+      {alertElement}
       <ModalHandle />
       <View style={styles.headerBar}>
         <TouchableOpacity
@@ -162,13 +165,16 @@ export default function SettingsScreen() {
             <AccountBadge tier={userProfile.account_tier} size="large" />
             {userProfile.account_tier === 'free' && (
               <TouchableOpacity
-                style={styles.upgradeButton}
+                style={styles.upgradeCard}
                 onPress={() => router.push('/premium-upgrade')}
                 activeOpacity={0.8}
               >
-                <Crown color={colors.primary} size={20} />
-                <Text style={styles.upgradeButtonText}>{t('settings.upgrade_premium')}</Text>
-                <ChevronRight color={colors.primary} size={20} />
+                <Crown color="#FFD700" size={28} fill="#FFD700" />
+                <View style={styles.upgradeCardText}>
+                  <Text style={styles.upgradeCardTitle}>{t('settings.upgrade_premium')}</Text>
+                  <Text style={styles.upgradeCardSubtitle}>{t('settings.upgrade_subtitle')}</Text>
+                </View>
+                <ChevronRight color={colors.primary} size={24} />
               </TouchableOpacity>
             )}
           </View>
@@ -406,20 +412,29 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     gap: SPACING.md,
   },
-  upgradeButton: {
+  upgradeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.sm,
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.md,
-    borderRadius: BORDER_RADIUS.button,
-    backgroundColor: colors.background,
+    gap: SPACING.md,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 215, 0, 0.4)',
+    backgroundColor: 'rgba(255, 215, 0, 0.08)',
     marginTop: SPACING.sm,
   },
-  upgradeButtonText: {
-    fontSize: SIZES.text14,
-    fontWeight: FONT_WEIGHTS.semiBold,
-    color: colors.primary,
+  upgradeCardText: {
+    flex: 1,
+  },
+  upgradeCardTitle: {
+    fontSize: SIZES.text16,
+    fontWeight: FONT_WEIGHTS.bold,
+    color: colors.primaryText,
+  },
+  upgradeCardSubtitle: {
+    fontSize: SIZES.text12,
+    color: colors.gray,
+    marginTop: 2,
   },
   menuItem: {
     flexDirection: 'row',

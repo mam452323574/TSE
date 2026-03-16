@@ -18,8 +18,6 @@ const LOOP_DETECTION = {
 } as const;
 
 interface NavigationState {
-  redirectCount: number;
-  loopDetected: boolean;
   forceLogout: boolean;
 }
 
@@ -35,12 +33,12 @@ export function useProtectedRoute() {
   const navigationState = useRootNavigationState();
 
   const [state, setState] = useState<NavigationState>({
-    redirectCount: 0,
-    loopDetected: false,
     forceLogout: false,
   });
 
   const lastRedirectTime = useRef<number>(0);
+  const redirectCountRef = useRef<number>(0);
+  const loopDetectedRef = useRef<boolean>(false);
 
   // Vérifier si le routeur est prêt
   const isRouterReady = navigationState?.key != null;
@@ -85,11 +83,8 @@ export function useProtectedRoute() {
 
   // Réinitialise l'état de détection de boucles
   const resetLoopDetection = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      redirectCount: 0,
-      loopDetected: false,
-    }));
+    redirectCountRef.current = 0;
+    loopDetectedRef.current = false;
   }, []);
 
   // Gère la déconnexion d'urgence
@@ -131,11 +126,9 @@ export function useProtectedRoute() {
 
     // Gestion du logout forcé
     if (state.forceLogout) {
-      setState({
-        redirectCount: 0,
-        loopDetected: false,
-        forceLogout: false,
-      });
+      redirectCountRef.current = 0;
+      loopDetectedRef.current = false;
+      setState({ forceLogout: false });
       router.replace('/login');
       return;
     }
@@ -155,25 +148,27 @@ export function useProtectedRoute() {
 
     // Détection des boucles de redirection
     if (timeSinceLastRedirect < LOOP_DETECTION.TIME_WINDOW) {
-      if (!routeState.isProtected && !routeState.isPublic) {
-        setState(prev => ({ ...prev, redirectCount: prev.redirectCount + 1 }));
+      if (!routeState.isProtected && !routeState.isPublic
+          && !routeState.isEmailVerification && !routeState.isProfileSetup
+          && !routeState.isSpecial) {
+        redirectCountRef.current++;
       }
     } else if (routeState.isProtected || routeState.isPublic) {
-      if (state.redirectCount > 0) {
+      if (redirectCountRef.current > 0) {
         resetLoopDetection();
       }
     }
 
     // Alerte si boucle détectée
-    if (state.redirectCount >= LOOP_DETECTION.THRESHOLD && !state.loopDetected) {
+    if (redirectCountRef.current >= LOOP_DETECTION.THRESHOLD && !loopDetectedRef.current) {
       console.error('[Navigation] LOOP DETECTED - Too many redirects!');
-      setState(prev => ({ ...prev, loopDetected: true }));
+      loopDetectedRef.current = true;
       showLoopAlert();
       return;
     }
 
     // STOP si boucle déjà détectée
-    if (state.loopDetected) return;
+    if (loopDetectedRef.current) return;
 
     // === LOGIQUE DE REDIRECTION ===
 
@@ -217,9 +212,7 @@ export function useProtectedRoute() {
     loading,
     isEmailVerified,
     segments,
-    state.redirectCount,
     state.forceLogout,
-    state.loopDetected,
     getCurrentRouteState,
     getAuthState,
     safeRedirect,
@@ -231,6 +224,6 @@ export function useProtectedRoute() {
 
   return {
     isLoading: loading,
-    isLoopDetected: state.loopDetected,
+    isLoopDetected: loopDetectedRef.current,
   };
 }

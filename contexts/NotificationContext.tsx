@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/services/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/hooks/useNotifications';
@@ -16,6 +17,7 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const { user, userProfile } = useAuth();
   const { t } = useLanguage();
   const {
@@ -61,6 +63,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         },
         () => {
           fetchUnreadNotifications();
+          queryClient.invalidateQueries({ queryKey: ['notifications'] });
         }
       )
       .subscribe();
@@ -110,8 +113,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     if (!error) {
       fetchUnreadNotifications();
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     }
-  }, [user, fetchUnreadNotifications]);
+  }, [user, fetchUnreadNotifications, queryClient]);
 
   const checkForAchievements = useCallback(async () => {
     if (!user) return;

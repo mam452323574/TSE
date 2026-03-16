@@ -2,5 +2,16 @@
     "deno.enable": false,
     "deno.enablePaths": [
         "supabase/functions"
-    ]
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.gradle.enabled": true,
+    "java.project.resourceFilters": [
+        "node_modules",
+        ".expo",
+        ".git"
+    ],
+    "files.exclude": {
+        "**/node_modules/*": true
+    }
 }

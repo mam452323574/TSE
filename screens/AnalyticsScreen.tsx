@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import { Crown, Activity, Utensils, Sparkles, Heart } from 'lucide-react-native';
@@ -14,6 +14,7 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS, SHADOWS } from '@/constants/theme';
 import { ContextualPaywall } from '@/components/ContextualPaywall';
 import { paywallSession } from '@/utils/paywallSession';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 // Périodes disponibles avec leurs labels et restriction premium
 const PERIODS: { value: AnalyticsPeriod; labelKey: string; premium: boolean }[] = [
@@ -129,6 +130,7 @@ export default function AnalyticsScreen() {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [period, setPeriod] = useState<AnalyticsPeriod>('7days');
   const [paywallVisible, setPaywallVisible] = useState(false);
+  const { showAlert, alertElement } = useCustomAlert();
   const isPremium = userProfile?.account_tier === 'premium' || userProfile?.account_tier === 'admin';
 
   // React Query hook - se met à jour automatiquement quand period change
@@ -150,7 +152,7 @@ export default function AnalyticsScreen() {
         setPaywallVisible(true);
         paywallSession.markPaywallShown();
       } else {
-        Alert.alert(
+        showAlert(
           t('analytics.premium_feature'),
           t('analytics.premium_feature_msg'),
           [
@@ -259,6 +261,7 @@ export default function AnalyticsScreen() {
 
   return (
     <View style={styles.container}>
+      {alertElement}
       <View style={[styles.header, { paddingTop: insets.top + SPACING.md }]}>
         <Text style={styles.headerTitle}>{t('analytics.title')}</Text>
         <Text style={styles.headerSubtitle}>{t('analytics.subtitle')}</Text>

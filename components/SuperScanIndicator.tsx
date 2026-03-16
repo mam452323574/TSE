@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Sparkles, Crown, Zap, Lock } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -18,9 +18,10 @@ interface ScanEligibility {
 interface SuperScanIndicatorProps {
     isPremium: boolean;
     eligibility?: ScanEligibility;
+    onLockedPress?: () => void;
 }
 
-export function SuperScanIndicator({ isPremium, eligibility }: SuperScanIndicatorProps) {
+export function SuperScanIndicator({ isPremium, eligibility, onLockedPress }: SuperScanIndicatorProps) {
     const { colors, isDark } = useTheme();
     const { t } = useLanguage();
     const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
@@ -41,8 +42,13 @@ export function SuperScanIndicator({ isPremium, eligibility }: SuperScanIndicato
             ? ['#3A3A3C', '#2C2C2E'] as const
             : ['#E0E0E0', '#BDBDBD'] as const;
 
+    const Container = (!isPremium && onLockedPress) ? TouchableOpacity : View;
+    const containerProps = (!isPremium && onLockedPress)
+        ? { onPress: onLockedPress, activeOpacity: 0.7 } as const
+        : {};
+
     return (
-        <View style={[styles.container, !isPremium && styles.containerLocked]}>
+        <Container {...containerProps} style={[styles.container, !isPremium && styles.containerLocked]}>
             {/* Background avec effet premium */}
             <View style={styles.backgroundGlow} />
 
@@ -140,7 +146,7 @@ export function SuperScanIndicator({ isPremium, eligibility }: SuperScanIndicato
                     </View>
                 )}
             </View>
-        </View>
+        </Container>
     );
 }
 

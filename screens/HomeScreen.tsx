@@ -1,8 +1,9 @@
 import { useEffect, useCallback, useRef, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, RefreshControl, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, RefreshControl, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Sun, Moon } from 'lucide-react-native';
+import { Sun, Moon, Crown, ChevronRight } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -34,7 +35,7 @@ export default function HomeScreen() {
   const isFocused = useIsFocused();
   const insets = useSafeAreaInsets();
 
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const { checkForAchievements, scheduleScanReadyNotification } = useNotificationContext();
 
@@ -102,13 +103,6 @@ export default function HomeScreen() {
   const renderFixedHeader = () => (
     <View style={[styles.header, { paddingTop: insets.top + SPACING.sm }]}>
       <View style={styles.headerLeft}>
-        <View style={styles.brandingRow}>
-          <Image
-            source={require('@/assets/images/icon.png')}
-            style={styles.logo}
-          />
-          <Text style={styles.appName}>All Scan</Text>
-        </View>
         <Text style={styles.username}>{userProfile?.username || t('common.unknown_user')}</Text>
       </View>
       <View style={styles.headerRight}>
@@ -156,7 +150,11 @@ export default function HomeScreen() {
                     {t(SCAN_TYPE_LABELS[scanType])}
                   </Text>
                   {scanEligibility ? (
-                    <ScanLimitIndicator eligibility={scanEligibility[scanType]} isPremium={isPremium} />
+                    <ScanLimitIndicator
+                      eligibility={scanEligibility[scanType]}
+                      isPremium={isPremium}
+                      onLimitReachedPress={!isPremium ? () => router.push('/premium-upgrade') : undefined}
+                    />
                   ) : (
                     <Text style={styles.loadingText}>...</Text>
                   )}
@@ -169,12 +167,35 @@ export default function HomeScreen() {
             <SuperScanIndicator
               isPremium={isPremium}
               eligibility={scanEligibility?.super}
+              onLockedPress={() => router.push('/premium-upgrade')}
             />
           </View>
         </View>
+
+        {!isPremium && (
+          <TouchableOpacity
+            style={styles.premiumBanner}
+            onPress={() => router.push('/premium-upgrade')}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={isDark ? ['#B8860B', '#8B6914'] as const : ['#FFD700', '#FFA500'] as const}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.premiumBannerGradient}
+            >
+              <Crown color="#FFFFFF" size={24} fill="#FFFFFF" />
+              <View style={styles.premiumBannerText}>
+                <Text style={styles.premiumBannerTitle}>{t('home.premium_banner_title')}</Text>
+                <Text style={styles.premiumBannerSubtitle}>{t('home.premium_banner_subtitle')}</Text>
+              </View>
+              <ChevronRight color="#FFFFFF" size={20} />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
       </>
     );
-  }, [data, scanEligibility, isPremium]);
+  }, [data, scanEligibility, isPremium, isDark]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -210,7 +231,7 @@ export default function HomeScreen() {
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -231,21 +252,6 @@ const createStyles = (colors: any) => StyleSheet.create({
   headerLeft: {
     flexDirection: 'column',
     gap: SPACING.xs,
-  },
-  brandingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-  },
-  logo: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-  },
-  appName: {
-    fontSize: SIZES.text16,
-    fontWeight: FONT_WEIGHTS.bold,
-    color: colors.primary,
   },
   username: {
     fontSize: SIZES.text18,
@@ -328,6 +334,30 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.gray,
     textAlign: 'center',
     paddingVertical: SPACING.md,
+  },
+  premiumBanner: {
+    marginHorizontal: SPACING.page,
+    marginTop: SPACING.xl,
+  },
+  premiumBannerGradient: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
+    gap: SPACING.md,
+  },
+  premiumBannerText: {
+    flex: 1,
+  },
+  premiumBannerTitle: {
+    fontSize: SIZES.text16,
+    fontWeight: FONT_WEIGHTS.bold,
+    color: '#FFFFFF',
+  },
+  premiumBannerSubtitle: {
+    fontSize: SIZES.text12,
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 2,
   },
 });
 

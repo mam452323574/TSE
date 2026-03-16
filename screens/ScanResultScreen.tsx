@@ -530,10 +530,13 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   gridContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: SPACING.md,
   },
   quickStatCard: {
-    flex: 1,
+    minWidth: '45%',
+    flexGrow: 1,
+    flexShrink: 0,
     borderRadius: BORDER_RADIUS.xl,
     padding: SPACING.md,
     alignItems: 'center',

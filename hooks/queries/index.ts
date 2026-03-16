@@ -8,5 +8,5 @@ export {
   useAllScanEligibility, 
   SCAN_ELIGIBILITY_QUERY_KEY 
 } from './useScanEligibility';
-export { useNotificationsQuery, NOTIFICATIONS_QUERY_KEY } from './useNotifications';
+export { useNotificationsQuery, NOTIFICATIONS_QUERY_KEY, fetchNotifications } from './useNotifications';
 export { usePremiumFeatures, PREMIUM_FEATURES_QUERY_KEY } from './usePremiumFeatures';

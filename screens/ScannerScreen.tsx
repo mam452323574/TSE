@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, StatusBar } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -21,6 +21,7 @@ import { paywallSession } from '@/utils/paywallSession';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CameraFlipIcon } from '@/components/CameraFlipIcon';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 export default function ScannerScreen() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function ScannerScreen() {
   const { scheduleSuperScanReset } = useNotificationContext();
   const { colors } = useTheme();
   const { t } = useLanguage();
+  const { showAlert, alertElement } = useCustomAlert();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const styles = useMemo(() => createStyles(colors), [colors]);
 
@@ -107,7 +109,7 @@ export default function ScannerScreen() {
           });
           paywallSession.markPaywallShown();
         } else {
-          Alert.alert(
+          showAlert(
             t('super_scan_features.premium_alert_title'),
             t('super_scan_features.premium_alert_msg'),
             [
@@ -142,7 +144,7 @@ export default function ScannerScreen() {
 
         // Message spécifique pour Super Scan utilisé aujourd'hui
         if (scanType === 'super') {
-          Alert.alert(
+          showAlert(
             t('super_scan_features.used_alert_title'),
             `${t('super_scan_features.used_alert_msg')}\n\n${timeMessage}`,
             [{ text: t('common.ok'), style: 'default' }]
@@ -156,7 +158,7 @@ export default function ScannerScreen() {
             });
             paywallSession.markPaywallShown();
           } else {
-            Alert.alert(
+            showAlert(
               t('common.error'),
               `${t(eligibility.message || 'scan_limit.limit_reached')} ${timeMessage}\n\n${t('premium.subtitle')}`,
               [
@@ -178,7 +180,7 @@ export default function ScannerScreen() {
 
   const takePicture = async () => {
     if (!selectedScanType) {
-      Alert.alert(t('scanner.type_required_title'), t('scanner.type_required_msg'));
+      showAlert(t('scanner.type_required_title'), t('scanner.type_required_msg'));
       return;
     }
 
@@ -215,7 +217,7 @@ export default function ScannerScreen() {
         });
         paywallSession.markPaywallShown();
       } else {
-        Alert.alert(
+        showAlert(
           t('scan_limit.limit_reached'),
           t(eligibility?.message || 'scan_limit.limit_reached'),
           [
@@ -253,7 +255,7 @@ export default function ScannerScreen() {
         }
       }
     } catch (error) {
-      Alert.alert(t('common.error'), t('scanner.error_taking_photo'));
+      showAlert(t('common.error'), t('scanner.error_taking_photo'));
     } finally {
       setCheckingEligibility(false);
     }
@@ -261,7 +263,7 @@ export default function ScannerScreen() {
 
   const pickImage = async () => {
     if (!selectedScanType) {
-      Alert.alert(t('scanner.type_required_title'), t('scanner.type_required_msg'));
+      showAlert(t('scanner.type_required_title'), t('scanner.type_required_msg'));
       return;
     }
 
@@ -298,7 +300,7 @@ export default function ScannerScreen() {
         });
         paywallSession.markPaywallShown();
       } else {
-        Alert.alert(
+        showAlert(
           t('scan_limit.limit_reached'),
           t(eligibility?.message || 'scan_limit.limit_reached'),
           [
@@ -337,7 +339,7 @@ export default function ScannerScreen() {
         });
       }
     } catch (error) {
-      Alert.alert(t('common.error'), t('scanner.error_loading_image'));
+      showAlert(t('common.error'), t('scanner.error_loading_image'));
     } finally {
       setCheckingEligibility(false);
     }
@@ -472,6 +474,7 @@ export default function ScannerScreen() {
 
   return (
     <View style={styles.container}>
+      {alertElement}
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
       <View style={{ flex: 1 }}>

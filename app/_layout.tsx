@@ -1,5 +1,7 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
@@ -8,6 +10,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BadgeProvider } from '@/contexts/BadgeContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import Purchases, { LOG_LEVEL } from 'react-native-purchases';
 
 import { SCREEN_OPTIONS } from '@/constants/routes';
 
@@ -41,6 +44,7 @@ function RootLayoutNav() {
       <Stack.Screen name="recipes" options={{ presentation: 'modal' }} />
       <Stack.Screen name="exercises" options={{ presentation: 'modal' }} />
       <Stack.Screen name="scan-result" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="premium-upgrade" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }
@@ -51,6 +55,20 @@ function RootLayoutNav() {
  */
 export default function RootLayout() {
   useFrameworkReady();
+
+  // Initialisation RevenueCat
+  useEffect(() => {
+    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    const iosApiKey = 'test_JjvgYeNhjZNuGbVuyszipmWNKSi';
+    const androidApiKey = 'test_JjvgYeNhjZNuGbVuyszipmWNKSi';
+
+    if (Platform.OS === 'ios') {
+      Purchases.configure({ apiKey: iosApiKey });
+    } else if (Platform.OS === 'android') {
+      Purchases.configure({ apiKey: androidApiKey });
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

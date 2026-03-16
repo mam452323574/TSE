@@ -1,20 +1,36 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import { Bell } from 'lucide-react-native';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { useAuth } from '@/contexts/AuthContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { navigationService } from '@/services/navigation';
+import { NOTIFICATIONS_QUERY_KEY, fetchNotifications } from '@/hooks/queries';
 import { SIZES, FONT_WEIGHTS } from '@/constants/theme';
 
 
 
 export const NotificationBell = memo(function NotificationBell() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const { notificationCount } = useNotificationContext();
   const { colors } = useTheme();
   const { t } = useLanguage();
   const styles = useMemo(() => createStyles(colors), [colors]);
+
+  // Prefetch notifications so the screen opens instantly
+  useEffect(() => {
+    if (user?.id) {
+      queryClient.prefetchQuery({
+        queryKey: NOTIFICATIONS_QUERY_KEY(user.id, 'all'),
+        queryFn: () => fetchNotifications(user.id, 'all'),
+        staleTime: 1000 * 60 * 5,
+      });
+    }
+  }, [user?.id, queryClient]);
 
   const handlePress = () => {
     navigationService.navigateToNotifications();

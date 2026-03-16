@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ScanEligibilityResponse } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,9 +9,10 @@ import { NextScanTimer } from '@/components/NextScanTimer';
 interface ScanLimitIndicatorProps {
   eligibility?: ScanEligibilityResponse;
   isPremium?: boolean;
+  onLimitReachedPress?: () => void;
 }
 
-export function ScanLimitIndicator({ eligibility, isPremium }: ScanLimitIndicatorProps) {
+export function ScanLimitIndicator({ eligibility, isPremium, onLimitReachedPress }: ScanLimitIndicatorProps) {
   const { colors } = useTheme();
   const { t } = useLanguage();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -52,9 +53,17 @@ export function ScanLimitIndicator({ eligibility, isPremium }: ScanLimitIndicato
         </View>
       </View>
 
-      <Text style={[styles.statusText, isLimitReached && styles.statusTextDisabled]}>
-        {isLimitReached ? t('scan_limit.limit_reached') : t('scan_limit.available')}
-      </Text>
+      {isLimitReached && onLimitReachedPress ? (
+        <TouchableOpacity onPress={onLimitReachedPress} activeOpacity={0.7}>
+          <Text style={[styles.statusText, { color: colors.primary, textDecorationLine: 'underline' }]}>
+            {t('scan_limit.upgrade')}
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <Text style={[styles.statusText, isLimitReached && styles.statusTextDisabled]}>
+          {isLimitReached ? t('scan_limit.limit_reached') : t('scan_limit.available')}
+        </Text>
+      )}
 
       {isPremium && eligibility.next_available_date && (
         <View style={styles.timerContainer}>
