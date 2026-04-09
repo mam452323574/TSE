@@ -71,6 +71,21 @@ describe('NextScanTimer', () => {
     expect(screen.getByText(/dans/)).toBeTruthy();
   });
 
+  it('renders the compact scanner mode on a single line without the default prefix', () => {
+    const futureDate = Date.now() + (2 * 24 * 60 * 60 * 1000) + (3 * 60 * 60 * 1000);
+    const { UNSAFE_queryByType } = render(
+      <NextScanTimer
+        nextAvailableDate={futureDate}
+        scanLabel="Dispo."
+        mode="scannerCompact"
+      />
+    );
+
+    expect(screen.getByText(/Dispo\./)).toBeTruthy();
+    expect(screen.queryByText(/dans/)).toBeNull();
+    expect(UNSAFE_queryByType('Clock' as any)).toBeNull();
+  });
+
   it('updates when time passes', async () => {
     const futureDate = Date.now() + 5000; // 5 seconds from now
     render(

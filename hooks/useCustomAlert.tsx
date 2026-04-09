@@ -1,11 +1,23 @@
-import React, { useState, useCallback } from 'react';
-import { CustomAlert, CustomAlertButton, CustomAlertProps } from '@/components/CustomAlert';
+﻿import React, { useCallback, useState } from 'react';
+import { AlertButtonTone, AlertVariant, CustomAlert, CustomAlertButton } from '@/components/CustomAlert';
+
+export interface CustomAlertOptions {
+  variant?: AlertVariant;
+  emoji?: string;
+  icon?: React.ReactNode;
+  dismissible?: boolean;
+  buttonTones?: Partial<Record<'default' | 'cancel' | 'destructive', AlertButtonTone>>;
+}
 
 interface AlertConfig {
   title: string;
   message?: string;
   buttons?: CustomAlertButton[];
   icon?: React.ReactNode;
+  variant?: AlertVariant;
+  emoji?: string;
+  dismissible?: boolean;
+  buttonTones?: Partial<Record<'default' | 'cancel' | 'destructive', AlertButtonTone>>;
 }
 
 export function useCustomAlert() {
@@ -16,8 +28,18 @@ export function useCustomAlert() {
     message?: string,
     buttons?: CustomAlertButton[],
     icon?: React.ReactNode,
+    options?: CustomAlertOptions,
   ) => {
-    setConfig({ title, message, buttons, icon });
+    setConfig({
+      title,
+      message,
+      buttons,
+      icon: options?.icon ?? icon,
+      variant: options?.variant,
+      emoji: options?.emoji,
+      dismissible: options?.dismissible,
+      buttonTones: options?.buttonTones,
+    });
   }, []);
 
   const hideAlert = useCallback(() => {
@@ -31,6 +53,10 @@ export function useCustomAlert() {
       message={config.message}
       buttons={config.buttons}
       icon={config.icon}
+      variant={config.variant}
+      emoji={config.emoji}
+      dismissible={config.dismissible}
+      buttonTones={config.buttonTones}
       onDismiss={hideAlert}
     />
   ) : null;

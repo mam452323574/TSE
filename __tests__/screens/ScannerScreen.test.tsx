@@ -2,11 +2,34 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import ScannerScreen from '@/screens/ScannerScreen';
+import { paywallSession } from '@/utils/paywallSession';
+import { ApiError } from '@/services/api';
 
 // Mock expo-camera
 const mockUseCameraPermissions = jest.fn();
+const mockTakePictureAsync = jest.fn();
+const mockCameraViewProps: { current: Record<string, any> | null } = { current: null };
+const mockCameraGuideProps: { current: Record<string, any> | null } = { current: null };
+const mockManipulateAsync = jest.fn();
+const mockShowAlert = jest.fn();
+const mockScheduleSuperScanReset = jest.fn();
 jest.mock('expo-camera', () => ({
-  CameraView: 'CameraView',
+  CameraView: (() => {
+    const React = require('react');
+    const { View } = require('react-native');
+
+    const MockCameraView = React.forwardRef((props: any, ref: any) => {
+      mockCameraViewProps.current = props;
+      React.useImperativeHandle(ref, () => ({
+        takePictureAsync: mockTakePictureAsync,
+      }));
+
+      return React.createElement(View, { testID: 'mock-camera-view' });
+    });
+
+    MockCameraView.displayName = 'MockCameraView';
+    return MockCameraView;
+  })(),
   CameraType: {},
   useCameraPermissions: () => mockUseCameraPermissions(),
 }));
@@ -16,10 +39,25 @@ jest.mock('expo-image-picker', () => ({
   launchImageLibraryAsync: jest.fn(),
 }));
 
+// Mock expo-image-manipulator
+jest.mock('expo-image-manipulator', () => ({
+  manipulateAsync: (...args: any[]) => mockManipulateAsync(...args),
+  FlipType: {
+    Horizontal: 'horizontal',
+    Vertical: 'vertical',
+  },
+  SaveFormat: {
+    JPEG: 'jpeg',
+    PNG: 'png',
+    WEBP: 'webp',
+  },
+}));
+
 // Mock expo-router
 const mockPush = jest.fn();
+let latestFocusEffectCallback: (() => void) | undefined;
 const mockUseFocusEffect = jest.fn((callback: () => void) => {
-  // Don't call immediately to avoid issues with loading state
+  latestFocusEffectCallback = callback;
 });
 jest.mock('expo-router', () => ({
   useRouter: () => ({
@@ -52,6 +90,13 @@ jest.mock('@/contexts/AuthContext', () => ({
   }),
 }));
 
+jest.mock('@/hooks/useCustomAlert', () => ({
+  useCustomAlert: () => ({
+    showAlert: mockShowAlert,
+    alertElement: null,
+  }),
+}));
+
 // Mock NotificationContext
 jest.mock('@/contexts/NotificationContext', () => ({
   useNotificationContext: () => ({
@@ -59,18 +104,31 @@ jest.mock('@/contexts/NotificationContext', () => ({
     notifications: [],
     markAsRead: jest.fn(),
     refreshNotifications: jest.fn(),
-    scheduleSuperScanReset: jest.fn(),
+    scheduleSuperScanReset: mockScheduleSuperScanReset,
   }),
 }));
 
 // Mock useAllScanEligibility hook (shared scan eligibility state)
 const mockScanEligibilityData = jest.fn();
+const mockScanEligibilityErrors = jest.fn();
+const mockScanEligibilityLoadingByType = jest.fn();
+const mockEligibilityLoading = jest.fn();
+const mockHasConnectivityError = jest.fn();
+const mockHasBlockingEligibilityError = jest.fn();
+const mockIsAuthReady = jest.fn();
+const mockCanQueryEligibility = jest.fn();
 const mockRefetchAll = jest.fn();
 jest.mock('@/hooks/queries', () => ({
   useAllScanEligibility: () => ({
     data: mockScanEligibilityData(),
-    isLoading: false,
-    isError: false,
+    errors: mockScanEligibilityErrors(),
+    loadingByScanType: mockScanEligibilityLoadingByType(),
+    isLoading: mockEligibilityLoading(),
+    isError: Object.keys(mockScanEligibilityErrors() || {}).length > 0,
+    isAuthReady: mockIsAuthReady(),
+    canQuery: mockCanQueryEligibility(),
+    hasConnectivityError: mockHasConnectivityError(),
+    hasBlockingEligibilityError: mockHasBlockingEligibilityError(),
     refetchAll: mockRefetchAll,
   }),
 }));
@@ -95,11 +153,41 @@ jest.mock('@/components/LoadingSpinner', () => ({
 }));
 
 jest.mock('@/components/CameraGuide', () => ({
-  CameraGuide: () => null,
+  CameraGuide: (props: any) => {
+    const { View } = require('react-native');
+    mockCameraGuideProps.current = props;
+
+    return <View testID="mock-camera-guide" />;
+  },
+}));
+
+jest.mock('@/components/ContextualPaywall', () => ({
+  ContextualPaywall: ({ visible, title, subtitle, description }: any) => {
+    if (!visible) {
+      return null;
+    }
+
+    const { View, Text } = require('react-native');
+
+    return (
+      <View testID="contextual-paywall">
+        <Text>{title}</Text>
+        {subtitle ? <Text>{subtitle}</Text> : null}
+        {description ? <Text>{description}</Text> : null}
+      </View>
+    );
+  },
 }));
 
 jest.mock('@/components/NextScanTimer', () => ({
-  NextScanTimer: () => null,
+  NextScanTimer: ({ scanLabel, mode }: any) => {
+    const { Text } = require('react-native');
+    return (
+      <Text>
+        {mode === 'scannerCompact' ? `${scanLabel} 6j 23h` : `${scanLabel || 'Timer'} default`}
+      </Text>
+    );
+  },
 }));
 
 // Mock Alert
@@ -111,11 +199,19 @@ describe('ScannerScreen', () => {
     current_count: 0,
     limit: 1,
     welcome_credits: 0,
+    message: 'Scan disponible',
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    paywallSession.reset();
+    mockTakePictureAsync.mockResolvedValue({ uri: 'file:///captured-photo.jpg' });
+    mockManipulateAsync.mockResolvedValue({ uri: 'file:///mirrored-photo.jpg', width: 100, height: 200 });
+    mockCameraViewProps.current = null;
+    mockCameraGuideProps.current = null;
+    latestFocusEffectCallback = undefined;
     mockUserProfile.mockReturnValue({ account_tier: 'free' });
+    mockScheduleSuperScanReset.mockResolvedValue(undefined);
     // Mock all scan types with default eligibility
     mockScanEligibilityData.mockReturnValue({
       body: defaultEligibility,
@@ -123,6 +219,22 @@ describe('ScannerScreen', () => {
       nutrition: defaultEligibility,
       super: defaultEligibility,
     });
+    mockScanEligibilityErrors.mockReturnValue({});
+    mockScanEligibilityLoadingByType.mockReturnValue({
+      body: false,
+      health: false,
+      nutrition: false,
+      super: false,
+    });
+    mockEligibilityLoading.mockReturnValue(false);
+    mockHasConnectivityError.mockReturnValue(false);
+    mockHasBlockingEligibilityError.mockReturnValue(false);
+    mockIsAuthReady.mockReturnValue(true);
+    mockCanQueryEligibility.mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('camera permissions', () => {
@@ -144,7 +256,7 @@ describe('ScannerScreen', () => {
 
       // Wait for the eligibility check to complete (sets loading to false)
       await waitFor(() => {
-        expect(screen.getByText("Nous avons besoin d'accéder à votre caméra")).toBeTruthy();
+        expect(screen.getByText(/Nous avons besoin d'acc/)).toBeTruthy();
       });
       expect(screen.getByText('Autoriser')).toBeTruthy();
     });
@@ -215,6 +327,140 @@ describe('ScannerScreen', () => {
       // No alert is expected because the button is disabled
       expect(alertSpy).not.toHaveBeenCalled();
     });
+
+    it('renders the unavailable timer inline inside the scan box and removes the old limit label', async () => {
+      const limitReachedEligibility = {
+        allowed: false,
+        current_count: 1,
+        limit: 1,
+        welcome_credits: 0,
+        next_available_date: Date.now() + 86400000,
+        message: 'Limite atteinte',
+      };
+      mockScanEligibilityData.mockReturnValue({
+        body: defaultEligibility,
+        health: limitReachedEligibility,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      expect(screen.getByText('Dispo. 6j 23h')).toBeTruthy();
+      expect(screen.getByText('0/1')).toBeTruthy();
+      expect(screen.queryByText('scan_limits.week_1')).toBeNull();
+    });
+
+    it('shows the full free daily quota when a scan is available', async () => {
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        const countElements = screen.getAllByText('1/1');
+        expect(countElements.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('renders admin quotas numerically and never falls back to infinity', async () => {
+      mockUserProfile.mockReturnValue({ account_tier: 'admin' });
+      const adminEligibility = {
+        allowed: true,
+        current_count: 0,
+        limit: 20,
+        remaining: 20,
+        welcome_credits: 0,
+        message: 'Admin',
+      };
+      mockScanEligibilityData.mockReturnValue({
+        body: adminEligibility,
+        health: adminEligibility,
+        nutrition: adminEligibility,
+        super: adminEligibility,
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        const countElements = screen.getAllByText('20/20');
+        expect(countElements.length).toBeGreaterThan(0);
+      });
+
+      expect(screen.queryByText('\u221E')).toBeNull();
+      expect(screen.queryByText('...')).toBeNull();
+    });
+
+    it('resolves legacy French limit messages without exposing missing translation fallbacks', async () => {
+      paywallSession.markPaywallShown();
+
+      const legacyDailyLimit = {
+        allowed: false,
+        current_count: 1,
+        limit: 1,
+        welcome_credits: 0,
+        next_available_date: Date.now() + 23 * 60 * 60 * 1000 + 60 * 1000,
+        message: 'Limite quotidienne atteinte (1 scan). Prochain scan disponible dans',
+      };
+      mockScanEligibilityData.mockReturnValue({
+        body: legacyDailyLimit,
+        health: defaultEligibility,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Corps')).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText('Corps'));
+
+      await waitFor(() => {
+        expect(mockShowAlert).toHaveBeenCalled();
+      });
+
+      const alertBody = mockShowAlert.mock.calls.at(-1)?.[1];
+
+      expect(alertBody).toContain('Limite quotidienne atteinte (1 scan). Prochain scan disponible dans 23 heures');
+      expect(alertBody).toContain('Passez en Premium pour scanner sans limite');
+      expect(alertBody).not.toContain('[missing');
+    });
+
+    it('uses message_key interpolation for the paywall title and subtitle when a limit is reached', async () => {
+      const keyedDailyLimit = {
+        allowed: false,
+        current_count: 1,
+        limit: 1,
+        welcome_credits: 0,
+        next_available_date: Date.now() + 23 * 60 * 60 * 1000 + 60 * 1000,
+        message: 'Limite quotidienne atteinte (1 scan). Prochain scan disponible dans',
+        message_key: 'scan_limits.msg_daily_reached_1_with_time',
+      };
+      mockScanEligibilityData.mockReturnValue({
+        body: defaultEligibility,
+        health: keyedDailyLimit,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText(/Visage/));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('contextual-paywall')).toBeTruthy();
+      });
+
+      expect(screen.getByText('Votre prochain scan est disponible dans 23 heures')).toBeTruthy();
+      expect(screen.getByText('Passez en Premium pour scanner sans limite')).toBeTruthy();
+    });
   });
 
   describe('welcome credits', () => {
@@ -283,6 +529,35 @@ describe('ScannerScreen', () => {
       ]);
     });
 
+    it('passes mirror false to CameraView', async () => {
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('mock-camera-view')).toBeTruthy();
+      });
+
+      expect(mockCameraViewProps.current?.mirror).toBe(false);
+      expect(mockCameraViewProps.current?.facing).toBe('back');
+    });
+
+    it('renders a passive single guide overlay when a scan type is selected', async () => {
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText(/Visage/));
+
+      expect(mockCameraGuideProps.current).toEqual(
+        expect.objectContaining({
+          scanType: 'health',
+          visible: true,
+        })
+      );
+      expect(screen.getByTestId('scanner-focus-overlay').props.pointerEvents).toBe('none');
+    });
+
     it('shows alert when trying to capture without selecting scan type', async () => {
       render(<ScannerScreen />);
 
@@ -290,8 +565,15 @@ describe('ScannerScreen', () => {
         expect(screen.getByText(/Visage/)).toBeTruthy();
       });
 
-      // The capture button is rendered but we need to find it
-      // In a real test, we'd use testID
+      fireEvent.press(screen.getByTestId('scanner-capture-button'));
+
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Type de scan requis',
+        'Veuillez sélectionner un type de scan.',
+        undefined,
+        undefined,
+        expect.objectContaining({ variant: 'info' })
+      );
     });
 
     it('checks eligibility before proceeding with scan', async () => {
@@ -355,6 +637,115 @@ describe('ScannerScreen', () => {
         expect.any(Array)
       );
     });
+
+    it('captures immediately and opens the preview on the back camera', async () => {
+      const Haptics = require('expo-haptics');
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText(/Visage/));
+      await act(async () => {
+        fireEvent.press(screen.getByTestId('scanner-capture-button'));
+        await Promise.resolve();
+      });
+
+      expect(screen.queryByText('Analyse biometrique en cours...')).toBeNull();
+
+      await waitFor(() => {
+        expect(Haptics.impactAsync).toHaveBeenCalledTimes(1);
+        expect(mockTakePictureAsync).toHaveBeenCalled();
+      });
+
+      const captureOptions = mockTakePictureAsync.mock.calls[0][0];
+      expect(captureOptions).toEqual({ quality: 1 });
+      expect(captureOptions.skipProcessing).toBeUndefined();
+      expect(mockManipulateAsync).not.toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/scan-preview',
+        params: {
+          imageUri: 'file:///captured-photo.jpg',
+          scanType: 'health',
+        },
+      });
+    });
+
+    it('flips the captured image on the front camera before opening the preview', async () => {
+      mockTakePictureAsync.mockResolvedValue({ uri: 'file:///front-camera-photo.jpg' });
+      mockManipulateAsync.mockResolvedValue({ uri: 'file:///front-camera-photo-fixed.jpg', width: 100, height: 200 });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('scanner-flip-camera-button')).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByTestId('scanner-flip-camera-button'));
+
+      await waitFor(() => {
+        expect(mockCameraViewProps.current?.facing).toBe('front');
+      });
+
+      expect(mockCameraViewProps.current?.mirror).toBe(false);
+
+      fireEvent.press(screen.getByText(/Visage/));
+      await act(async () => {
+        fireEvent.press(screen.getByTestId('scanner-capture-button'));
+        await Promise.resolve();
+      });
+
+      await waitFor(() => {
+        expect(mockManipulateAsync).toHaveBeenCalledWith(
+          'file:///front-camera-photo.jpg',
+          [{ flip: 'horizontal' }],
+          {
+            compress: 1,
+            format: 'jpeg',
+          }
+        );
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: '/scan-preview',
+          params: {
+            imageUri: 'file:///front-camera-photo-fixed.jpg',
+            scanType: 'health',
+          },
+        });
+      });
+    });
+
+    it('stays on the scanner and shows the existing photo error when front camera normalization fails', async () => {
+      mockTakePictureAsync.mockResolvedValue({ uri: 'file:///front-camera-photo.jpg' });
+      mockManipulateAsync.mockRejectedValue(new Error('flip failed'));
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('scanner-flip-camera-button')).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByTestId('scanner-flip-camera-button'));
+      fireEvent.press(screen.getByText(/Visage/));
+      await act(async () => {
+        fireEvent.press(screen.getByTestId('scanner-capture-button'));
+        await Promise.resolve();
+      });
+
+      await waitFor(() => {
+        expect(mockManipulateAsync).toHaveBeenCalled();
+      });
+
+      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        undefined,
+        undefined,
+        expect.objectContaining({ variant: 'warning' })
+      );
+    });
   });
 
   describe('image picker', () => {
@@ -377,6 +768,78 @@ describe('ScannerScreen', () => {
       // Image picker should not be called without scan type selection
       expect(ImagePicker.launchImageLibraryAsync).not.toHaveBeenCalled();
     });
+
+    it('does not flip images coming from the gallery', async () => {
+      const ImagePicker = require('expo-image-picker');
+      ImagePicker.launchImageLibraryAsync.mockResolvedValue({
+        canceled: false,
+        assets: [{ uri: 'file:///gallery-photo.jpg' }],
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText(/Visage/));
+      fireEvent.press(screen.getByTestId('scanner-gallery-button'));
+
+      await waitFor(() => {
+        expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalled();
+      });
+
+      expect(mockManipulateAsync).not.toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/scan-preview',
+        params: {
+          imageUri: 'file:///gallery-photo.jpg',
+          scanType: 'health',
+        },
+      });
+    });
+
+    it('schedules the Super Scan reset once when gallery is tapped rapidly', async () => {
+      const ImagePicker = require('expo-image-picker');
+      let resolvePicker: ((value: { canceled: boolean; assets: Array<{ uri: string }> }) => void) | null = null;
+      ImagePicker.launchImageLibraryAsync.mockReturnValue(
+        new Promise((resolve) => {
+          resolvePicker = resolve;
+        })
+      );
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Super')).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText('Super'));
+
+      fireEvent.press(screen.getByTestId('scanner-gallery-button'));
+      fireEvent.press(screen.getByTestId('scanner-gallery-button'));
+
+      expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        resolvePicker?.({
+          canceled: false,
+          assets: [{ uri: 'file:///super-gallery-photo.jpg' }],
+        });
+        await Promise.resolve();
+      });
+
+      await waitFor(() => {
+        expect(mockScheduleSuperScanReset).toHaveBeenCalledTimes(1);
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: '/scan-preview',
+          params: {
+            imageUri: 'file:///super-gallery-photo.jpg',
+            scanType: 'super',
+          },
+        });
+      });
+    });
   });
 
   describe('scan eligibility refresh', () => {
@@ -388,15 +851,36 @@ describe('ScannerScreen', () => {
     });
 
     it('refreshes eligibility when screen gains focus', async () => {
-      // Default eligibility is already set in beforeEach
       render(<ScannerScreen />);
 
       await waitFor(() => {
         expect(screen.getByText(/Visage/)).toBeTruthy();
       });
 
-      // useFocusEffect should have been called (which triggers refetchEligibility)
       expect(mockUseFocusEffect).toHaveBeenCalled();
+      await act(async () => {
+        latestFocusEffectCallback?.();
+        await Promise.resolve();
+      });
+      expect(mockRefetchAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not refetch eligibility on focus before auth is ready', async () => {
+      mockIsAuthReady.mockReturnValue(false);
+      mockCanQueryEligibility.mockReturnValue(false);
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      await act(async () => {
+        latestFocusEffectCallback?.();
+        await Promise.resolve();
+      });
+
+      expect(mockRefetchAll).not.toHaveBeenCalled();
     });
 
     it('displays updated eligibility counts', async () => {
@@ -448,6 +932,28 @@ describe('ScannerScreen', () => {
       });
     });
 
+    it('shows explicit loading text instead of dots for unresolved scan quotas', async () => {
+      mockScanEligibilityData.mockReturnValue({
+        body: defaultEligibility,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+      mockScanEligibilityLoadingByType.mockReturnValue({
+        body: false,
+        health: true,
+        nutrition: false,
+        super: false,
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Chargement...')).toBeTruthy();
+      });
+
+      expect(screen.queryByText('...')).toBeNull();
+    });
+
     it('shows scan types even when eligibility data is unavailable', async () => {
       // Simulate partial data (some scan types missing)
       mockScanEligibilityData.mockReturnValue({
@@ -463,11 +969,162 @@ describe('ScannerScreen', () => {
         expect(screen.getByText(/Visage/)).toBeTruthy();
         expect(screen.getByText('Corps')).toBeTruthy();
         expect(screen.getByText('Nutrition')).toBeTruthy();
+        expect(screen.getByText('Données indispo.')).toBeTruthy();
       }, { timeout: 3000 });
 
       // Wait for all state updates to settle
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 100));
+      });
+    });
+
+    it('shows explicit unavailable text instead of dots when a scan quota fails', async () => {
+      mockScanEligibilityData.mockReturnValue({
+        body: defaultEligibility,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+      mockScanEligibilityErrors.mockReturnValue({
+        health: new ApiError('schema mismatch', 'DATABASE'),
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Erreur quota')).toBeTruthy();
+      });
+
+      expect(screen.queryByText('...')).toBeNull();
+    });
+
+    it('does not show the connectivity banner for auth hydration or auth errors', async () => {
+      jest.useFakeTimers();
+      mockScanEligibilityData.mockReturnValue({});
+      mockScanEligibilityErrors.mockReturnValue({
+        health: new ApiError('api_errors.unauthorized', 'AUTH'),
+      });
+      mockIsAuthReady.mockReturnValue(false);
+      mockCanQueryEligibility.mockReturnValue(false);
+      mockHasConnectivityError.mockReturnValue(false);
+
+      render(<ScannerScreen />);
+
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(
+        screen.queryByText('Connexion instable. Appuyez pour réessayer.'),
+      ).toBeNull();
+    });
+
+    it('does not show the connectivity banner for non-network eligibility failures', async () => {
+      jest.useFakeTimers();
+      mockScanEligibilityData.mockReturnValue({});
+      mockScanEligibilityErrors.mockReturnValue({
+        health: new ApiError('schema mismatch', 'DATABASE'),
+      });
+      mockHasConnectivityError.mockReturnValue(false);
+
+      render(<ScannerScreen />);
+
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(
+        screen.queryByText('Connexion instable. Appuyez pour réessayer.'),
+      ).toBeNull();
+    });
+
+    it('shows the connectivity banner only after the debounce for real network failures', async () => {
+      jest.useFakeTimers();
+      mockScanEligibilityData.mockReturnValue({});
+      mockScanEligibilityErrors.mockReturnValue({
+        health: new ApiError('Network request failed', 'NETWORK'),
+      });
+      mockHasConnectivityError.mockReturnValue(true);
+
+      render(<ScannerScreen />);
+
+      expect(
+        screen.queryByText('Connexion instable. Appuyez pour réessayer.'),
+      ).toBeNull();
+
+      act(() => {
+        jest.advanceTimersByTime(799);
+      });
+      expect(
+        screen.queryByText('Connexion instable. Appuyez pour réessayer.'),
+      ).toBeNull();
+
+      act(() => {
+        jest.advanceTimersByTime(1);
+      });
+
+      expect(
+        screen.getByText('Connexion instable. Appuyez pour réessayer.'),
+      ).toBeTruthy();
+    });
+
+    it('shows a precise alert when the tapped scan type has a non-network eligibility error', async () => {
+      mockScanEligibilityData.mockReturnValue({
+        body: defaultEligibility,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+      mockScanEligibilityErrors.mockReturnValue({
+        health: new ApiError('api_errors.unauthorized', 'AUTH'),
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Visage/)).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText(/Visage/));
+
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Vérification du scan impossible',
+        'Votre session a expiré. Reconnectez-vous puis réessayez.',
+        expect.any(Array),
+        undefined,
+        expect.objectContaining({ variant: 'warning' }),
+      );
+    });
+
+    it('keeps successful scan types usable when another eligibility query fails', async () => {
+      mockScanEligibilityData.mockReturnValue({
+        body: defaultEligibility,
+        nutrition: defaultEligibility,
+        super: defaultEligibility,
+      });
+      mockScanEligibilityErrors.mockReturnValue({
+        health: new ApiError('schema mismatch', 'DATABASE'),
+      });
+
+      render(<ScannerScreen />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Corps')).toBeTruthy();
+      });
+
+      fireEvent.press(screen.getByText('Corps'));
+
+      await act(async () => {
+        fireEvent.press(screen.getByTestId('scanner-capture-button'));
+        await Promise.resolve();
+      });
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: '/scan-preview',
+          params: {
+            imageUri: 'file:///captured-photo.jpg',
+            scanType: 'body',
+          },
+        });
       });
     });
   });

@@ -1,54 +1,116 @@
 import { useQuery, useQueries } from '@tanstack/react-query';
-import { ApiService } from '@/services/api';
+import { ApiError, ApiService, isConnectivityApiError } from '@/services/api';
 import { ScanType, ScanEligibilityResponse } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
+import { SCAN_ELIGIBILITY_QUERY_KEY } from '@/utils/scanEligibilityQuery';
 
-export const SCAN_ELIGIBILITY_QUERY_KEY = (scanType: ScanType) => 
-  ['scanEligibility', scanType] as const;
+export { SCAN_ELIGIBILITY_QUERY_KEY };
+
+const SCAN_TYPES: ScanType[] = ['body', 'health', 'nutrition', 'super'];
+
+export type ScanEligibilityDataMap = Partial<
+  Record<ScanType, ScanEligibilityResponse>
+>;
+export type ScanEligibilityErrorMap = Partial<Record<ScanType, ApiError>>;
+export type ScanEligibilityLoadingMap = Record<ScanType, boolean>;
+
+function buildEmptyLoadingMap(value: boolean): ScanEligibilityLoadingMap {
+  return {
+    body: value,
+    health: value,
+    nutrition: value,
+    super: value,
+  };
+}
 
 export const useScanEligibility = (scanType: ScanType) => {
-  const { session } = useAuth();
-  
-  return useQuery<ScanEligibilityResponse, Error>({
-    queryKey: SCAN_ELIGIBILITY_QUERY_KEY(scanType),
+  const { session, loading } = useAuth();
+  const userId = session?.user?.id ?? null;
+  const canQuery = !loading && !!session;
+
+  return useQuery<ScanEligibilityResponse, ApiError>({
+    queryKey: SCAN_ELIGIBILITY_QUERY_KEY(userId, scanType),
     queryFn: () => ApiService.checkScanEligibilityOnly(scanType),
     staleTime: 1000 * 60 * 2, // 2 minutes - les limites de scan changent plus souvent
-    enabled: !!session,
+    enabled: canQuery,
   });
 };
 
 // Hook pour récupérer l'éligibilité de tous les types de scan en parallèle
 export const useAllScanEligibility = () => {
-  const { session } = useAuth();
-  const scanTypes: ScanType[] = ['body', 'health', 'nutrition', 'super'];
+  const { session, loading } = useAuth();
+  const userId = session?.user?.id ?? null;
+  const canQuery = !loading && !!session;
 
   const queries = useQueries({
-    queries: scanTypes.map((scanType) => ({
-      queryKey: SCAN_ELIGIBILITY_QUERY_KEY(scanType),
+    queries: SCAN_TYPES.map((scanType) => ({
+      queryKey: SCAN_ELIGIBILITY_QUERY_KEY(userId, scanType),
       queryFn: () => ApiService.checkScanEligibilityOnly(scanType),
       staleTime: 1000 * 60 * 2,
-      enabled: !!session,
+      enabled: canQuery,
+      retry: false,
     })),
   });
 
-  const isLoading = queries.some((q) => q.isLoading);
-  const isError = queries.some((q) => q.isError);
+  const data = SCAN_TYPES.reduce((acc, scanType, index) => {
+    const queryData = queries[index].data;
+    if (queryData) {
+      acc[scanType] = queryData as ScanEligibilityResponse;
+    }
+    return acc;
+  }, {} as ScanEligibilityDataMap);
 
-  const data = isLoading || isError
-    ? null
-    : scanTypes.reduce((acc, scanType, index) => {
-        acc[scanType] = queries[index].data as ScanEligibilityResponse;
+  const errors = SCAN_TYPES.reduce((acc, scanType, index) => {
+    const queryError = queries[index].error;
+    if (queryError instanceof ApiError) {
+      acc[scanType] = queryError;
+    } else if (queryError instanceof Error) {
+      acc[scanType] = new ApiError(
+        queryError.message,
+        'UNKNOWN',
+        queryError,
+        {
+          scanType,
+          stage: 'eligibility',
+        },
+      );
+    }
+    return acc;
+  }, {} as ScanEligibilityErrorMap);
+
+  const loadingByScanType = loading
+    ? buildEmptyLoadingMap(true)
+    : SCAN_TYPES.reduce((acc, scanType, index) => {
+        acc[scanType] = canQuery && Boolean(queries[index].isLoading);
         return acc;
-      }, {} as Record<ScanType, ScanEligibilityResponse>);
+      }, buildEmptyLoadingMap(false));
 
-  const refetchAll = () => {
-    queries.forEach((q) => q.refetch());
+  const errorList = Object.values(errors);
+  const hasConnectivityError = errorList.some((error) =>
+    isConnectivityApiError(error),
+  );
+  const hasBlockingEligibilityError = errorList.some(
+    (error) => !isConnectivityApiError(error),
+  );
+
+  const refetchAll = async () => {
+    if (!canQuery) {
+      return [];
+    }
+
+    return Promise.all(queries.map((query) => query.refetch()));
   };
 
   return {
     data,
-    isLoading,
-    isError,
+    errors,
+    loadingByScanType,
+    isAuthReady: !loading,
+    canQuery,
+    isLoading: loading || (canQuery && queries.some((query) => query.isLoading)),
+    isError: errorList.length > 0,
+    hasConnectivityError,
+    hasBlockingEligibilityError,
     refetchAll,
   };
 };

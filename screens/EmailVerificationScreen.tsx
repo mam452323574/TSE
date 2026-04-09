@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, AppState, AppStateStatus } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, AppState, AppStateStatus } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Mail, RefreshCw, ArrowLeft, Check, Shield } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,7 +8,9 @@ import { Button } from '@/components/Button';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useStartupDiagnostics } from '@/contexts/StartupDiagnosticsContext';
 import { getDeviceFingerprint, getDeviceName } from '@/services/deviceFingerprint';
+import { AppScreen } from '@/components/AppScreen';
 
 const CODE_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
@@ -18,7 +21,9 @@ export default function EmailVerificationScreen() {
   const { sendVerificationEmail, verifyEmailCode, addTrustedDevice, refreshUserProfile, user, signOut } = useAuth();
   const { colors } = useTheme();
   const { t } = useLanguage();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const { markStartup, settleStartup } = useStartupDiagnostics();
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
 
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
@@ -40,6 +45,13 @@ export default function EmailVerificationScreen() {
   const email = params.email || user?.email || '';
   const userId = params.userId || user?.id || '';
   const type = (params.type as 'signup' | 'login') || 'signup';
+
+  useEffect(() => {
+    markStartup('email-verification-rendered', {
+      type,
+    });
+    settleStartup('email-verification-rendered');
+  }, [markStartup, settleStartup, type]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -218,7 +230,7 @@ export default function EmailVerificationScreen() {
 
   if (success) {
     return (
-      <View style={styles.container}>
+      <AppScreen style={styles.container}>
         <View style={styles.successContainer}>
           <View style={styles.successIcon}>
             <Check color={colors.white} size={48} />
@@ -229,20 +241,16 @@ export default function EmailVerificationScreen() {
           </Text>
           <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: SPACING.lg }} />
         </View>
-      </View>
+      </AppScreen>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <AppScreen scroll keyboard style={styles.container} topInset={false}>
+      <TouchableOpacity style={styles.backButton} onPress={handleCancel}>
+        <ArrowLeft color={colors.primaryText} size={24} />
+      </TouchableOpacity>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.backButton} onPress={handleCancel}>
-          <ArrowLeft color={colors.primaryText} size={24} />
-        </TouchableOpacity>
-
         <View style={styles.header}>
           <View style={styles.iconContainer}>
             <Mail color={colors.primary} size={32} />
@@ -325,11 +333,11 @@ export default function EmailVerificationScreen() {
           )}
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </AppScreen>
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, insets: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -337,11 +345,11 @@ const createStyles = (colors: any) => StyleSheet.create({
   content: {
     flex: 1,
     padding: SPACING.lg,
-    paddingTop: SPACING.xl * 2,
+    paddingTop: insets.top + SPACING.xl * 2,
   },
   backButton: {
     position: 'absolute',
-    top: SPACING.xl,
+    top: insets.top + SPACING.sm,
     left: SPACING.lg,
     zIndex: 1,
     padding: SPACING.sm,

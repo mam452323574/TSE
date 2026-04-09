@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Heart, Check, X, AlertCircle, Sun, Moon } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,16 +8,27 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/Button';
 import { SIZES, SPACING, BORDER_RADIUS, SHADOWS } from '@/constants/theme';
-import { supabase } from '@/services/supabase';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { useStartupDiagnostics } from '@/contexts/StartupDiagnosticsContext';
+import { AppScreen } from '@/components/AppScreen';
+import { markPostSignupOnboardingPending } from '@/utils/postSignupOnboarding';
+import { normalizeUsernameInput, validateCanonicalUsername } from '@/utils/username';
 
 export default function UsernameSetupScreen() {
   const router = useRouter();
-  const { user, userProfile, isEmailVerified, checkUsernameAvailability, updateUserProfile, completeSignUp } = useAuth();
+  const {
+    user,
+    userProfile,
+    isEmailVerified,
+    checkUsernameAvailability,
+    setUsername: persistUsername,
+    completeSignUp,
+  } = useAuth();
   const { colors, setTheme, isDark } = useTheme();
   const { t } = useLanguage();
   const { showAlert, alertElement } = useCustomAlert();
+  const { markStartup, settleStartup } = useStartupDiagnostics();
 
   const [step, setStep] = useState<'username' | 'theme'>('username');
   const [username, setUsername] = useState('');
@@ -25,9 +37,28 @@ export default function UsernameSetupScreen() {
   const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'invalid'>('idle');
   const checkTimeoutRef = useRef<any>(null);
 
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
 
   const isNewSignup = !userProfile?.username;
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    markStartup('username-setup-rendered', {
+      hasUsername: !!userProfile?.username,
+      isNewSignup,
+    });
+    settleStartup('username-setup-rendered');
+  }, [
+    isNewSignup,
+    markStartup,
+    settleStartup,
+    user,
+    userProfile?.username,
+  ]);
 
   useEffect(() => {
     if (!user) {
@@ -54,12 +85,9 @@ export default function UsernameSetupScreen() {
       return;
     }
 
-    if (username.length < 3 || username.length > 20) {
-      setUsernameStatus('invalid');
-      return;
-    }
+    const { valid } = validateCanonicalUsername(username);
 
-    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+    if (!valid) {
       setUsernameStatus('invalid');
       return;
     }
@@ -82,9 +110,8 @@ export default function UsernameSetupScreen() {
     };
   }, [username, checkUsernameAvailability]);
 
-  const validateUsername = (text: string) => {
-    const cleaned = text.toLowerCase().replace(/[^a-z0-9_-]/g, '');
-    setUsername(cleaned);
+  const handleUsernameChange = (text: string) => {
+    setUsername(normalizeUsernameInput(text));
   };
 
   const handleContinue = async () => {
@@ -124,43 +151,21 @@ export default function UsernameSetupScreen() {
       const isOAuthUser = user.app_metadata?.provider && user.app_metadata.provider !== 'email';
 
       if (isOAuthUser) {
-        await updateUserProfile({
-          username,
-        });
-
-        const provider = user.app_metadata.provider || 'google';
-
-        const { error: oauthError } = await supabase.from('oauth_connections').insert({
-          user_id: user.id,
-          provider,
-          provider_user_id: user.id,
-          provider_email: user.email,
-          metadata: user.user_metadata || {},
-        });
-
-        if (oauthError && !oauthError.message?.includes('duplicate')) {
-          console.error('[UsernameSetup] OAuth connection error:', oauthError);
-        }
-
-        const today = new Date().toISOString().split('T')[0];
-        const { error: healthError } = await supabase.from('health_scores').insert({
-          user_id: user.id,
-          score: 50,
-          calories_current: 0,
-          calories_goal: 2000,
-          bodyfat: 20,
-          muscle: 40,
-          date: today,
-        });
-
-        if (healthError && !healthError.message?.includes('duplicate')) {
-          console.error('[UsernameSetup] Health score error:', healthError);
-        }
+        await persistUsername(username);
       } else {
         await completeSignUp(user.id, username, undefined);
       }
 
-      router.replace('/(tabs)');
+      try {
+        await markPostSignupOnboardingPending(user.id);
+      } catch (onboardingError) {
+        console.error(
+          '[UsernameSetup] Failed to persist post-signup onboarding flag:',
+          onboardingError
+        );
+      }
+
+      router.replace('/post-signup-onboarding' as any);
     } catch (err) {
       console.error('[UsernameSetup] Critical error during setup:', err);
 
@@ -233,10 +238,7 @@ export default function UsernameSetupScreen() {
   if (!user) return null;
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <AppScreen scroll keyboard style={styles.container} topInset={false}>
       {alertElement}
       <View style={styles.languageContainer}>
         <LanguageSelector />
@@ -259,7 +261,7 @@ export default function UsernameSetupScreen() {
                   style={[styles.input, styles.inputWithStatus]}
                   placeholder={t('onboarding.username_placeholder')}
                   value={username}
-                  onChangeText={validateUsername}
+                  onChangeText={handleUsernameChange}
                   autoCapitalize="none"
                   autoComplete="off"
                   placeholderTextColor={colors.gray}
@@ -320,18 +322,18 @@ export default function UsernameSetupScreen() {
           />
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </AppScreen>
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, insets: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
   },
   languageContainer: {
     position: 'absolute',
-    top: SPACING.xl,
+    top: insets.top + SPACING.sm,
     right: SPACING.lg,
     zIndex: 10,
   },
@@ -339,6 +341,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: SPACING.lg,
+    paddingTop: insets.top + SPACING.xl,
   },
   header: {
     alignItems: 'center',

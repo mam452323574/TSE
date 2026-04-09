@@ -23,8 +23,11 @@ export function ScanLimitIndicator({ eligibility, isPremium, onLimitReachedPress
   }
 
   const currentCount = eligibility.current_count || 0;  // Scans utilisés
-  const limit = eligibility.limit || 1;                 // Limite totale
-  const remaining = Math.max(0, limit - currentCount);  // Scans disponibles
+  const limit = Math.max(eligibility.limit || 1, 1);    // Limite totale
+  const remaining =
+    typeof eligibility.remaining === 'number'
+      ? Math.max(0, eligibility.remaining)
+      : Math.max(0, limit - currentCount);              // Scans disponibles
   const progress = (remaining / limit) * 100;           // Barre de progression basée sur les scans restants (décroissante)
   const isLimitReached = !eligibility.allowed;
 
@@ -54,13 +57,16 @@ export function ScanLimitIndicator({ eligibility, isPremium, onLimitReachedPress
       </View>
 
       {isLimitReached && onLimitReachedPress ? (
-        <TouchableOpacity onPress={onLimitReachedPress} activeOpacity={0.7}>
-          <Text style={[styles.statusText, { color: colors.primary, textDecorationLine: 'underline' }]}>
+        <TouchableOpacity onPress={onLimitReachedPress} activeOpacity={0.7} style={styles.statusButton}>
+          <Text
+            style={[styles.statusText, { color: colors.primary, textDecorationLine: 'underline' }]}
+            numberOfLines={1}
+          >
             {t('scan_limit.upgrade')}
           </Text>
         </TouchableOpacity>
       ) : (
-        <Text style={[styles.statusText, isLimitReached && styles.statusTextDisabled]}>
+        <Text style={[styles.statusText, isLimitReached && styles.statusTextDisabled]} numberOfLines={1}>
           {isLimitReached ? t('scan_limit.limit_reached') : t('scan_limit.available')}
         </Text>
       )}
@@ -81,11 +87,14 @@ export function ScanLimitIndicator({ eligibility, isPremium, onLimitReachedPress
 
 const createStyles = (colors: any) => StyleSheet.create({
   container: {
-    alignItems: 'center',
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'stretch',
   },
   countContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
+    justifyContent: 'center',
     marginBottom: SPACING.sm,
   },
   countText: {
@@ -108,6 +117,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   progressContainer: {
     width: '100%',
+    alignSelf: 'stretch',
     marginBottom: SPACING.sm,
   },
   progressBar: {
@@ -128,13 +138,21 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: SIZES.text12,
     color: colors.primary,
     fontWeight: FONT_WEIGHTS.medium,
+    textAlign: 'center',
+    flexShrink: 1,
   },
   statusTextDisabled: {
     color: colors.gray,
+  },
+  statusButton: {
+    alignSelf: 'center',
+    maxWidth: '100%',
   },
   timerContainer: {
     marginTop: 2,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    minWidth: 0,
   },
 });

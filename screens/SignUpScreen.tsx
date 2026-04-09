@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Heart, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
@@ -9,6 +9,7 @@ import { Button } from '@/components/Button';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { AppScreen } from '@/components/AppScreen';
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -85,123 +86,118 @@ export default function SignUpScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <AppScreen scroll keyboard style={styles.container} topInset={false}>
       <View style={styles.languageContainer}>
         <LanguageSelector />
       </View>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Heart color={colors.primary} size={48} fill={colors.primary} />
-            <Text style={styles.title}>{t('auth.signup_title')}</Text>
-            <Text style={styles.subtitle}>{t('auth.signup_subtitle')}</Text>
-          </View>
-
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('auth.email_label')}</Text>
-              <View style={styles.inputWithIcon}>
-                <Mail color={colors.gray} size={20} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.inputWithPadding}
-                  placeholder={t('auth.email_placeholder')}
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  autoComplete="email"
-                  placeholderTextColor={colors.gray}
-                />
-              </View>
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('common.password')}</Text>
-              <View style={styles.inputWithIcon}>
-                <Lock color={colors.gray} size={20} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.inputWithPadding}
-                  placeholder={t('auth.password_min_placeholder')}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  autoComplete="password-new"
-                  placeholderTextColor={colors.gray}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
-                  {showPassword ? (
-                    <EyeOff color={colors.gray} size={20} />
-                  ) : (
-                    <Eye color={colors.gray} size={20} />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('auth.password_confirm')}</Text>
-              <View style={styles.inputWithIcon}>
-                <Lock color={colors.gray} size={20} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.inputWithPadding}
-                  placeholder={t('auth.password_confirm_placeholder')}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry={!showConfirmPassword}
-                  autoComplete="password-new"
-                  placeholderTextColor={colors.gray}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                  style={styles.eyeIcon}
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff color={colors.gray} size={20} />
-                  ) : (
-                    <Eye color={colors.gray} size={20} />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {error && (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{error}</Text>
-              </View>
-            )}
-
-            <View style={styles.infoContainer}>
-              <Text style={styles.infoText}>
-                {t('auth.verification_note')}
-              </Text>
-            </View>
-
-            <Button
-              title={t('auth.signup_btn')}
-              onPress={handleSignUp}
-              loading={loading}
-              disabled={loading || !email || !password || !confirmPassword}
-            />
-
-            <TouchableOpacity
-              style={styles.loginContainer}
-              onPress={() => router.back()}
-            >
-              <Text style={styles.loginText}>
-                {t('auth.has_account')}{' '}
-                <Text style={styles.loginLink}>{t('auth.login_link')}</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Heart color={colors.primary} size={48} fill={colors.primary} />
+          <Text style={styles.title}>{t('auth.signup_title')}</Text>
+          <Text style={styles.subtitle}>{t('auth.signup_subtitle')}</Text>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+        <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t('auth.email_label')}</Text>
+            <View style={styles.inputWithIcon}>
+              <Mail color={colors.gray} size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.inputWithPadding}
+                placeholder={t('auth.email_placeholder')}
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                autoComplete="email"
+                placeholderTextColor={colors.gray}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t('common.password')}</Text>
+            <View style={styles.inputWithIcon}>
+              <Lock color={colors.gray} size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.inputWithPadding}
+                placeholder={t('auth.password_min_placeholder')}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoComplete="password-new"
+                placeholderTextColor={colors.gray}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIcon}
+              >
+                {showPassword ? (
+                  <EyeOff color={colors.gray} size={20} />
+                ) : (
+                  <Eye color={colors.gray} size={20} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t('auth.password_confirm')}</Text>
+            <View style={styles.inputWithIcon}>
+              <Lock color={colors.gray} size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.inputWithPadding}
+                placeholder={t('auth.password_confirm_placeholder')}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                autoComplete="password-new"
+                placeholderTextColor={colors.gray}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={styles.eyeIcon}
+              >
+                {showConfirmPassword ? (
+                  <EyeOff color={colors.gray} size={20} />
+                ) : (
+                  <Eye color={colors.gray} size={20} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {error && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoText}>
+              {t('auth.verification_note')}
+            </Text>
+          </View>
+
+          <Button
+            title={t('auth.signup_btn')}
+            onPress={handleSignUp}
+            loading={loading}
+            disabled={loading || !email || !password || !confirmPassword}
+          />
+
+          <TouchableOpacity
+            style={styles.loginContainer}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.loginText}>
+              {t('auth.has_account')}{' '}
+              <Text style={styles.loginLink}>{t('auth.login_link')}</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </AppScreen>
   );
 }
 
@@ -220,11 +216,11 @@ const createStyles = (colors: any, insets: any) => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: SPACING.lg,
-    paddingTop: SPACING.xl,
+    paddingTop: insets.top + SPACING.xl,
   },
   languageContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? insets.top + SPACING.sm : SPACING.xl,
+    top: insets.top + SPACING.sm,
     right: SPACING.lg,
     zIndex: 10,
   },

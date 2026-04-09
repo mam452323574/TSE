@@ -42,7 +42,7 @@ async function createAdminAccount() {
     await supabaseAdmin.from('user_profiles').upsert({
         id: userId,
         email: email,
-        username: 'Pote',
+        username: 'Anna',
         account_tier: 'premium',
         email_verified: true,
         has_seen_tutorial: true,

@@ -45,6 +45,9 @@ export function Button({ title, onPress, variant = 'primary', loading = false, d
           <ActivityIndicator color={variant === 'outline' ? colors.primary : colors.white} />
         ) : (
           <Text
+            adjustsFontSizeToFit
+            minimumFontScale={0.86}
+            numberOfLines={2}
             style={[
               styles.text,
               variant === 'primary' && styles.primaryText,
@@ -86,6 +89,8 @@ const createStyles = (colors: any) => StyleSheet.create({
   text: {
     fontSize: SIZES.md,
     fontWeight: '600',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   primaryText: {
     color: colors.white,

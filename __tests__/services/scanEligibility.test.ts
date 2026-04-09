@@ -51,7 +51,7 @@ describe('ApiService.checkScanEligibility', () => {
             expect.stringContaining('/check-and-record-scan'),
             expect.objectContaining({
                 method: 'POST',
-                body: JSON.stringify({ scanType: 'health' }),
+                body: JSON.stringify({ scan_type: 'health' }),
             })
         );
     });
@@ -76,6 +76,28 @@ describe('ApiService.checkScanEligibility', () => {
         expect(result.allowed).toBe(false);
         expect(result.remaining).toBe(0);
         expect(result.next_available_date).toBeDefined();
+    });
+
+    it('should preserve message_key when the backend returns a dedicated i18n key', async () => {
+        const mockResponse = {
+            success: true,
+            allowed: false,
+            message: 'Limite quotidienne atteinte (1 scan). Prochain scan disponible dans',
+            message_key: 'scan_limits.msg_daily_reached_1_with_time',
+            current_count: 1,
+            limit: 1,
+            next_available_date: Date.now() + 86400000,
+        };
+
+        (global.fetch as jest.Mock).mockResolvedValue({
+            ok: true,
+            json: async () => mockResponse,
+        });
+
+        const result = await ApiService.checkScanEligibility('health');
+
+        expect(result.message_key).toBe('scan_limits.msg_daily_reached_1_with_time');
+        expect(result.message).toBe('Limite quotidienne atteinte (1 scan). Prochain scan disponible dans');
     });
 
     it('should handle welcome credits correctly', async () => {
@@ -124,45 +146,42 @@ describe('ApiService.checkScanEligibility', () => {
     it('should handle API errors gracefully', async () => {
         (global.fetch as jest.Mock).mockResolvedValue({
             ok: false,
-            json: async () => ({ error: 'Server error' }),
+            status: 500,
+            json: async () => ({
+                error: 'Server error',
+                code: 'scan_profile_lookup_failed',
+                request_id: 'req-500',
+            }),
         });
 
         await expect(ApiService.checkScanEligibility('health'))
-            .rejects.toThrow('Server error');
+            .rejects.toMatchObject({
+                message: 'Server error',
+                type: 'DATABASE',
+                code: 'scan_profile_lookup_failed',
+                status: 500,
+                requestId: 'req-500',
+            });
     });
 
-    it('should fallback locally for super scan if backend rejects invalid type (backward compatibility)', async () => {
+    it('should surface backend validation errors without local fallback behavior', async () => {
         (global.fetch as jest.Mock).mockResolvedValue({
             ok: false,
-            json: async () => ({ error: 'Invalid scan type' }),
+            status: 422,
+            json: async () => ({
+                error: 'Validation failed',
+                code: 'invalid_scan_request',
+                request_id: 'req-422',
+            }),
         });
 
-        // Mock insert for fallback
-        const mockInsert = jest.fn().mockReturnThis();
-        const mockSelect = jest.fn().mockReturnThis();
-        const mockSingle = jest.fn().mockResolvedValue({ data: { id: 'scan-123' }, error: null });
-
-        (supabase.from as jest.Mock).mockReturnValue({
-            insert: mockInsert,
-            select: mockSelect,
-            single: mockSingle,
-        } as any);
-
-        // Override local implementation for this test if needed, but ApiService logic is:
-        // if (scanType === 'super' && error.error === 'Invalid scan type') -> fallback
-
-        // Note: The mocked supabase.from needs to support the chain .insert().select().single()
-        (supabase.from as jest.Mock).mockImplementation(() => ({
-            insert: () => ({
-                select: () => ({
-                    single: () => Promise.resolve({ data: { id: 'fallback-id' }, error: null })
-                })
-            })
-        }));
-
-        const result = await ApiService.checkScanEligibility('super');
-
-        expect(result.allowed).toBe(true);
-        expect(result.message).toContain('fallback');
+        await expect(ApiService.checkScanEligibility('health'))
+            .rejects.toMatchObject({
+                message: 'Validation failed',
+                type: 'VALIDATION',
+                code: 'invalid_scan_request',
+                status: 422,
+                requestId: 'req-422',
+            });
     });
 });

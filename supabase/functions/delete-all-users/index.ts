@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2.58.0";
-import { getCorsHeaders, handleCorsPreflightRequest } from '../_shared/cors.ts';
+import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 
 interface DeleteResponse {
   success: boolean;
@@ -23,30 +23,16 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return handleCorsPreflightRequest(req);
   }
 
-  const corsHeaders = getCorsHeaders(req);
-
   try {
 
     if (req.method !== "POST") {
-      return new Response(
-        JSON.stringify({ success: false, error: "Method not allowed" }),
-        {
-          status: 405,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      return jsonResponse(req, { success: false, error: "Method not allowed" }, { status: 405 });
     }
 
     const adminSecret = Deno.env.get("ADMIN_SECRET");
     if (!adminSecret) {
       console.error("ADMIN_SECRET environment variable is not set");
-      return new Response(
-        JSON.stringify({ success: false, error: "Server configuration error" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      return jsonResponse(req, { success: false, error: "Server configuration error" }, { status: 500 });
     }
 
     const body = await req.json();
@@ -54,13 +40,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     if (!adminKey || adminKey !== adminSecret) {
       console.warn("Unauthorized delete attempt - invalid admin key");
-      return new Response(
-        JSON.stringify({ success: false, error: "Unauthorized: Invalid admin credentials" }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      return jsonResponse(req, { success: false, error: "Unauthorized: Invalid admin credentials" }, { status: 401 });
     }
 
     console.log("Admin authentication successful, proceeding with deletion");
@@ -174,10 +154,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       deletedCounts,
     };
 
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return jsonResponse(req, response, { status: 200 });
   } catch (error) {
     console.error("Error deleting users:", error);
 
@@ -187,9 +164,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
       error: error instanceof Error ? error.message : String(error),
     };
 
-    return new Response(JSON.stringify(errorResponse), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return jsonResponse(req, errorResponse, { status: 500 });
   }
 });

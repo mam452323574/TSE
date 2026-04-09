@@ -1,11 +1,16 @@
-import { useState, useRef, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, StatusBar } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { CameraView, CameraType, useCameraPermissions, type CameraPictureOptions } from 'expo-camera';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Camera, RefreshCcw, Image as ImageIcon, Crown, Gift, WifiOff, RefreshCw, Sparkles } from 'lucide-react-native';
+import { Camera, Image as ImageIcon, Crown, Gift, WifiOff, RefreshCw, Sparkles } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { Button } from '@/components/Button';
@@ -13,15 +18,38 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { CameraGuide } from '@/components/CameraGuide';
 import { NextScanTimer } from '@/components/NextScanTimer';
 import { useAllScanEligibility } from '@/hooks/queries';
-import { ScanType } from '@/types';
-import { SCAN_TYPE_LABELS, FREE_SCAN_LIMITS, PREMIUM_SCAN_LIMITS } from '@/constants/scan';
-import { COLORS, SIZES, SPACING, FONT_WEIGHTS } from '@/constants/theme';
+import { ScanEligibilityResponse, ScanType } from '@/types';
+import { SCAN_TYPE_LABELS } from '@/constants/scan';
+import { SIZES, SPACING, FONT_WEIGHTS } from '@/constants/theme';
 import { ContextualPaywall } from '@/components/ContextualPaywall';
 import { paywallSession } from '@/utils/paywallSession';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CameraFlipIcon } from '@/components/CameraFlipIcon';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { PUBLIC_PRIVACY_POLICY_URL } from '@/constants/privacyPolicy';
+import {
+  buildScanLimitMessage,
+  buildScanLimitPaywallTitle,
+  formatScanLimitTime,
+  getScanLimitUpgradeSubtitle,
+} from '@/utils/scanLimitI18n';
+import { useScanValidationFeedback } from '@/hooks/useScanValidationFeedback';
+import {
+  getScanQuotaStatusLabelKey,
+  hasScanQuotaPayload,
+  resolveScanQuotaState,
+} from '@/utils/scanQuotaState';
+import { hasPremiumAccess } from '@/utils/subscription';
+import { ApiError, isConnectivityApiError } from '@/services/api';
+
+const getCapturePictureOptions = (): CameraPictureOptions => {
+  // Keep Expo processing enabled so the saved photo stays deterministic.
+  // Reintroducing skipProcessing here previously let a mirror regression slip back in.
+  return {
+    quality: 1,
+  };
+};
 
 export default function ScannerScreen() {
   const router = useRouter();
@@ -30,14 +58,19 @@ export default function ScannerScreen() {
   const { colors } = useTheme();
   const { t } = useLanguage();
   const { showAlert, alertElement } = useCustomAlert();
+  const { playValidationFeedback } = useScanValidationFeedback();
+  const insets = useSafeAreaInsets();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
 
   // Use shared React Query hook for scan eligibility (single source of truth)
   const {
     data: scanEligibility,
-    isLoading: eligibilityLoading,
-    isError: hasQueryError,
+    errors: scanEligibilityErrors,
+    loadingByScanType,
+    isAuthReady,
+    canQuery: canQueryEligibility,
+    hasConnectivityError,
     refetchAll: refetchEligibility,
   } = useAllScanEligibility();
 
@@ -46,8 +79,13 @@ export default function ScannerScreen() {
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [checkingEligibility, setCheckingEligibility] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [showConnectivityBanner, setShowConnectivityBanner] = useState(false);
   const [clearedTimers, setClearedTimers] = useState<Record<string, boolean>>({});
+  const [captureSequenceActive, setCaptureSequenceActive] = useState(false);
   const cameraRef = useRef<CameraView>(null);
+  const captureSequenceActiveRef = useRef(false);
+  const gallerySelectionActiveRef = useRef(false);
+  const connectivityBannerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [paywallConfig, setPaywallConfig] = useState<{
     visible: boolean;
@@ -56,27 +94,59 @@ export default function ScannerScreen() {
     description?: string;
     bulletPoints?: string[];
   }>({ visible: false, title: '' });
+  const accountTier = userProfile?.account_tier ?? null;
+  const isAdmin = accountTier === 'admin';
+  const isPremium = hasPremiumAccess(accountTier);
 
-  // Derive loading and network error states from React Query
-  const loading = eligibilityLoading;
-  const networkError = hasQueryError;
+  const interactionsLocked = checkingEligibility || captureSequenceActive;
+  const shouldShowConnectivityBanner = showConnectivityBanner || isRetrying;
+
+  useEffect(() => {
+    if (hasConnectivityError) {
+      if (!connectivityBannerTimeoutRef.current) {
+        connectivityBannerTimeoutRef.current = setTimeout(() => {
+          setShowConnectivityBanner(true);
+          connectivityBannerTimeoutRef.current = null;
+        }, 800);
+      }
+      return;
+    }
+
+    if (connectivityBannerTimeoutRef.current) {
+      clearTimeout(connectivityBannerTimeoutRef.current);
+      connectivityBannerTimeoutRef.current = null;
+    }
+    setShowConnectivityBanner(false);
+  }, [hasConnectivityError]);
+
+  useEffect(() => {
+    return () => {
+      if (connectivityBannerTimeoutRef.current) {
+        clearTimeout(connectivityBannerTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Refetch eligibility when screen gains focus (syncs with HomeScreen via shared cache)
   useFocusEffect(
     useCallback(() => {
-      if (!eligibilityLoading) {
-        refetchEligibility();
+      if (isAuthReady && canQueryEligibility) {
+        void refetchEligibility();
       }
-    }, [eligibilityLoading, refetchEligibility])
+    }, [canQueryEligibility, isAuthReady, refetchEligibility])
   );
 
   // Manual retry handler for network error banner
   const handleManualRetry = useCallback(() => {
+    if (!canQueryEligibility) {
+      return;
+    }
+
     setIsRetrying(true);
-    refetchEligibility();
-    // Reset retrying state after a short delay
-    setTimeout(() => setIsRetrying(false), 1000);
-  }, [refetchEligibility]);
+    void refetchEligibility().finally(() => {
+      setIsRetrying(false);
+    });
+  }, [canQueryEligibility, refetchEligibility]);
 
   // Handle timer completion dynamically
   const handleTimerComplete = useCallback((scanType: string) => {
@@ -84,13 +154,130 @@ export default function ScannerScreen() {
       if (prev[scanType]) return prev;
       return { ...prev, [scanType]: true };
     });
-    refetchEligibility();
-  }, [refetchEligibility]);
+    if (canQueryEligibility) {
+      void refetchEligibility();
+    }
+  }, [canQueryEligibility, refetchEligibility]);
+
+  const getEligibilityErrorAlertContent = useCallback((error: ApiError) => {
+    switch (error.type) {
+      case 'AUTH':
+        return {
+          title: t('scanner.eligibility_error_title'),
+          message: t('scanner.eligibility_auth_msg'),
+        };
+      case 'VALIDATION':
+        return {
+          title: t('scanner.eligibility_error_title'),
+          message:
+            error.message.startsWith('api_errors.')
+              ? t(error.message)
+              : error.message || t('scanner.eligibility_unavailable_msg'),
+        };
+      case 'DATABASE':
+      case 'EDGE_FUNCTION':
+      case 'UNKNOWN':
+      default:
+        return {
+          title: t('scanner.eligibility_error_title'),
+          message: t('scanner.eligibility_unavailable_msg'),
+        };
+    }
+  }, [t]);
+
+  const showEligibilityErrorAlert = useCallback((error: ApiError) => {
+    const { title, message } = getEligibilityErrorAlertContent(error);
+    showAlert(
+      title,
+      message,
+      [
+        {
+          text: t('common.retry'),
+          onPress: () => {
+            if (canQueryEligibility) {
+              void refetchEligibility();
+            }
+          },
+        },
+        { text: t('common.ok'), style: 'cancel' },
+      ],
+      undefined,
+      { variant: 'warning', emoji: '\u26A0\uFE0F' }
+    );
+  }, [canQueryEligibility, getEligibilityErrorAlertContent, refetchEligibility, showAlert, t]);
+
+  const normalizeCapturedPhotoUri = useCallback(async (photoUri: string, cameraFacing: CameraType) => {
+    if (cameraFacing !== 'front') {
+      return photoUri;
+    }
+
+    const normalizedPhoto = await ImageManipulator.manipulateAsync(
+      photoUri,
+      [{ flip: ImageManipulator.FlipType.Horizontal }],
+      {
+        compress: 1,
+        format: ImageManipulator.SaveFormat.JPEG,
+      }
+    );
+
+    return normalizedPhoto.uri;
+  }, []);
+
+  const openScanPreview = useCallback(
+    async (scanType: ScanType, imageUri: string) => {
+      if (scanType === 'super') {
+        await scheduleSuperScanReset();
+      }
+
+      router.push({
+        pathname: '/scan-preview',
+        params: {
+          imageUri,
+          scanType,
+        },
+      });
+    },
+    [router, scheduleSuperScanReset]
+  );
+
+  const getTimedLimitContent = useCallback(
+    (eligibility: Pick<ScanEligibilityResponse, 'message' | 'message_key' | 'next_available_date'>) => {
+      if (!eligibility.next_available_date) {
+        return null;
+      }
+
+      const timeMessage = formatScanLimitTime(eligibility.next_available_date, t);
+
+      return {
+        timeMessage,
+        message: buildScanLimitMessage(eligibility, t, timeMessage),
+        paywallTitle: buildScanLimitPaywallTitle(t, timeMessage),
+        paywallSubtitle: getScanLimitUpgradeSubtitle(t),
+      };
+    },
+    [t]
+  );
 
   const handleScanTypeSelect = async (scanType: ScanType) => {
-    const isAdmin = userProfile?.account_tier === 'admin';
-    // Logique unifiée pour tous les types de scan (y compris super)
+    if (interactionsLocked || captureSequenceActiveRef.current) {
+      return;
+    }
+
+    // Unified logic for every scan type, including Super Scan.
     const eligibility = scanEligibility?.[scanType];
+    const eligibilityError = scanEligibilityErrors[scanType];
+
+    if (!eligibility) {
+      if (loadingByScanType[scanType]) {
+        return;
+      }
+
+      if (eligibilityError && !isConnectivityApiError(eligibilityError)) {
+        showEligibilityErrorAlert(eligibilityError);
+      }
+      return;
+    }
+
     const welcomeCredits = eligibility?.welcome_credits || 0;
     const hasWelcomeCredits = welcomeCredits > 0;
     const isTimerFinished = eligibility?.next_available_date
@@ -99,26 +286,30 @@ export default function ScannerScreen() {
     const hasTimerCleared = clearedTimers[scanType] || isTimerFinished;
 
     if (!isAdmin && (!eligibility || (!eligibility.allowed && !hasWelcomeCredits && !hasTimerCleared))) {
-      // Cas spécial pour Super Scan premium-only (pas de next_available_date)
+      // Special case for Premium-only Super Scan (no next_available_date).
       if (scanType === 'super' && eligibility && !eligibility.next_available_date) {
+        const premiumTitle = t('super_scan_features.premium_alert_title');
+        const premiumMessage = t('super_scan_features.premium_alert_msg');
         if (paywallSession.canShowPaywall()) {
           setPaywallConfig({
             visible: true,
-            title: t('super_scan_features.premium_alert_title', 'Le Super Scan est réservé aux membres Premium'),
-            description: t('super_scan_features.premium_alert_msg', 'Analyse approfondie IA • Score de risque global • Détection de conditions'),
+            title: premiumTitle,
+            description: premiumMessage,
           });
           paywallSession.markPaywallShown();
         } else {
           showAlert(
-            t('super_scan_features.premium_alert_title'),
-            t('super_scan_features.premium_alert_msg'),
+            premiumTitle,
+            premiumMessage,
             [
               { text: t('common.later'), style: 'cancel' },
               {
                 text: t('premium.upgrade_title'),
                 onPress: () => router.push('/premium-upgrade'),
               },
-            ]
+            ],
+            undefined,
+            { variant: 'premium', emoji: '\u2728' }
           );
         }
         return;
@@ -126,48 +317,41 @@ export default function ScannerScreen() {
 
       // Cas avec next_available_date (limite atteinte)
       if (eligibility && eligibility.next_available_date) {
-        const nextDate = new Date(eligibility.next_available_date);
-        const now = new Date();
-        const diffMs = nextDate.getTime() - now.getTime();
-        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffDays = Math.floor(diffHours / 24);
-
-        let timeMessage = '';
-        if (diffDays > 0) {
-          timeMessage = `${diffDays} ${diffDays > 1 ? t('common.days') : t('common.day')}`;
-        } else if (diffHours > 0) {
-          timeMessage = `${diffHours} ${diffHours > 1 ? t('common.hours') : t('common.hour')}`;
-        } else {
-          const diffMinutes = Math.floor(diffMs / (1000 * 60));
-          timeMessage = `${diffMinutes} ${diffMinutes > 1 ? t('common.minutes') : t('common.minute')}`;
+        const limitContent = getTimedLimitContent(eligibility);
+        if (!limitContent) {
+          return;
         }
 
-        // Message spécifique pour Super Scan utilisé aujourd'hui
+        // Dedicated message when Super Scan has already been used today.
         if (scanType === 'super') {
           showAlert(
             t('super_scan_features.used_alert_title'),
-            `${t('super_scan_features.used_alert_msg')}\n\n${timeMessage}`,
-            [{ text: t('common.ok'), style: 'default' }]
+            `${t('super_scan_features.used_alert_msg')}\n\n${limitContent.timeMessage}`,
+            [{ text: t('common.ok'), style: 'default' }],
+            undefined,
+            { variant: 'warning', emoji: '\uD83D\uDD52' }
           );
         } else {
           if (paywallSession.canShowPaywall()) {
             setPaywallConfig({
               visible: true,
-              title: `Votre prochain scan est disponible dans ${timeMessage}`,
-              subtitle: 'Passez en Premium pour scanner sans limite',
+              title: limitContent.paywallTitle,
+              subtitle: limitContent.paywallSubtitle,
             });
             paywallSession.markPaywallShown();
           } else {
             showAlert(
               t('common.error'),
-              `${t(eligibility.message || 'scan_limit.limit_reached')} ${timeMessage}\n\n${t('premium.subtitle')}`,
+              `${limitContent.message}\n\n${limitContent.paywallSubtitle}`,
               [
                 { text: t('common.ok'), style: 'cancel' },
                 {
                   text: t('premium.upgrade_title'),
                   onPress: () => router.push('/premium-upgrade'),
                 },
-              ]
+              ],
+              undefined,
+              { variant: 'premium', emoji: '\u2728' }
             );
           }
         }
@@ -178,14 +362,45 @@ export default function ScannerScreen() {
     setSelectedScanType(scanType);
   };
 
+  const performCameraCapture = useCallback(
+    async (scanType: ScanType) => {
+      if (!cameraRef.current) {
+        return false;
+      }
+
+      const captureFacing = facing;
+      const photo = await cameraRef.current.takePictureAsync(getCapturePictureOptions());
+
+      if (!photo) {
+        return false;
+      }
+
+      const normalizedPhotoUri = await normalizeCapturedPhotoUri(photo.uri, captureFacing);
+
+      await openScanPreview(scanType, normalizedPhotoUri);
+
+      return true;
+    },
+    [facing, normalizeCapturedPhotoUri, openScanPreview]
+  );
+
   const takePicture = async () => {
-    if (!selectedScanType) {
-      showAlert(t('scanner.type_required_title'), t('scanner.type_required_msg'));
+    if (interactionsLocked || captureSequenceActiveRef.current) {
       return;
     }
 
-    const isAdmin = userProfile?.account_tier === 'admin';
-    // Vérification unifiée pour tous les types de scan
+    if (!selectedScanType) {
+      showAlert(
+        t('scanner.type_required_title'),
+        t('scanner.type_required_msg'),
+        undefined,
+        undefined,
+        { variant: 'info', emoji: '\uD83D\uDCF8' }
+      );
+      return;
+    }
+
+    // Unified eligibility check for every scan type.
     const eligibility = scanEligibility?.[selectedScanType];
     const hasWelcomeCredits = (eligibility?.welcome_credits || 0) > 0;
     const isTimerFinished = eligibility?.next_available_date
@@ -193,20 +408,19 @@ export default function ScannerScreen() {
       : false;
     const hasTimerCleared = clearedTimers[selectedScanType] || isTimerFinished;
     const canScan = isAdmin || eligibility?.allowed || hasWelcomeCredits || hasTimerCleared;
+    const isSuperPremiumOnly = selectedScanType === 'super' && eligibility && !eligibility.next_available_date;
+    const limitContent = eligibility ? getTimedLimitContent(eligibility) : null;
 
     if (!canScan) {
       if (paywallSession.canShowPaywall()) {
-        const timeMessage = eligibility?.next_available_date 
-          ? ` dans quelques temps` 
-          : '';
-        const titleText = selectedScanType === 'super' 
-          ? t('super_scan_features.premium_alert_title', 'Le Super Scan est réservé aux membres Premium')
-          : `Votre prochain scan est disponible${timeMessage}`;
-        const subtitleText = selectedScanType === 'super'
+        const titleText = isSuperPremiumOnly
+          ? t('super_scan_features.premium_alert_title')
+          : limitContent?.paywallTitle || t('scan_limit.limit_reached');
+        const subtitleText = isSuperPremiumOnly
           ? undefined
-          : 'Passez en Premium pour scanner sans limite';
-        const descriptionText = selectedScanType === 'super'
-          ? t('super_scan_features.premium_alert_msg', 'Analyse approfondie IA • Score de risque global • Détection de conditions')
+          : limitContent?.paywallSubtitle || getScanLimitUpgradeSubtitle(t);
+        const descriptionText = isSuperPremiumOnly
+          ? t('super_scan_features.premium_alert_msg')
           : undefined;
 
         setPaywallConfig({
@@ -219,56 +433,70 @@ export default function ScannerScreen() {
       } else {
         showAlert(
           t('scan_limit.limit_reached'),
-          t(eligibility?.message || 'scan_limit.limit_reached'),
+          isSuperPremiumOnly
+            ? t('super_scan_features.premium_alert_msg')
+            : limitContent?.message || eligibility?.message || t('scan_limit.limit_reached'),
           [
             { text: t('common.ok'), style: 'cancel' },
             {
               text: t('premium.upgrade_btn'),
               onPress: () => router.push('/premium-upgrade'),
             },
-          ]
+          ],
+          undefined,
+          { variant: 'premium', emoji: '\u2728' }
         );
       }
       return;
     }
 
+    captureSequenceActiveRef.current = true;
+    setCaptureSequenceActive(true);
     setCheckingEligibility(true);
-    try {
-      if (cameraRef.current) {
-        const photo = await cameraRef.current.takePictureAsync({
-          quality: 1,
-          skipProcessing: true, // Force l'image brute pour éviter les artefacts de traitement
-        });
-        if (photo) {
-          // Planifier la notification de reset pour Super Scan
-          if (selectedScanType === 'super') {
-            await scheduleSuperScanReset();
-          }
 
-          router.push({
-            pathname: '/scan-preview',
-            params: {
-              imageUri: photo.uri,
-              scanType: selectedScanType,
-            },
-          });
-        }
+    try {
+      await playValidationFeedback();
+      const didNavigate = await performCameraCapture(selectedScanType);
+
+      if (!didNavigate) {
+        throw new Error('CAPTURE_FAILED');
       }
     } catch (error) {
-      showAlert(t('common.error'), t('scanner.error_taking_photo'));
+      showAlert(
+        t('common.error'),
+        t('scanner.error_taking_photo'),
+        undefined,
+        undefined,
+        { variant: 'warning', emoji: '\uD83D\uDCF7' }
+      );
     } finally {
       setCheckingEligibility(false);
+      captureSequenceActiveRef.current = false;
+      setCaptureSequenceActive(false);
     }
   };
 
   const pickImage = async () => {
-    if (!selectedScanType) {
-      showAlert(t('scanner.type_required_title'), t('scanner.type_required_msg'));
+    if (
+      interactionsLocked ||
+      captureSequenceActiveRef.current ||
+      gallerySelectionActiveRef.current
+    ) {
       return;
     }
 
-    const isAdmin = userProfile?.account_tier === 'admin';
-    // Vérification unifiée pour tous les types de scan
+    if (!selectedScanType) {
+      showAlert(
+        t('scanner.type_required_title'),
+        t('scanner.type_required_msg'),
+        undefined,
+        undefined,
+        { variant: 'info', emoji: '\uD83D\uDDBC\uFE0F' }
+      );
+      return;
+    }
+
+    // Unified eligibility check for every scan type.
     const eligibility = scanEligibility?.[selectedScanType];
     const hasWelcomeCredits = (eligibility?.welcome_credits || 0) > 0;
     const isTimerFinished = eligibility?.next_available_date
@@ -276,20 +504,19 @@ export default function ScannerScreen() {
       : false;
     const hasTimerCleared = clearedTimers[selectedScanType] || isTimerFinished;
     const canScan = isAdmin || eligibility?.allowed || hasWelcomeCredits || hasTimerCleared;
+    const isSuperPremiumOnly = selectedScanType === 'super' && eligibility && !eligibility.next_available_date;
+    const limitContent = eligibility ? getTimedLimitContent(eligibility) : null;
 
     if (!canScan) {
       if (paywallSession.canShowPaywall()) {
-        const timeMessage = eligibility?.next_available_date 
-          ? ` dans quelques temps` 
-          : '';
-        const titleText = selectedScanType === 'super' 
-          ? t('super_scan_features.premium_alert_title', 'Le Super Scan est réservé aux membres Premium')
-          : `Votre prochain scan est disponible${timeMessage}`;
-        const subtitleText = selectedScanType === 'super'
+        const titleText = isSuperPremiumOnly
+          ? t('super_scan_features.premium_alert_title')
+          : limitContent?.paywallTitle || t('scan_limit.limit_reached');
+        const subtitleText = isSuperPremiumOnly
           ? undefined
-          : 'Passez en Premium pour scanner sans limite';
-        const descriptionText = selectedScanType === 'super'
-          ? t('super_scan_features.premium_alert_msg', 'Analyse approfondie IA • Score de risque global • Détection de conditions')
+          : limitContent?.paywallSubtitle || getScanLimitUpgradeSubtitle(t);
+        const descriptionText = isSuperPremiumOnly
+          ? t('super_scan_features.premium_alert_msg')
           : undefined;
 
         setPaywallConfig({
@@ -302,19 +529,24 @@ export default function ScannerScreen() {
       } else {
         showAlert(
           t('scan_limit.limit_reached'),
-          t(eligibility?.message || 'scan_limit.limit_reached'),
+          isSuperPremiumOnly
+            ? t('super_scan_features.premium_alert_msg')
+            : limitContent?.message || eligibility?.message || t('scan_limit.limit_reached'),
           [
             { text: t('common.ok'), style: 'cancel' },
             {
               text: t('premium.upgrade_btn'),
               onPress: () => router.push('/premium-upgrade'),
             },
-          ]
+          ],
+          undefined,
+          { variant: 'premium', emoji: '\u2728' }
         );
       }
       return;
     }
 
+    gallerySelectionActiveRef.current = true;
     setCheckingEligibility(true);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -325,47 +557,62 @@ export default function ScannerScreen() {
       });
 
       if (!result.canceled) {
-        // Planifier la notification de reset pour Super Scan
-        if (selectedScanType === 'super') {
-          await scheduleSuperScanReset();
-        }
-
-        router.push({
-          pathname: '/scan-preview',
-          params: {
-            imageUri: result.assets[0].uri,
-            scanType: selectedScanType,
-          },
-        });
+        await openScanPreview(selectedScanType, result.assets[0].uri);
       }
     } catch (error) {
-      showAlert(t('common.error'), t('scanner.error_loading_image'));
+      showAlert(
+        t('common.error'),
+        t('scanner.error_loading_image'),
+        undefined,
+        undefined,
+        { variant: 'warning', emoji: '\uD83D\uDDBC\uFE0F' }
+      );
     } finally {
       setCheckingEligibility(false);
+      gallerySelectionActiveRef.current = false;
     }
   };
 
   const toggleCameraFacing = () => {
+    if (interactionsLocked || captureSequenceActiveRef.current) {
+      return;
+    }
+
     setFacing((current) => (current === 'back' ? 'front' : 'back'));
   };
 
   const renderScanTypeButton = (scanType: ScanType) => {
     const isSelected = selectedScanType === scanType;
     const eligibility = scanEligibility?.[scanType];
+    const quotaState = resolveScanQuotaState({
+      scanType,
+      accountTier,
+      eligibility,
+      error: scanEligibilityErrors[scanType],
+      loading: loadingByScanType[scanType],
+      isAuthReady,
+      canQuery: canQueryEligibility,
+    });
     const welcomeCredits = eligibility?.welcome_credits || 0;
     const hasWelcomeCredits = welcomeCredits > 0;
-    const isTimerFinished = eligibility?.next_available_date
-      ? Date.now() >= eligibility.next_available_date
+    const quotaStateLabelKey = getScanQuotaStatusLabelKey(quotaState);
+    const nextAvailableDate = hasScanQuotaPayload(quotaState)
+      ? quotaState.nextAvailableDate
+      : eligibility?.next_available_date;
+    const isTimerFinished = nextAvailableDate
+      ? Date.now() >= nextAvailableDate
       : false;
     const hasTimerCleared = clearedTimers[scanType] || isTimerFinished;
-    const isAdmin = userProfile?.account_tier === 'admin';
-    const isPremium = userProfile?.account_tier === 'premium' || isAdmin;
     // Admin buttons are never disabled
     const isDisabled = isAdmin ? false : (eligibility ? (!eligibility.allowed && !hasWelcomeCredits && !hasTimerCleared) : true);
-    const limits = isPremium ? PREMIUM_SCAN_LIMITS : FREE_SCAN_LIMITS;
-    const limit = limits[scanType];
+    const showInlineTimer =
+      isDisabled &&
+      !!nextAvailableDate &&
+      !hasWelcomeCredits &&
+      !hasTimerCleared;
     // Check if admin has remaining scans
-    const adminHasScans = isAdmin ? (!eligibility || ((eligibility.limit || 20) - (eligibility.current_count || 0) > 0)) : false;
+    const adminHasScans =
+      isAdmin && hasScanQuotaPayload(quotaState) ? quotaState.remaining > 0 : false;
 
     return (
       <View key={scanType} style={styles.scanTypeContainer}>
@@ -378,43 +625,56 @@ export default function ScannerScreen() {
             isAdmin && !isSelected && adminHasScans && styles.scanTypeButtonAdmin,
           ]}
           onPress={() => handleScanTypeSelect(scanType)}
-          disabled={false}
+          disabled={interactionsLocked}
           activeOpacity={0.8}
         >
-          <Text style={[styles.scanTypeText, isSelected && styles.scanTypeTextSelected]}>
+          <Text
+            style={[styles.scanTypeText, isSelected && styles.scanTypeTextSelected]}
+            numberOfLines={1}
+          >
             {t(SCAN_TYPE_LABELS[scanType])}
           </Text>
-          {hasWelcomeCredits && !isAdmin ? (
-            <View style={styles.welcomeCreditsContainer} testID="welcome-gift">
-              <Gift color={colors.success} size={14} strokeWidth={2} />
-            </View>
-          ) : (
-            <>
-              {!isPremium && <Text style={styles.limitLabel}>{t(limit.label)}</Text>}
-              {eligibility && (
-                <Text style={styles.countLabel}>
-                  {Math.max(0, (eligibility.limit || limit.count) - (eligibility.current_count || 0))}/{eligibility.limit || limit.count}
-                </Text>
-              )}
-            </>
-          )}
+          <View style={styles.scanTypeSecondarySlot}>
+            {hasWelcomeCredits && !isAdmin ? (
+              <View style={styles.welcomeCreditsContainer} testID="welcome-gift">
+                <Gift color={colors.success} size={12} strokeWidth={2} />
+              </View>
+            ) : showInlineTimer ? (
+              <NextScanTimer
+                nextAvailableDate={nextAvailableDate!}
+                scanLabel="Dispo."
+                mode="scannerCompact"
+                onTimerComplete={() => handleTimerComplete(scanType)}
+              />
+            ) : (
+              <View style={styles.scanTypeSecondarySpacer} />
+            )}
+          </View>
+          <View style={styles.scanTypeFooterSlot}>
+            <Text style={styles.countLabel}>
+              {hasScanQuotaPayload(quotaState)
+                ? `${quotaState.remaining}/${quotaState.limit}`
+                : t(quotaStateLabelKey ?? 'scan_limit.missing_payload')}
+            </Text>
+          </View>
         </TouchableOpacity>
-        {isDisabled && eligibility?.next_available_date && !hasWelcomeCredits && !hasTimerCleared && (
-          <NextScanTimer
-            nextAvailableDate={eligibility.next_available_date}
-            scanLabel="Disponible"
-            onTimerComplete={() => handleTimerComplete(scanType)}
-          />
-        )}
       </View>
     );
   };
 
   const renderSuperScanButton = () => {
     const isSelected = selectedScanType === 'super';
-    const isAdmin = userProfile?.account_tier === 'admin';
-    const isPremium = userProfile?.account_tier === 'premium' || isAdmin;
     const superEligibility = scanEligibility?.['super'];
+    const superQuotaState = resolveScanQuotaState({
+      scanType: 'super',
+      accountTier,
+      eligibility: superEligibility,
+      error: scanEligibilityErrors.super,
+      loading: loadingByScanType.super,
+      isAuthReady,
+      canQuery: canQueryEligibility,
+    });
+    const superQuotaStateLabelKey = getScanQuotaStatusLabelKey(superQuotaState);
 
     const isTimerFinished = superEligibility?.next_available_date
       ? Date.now() >= superEligibility.next_available_date
@@ -434,25 +694,39 @@ export default function ScannerScreen() {
             isDisabled && styles.scanTypeButtonDisabled,
           ]}
           onPress={() => handleScanTypeSelect('super')}
-          disabled={false}
+          disabled={interactionsLocked}
           activeOpacity={0.8}
         >
           <View style={styles.superScanHeader}>
-            <Sparkles color={isSelected ? '#FFFFFF' : '#FFD700'} size={14} strokeWidth={2} />
-            <Text style={[styles.superScanText, isSelected && styles.scanTypeTextSelected]}>
+            <Sparkles color={isSelected ? '#FFFFFF' : '#FFD700'} size={12} strokeWidth={2} />
+            <Text
+              style={[styles.superScanText, isSelected && styles.scanTypeTextSelected]}
+              numberOfLines={1}
+            >
               Super
             </Text>
           </View>
-          {isPremium ? (
-            <Text style={styles.superScanLimit}>
-              {isAdmin ? '∞' : (superScanUsed ? '0/1' : '1/1')}
-            </Text>
-          ) : (
-            <View style={styles.premiumBadge}>
-              <Crown color="#FFD700" size={10} fill="#FFD700" />
-              <Text style={styles.premiumBadgeText}>{t('super_scan_features.premium_badge')}</Text>
-            </View>
-          )}
+          <View style={styles.scanTypeSecondarySlot}>
+            {!isPremium ? (
+              <View style={styles.premiumBadge}>
+                <Crown color="#FFD700" size={8} fill="#FFD700" />
+                <Text style={styles.premiumBadgeText}>{t('super_scan_features.premium_badge')}</Text>
+              </View>
+            ) : (
+              <View style={styles.scanTypeSecondarySpacer} />
+            )}
+          </View>
+          <View style={styles.scanTypeFooterSlot}>
+            {isPremium ? (
+              <Text style={styles.superScanLimit}>
+                {hasScanQuotaPayload(superQuotaState)
+                  ? `${superQuotaState.remaining}/${superQuotaState.limit}`
+                  : t(superQuotaStateLabelKey ?? 'scan_limit.missing_payload')}
+              </Text>
+            ) : (
+              <View style={styles.scanTypeFooterSpacer} />
+            )}
+          </View>
         </TouchableOpacity>
       </View>
     );
@@ -465,9 +739,25 @@ export default function ScannerScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <Camera color={colors.primary} size={64} />
-        <Text style={styles.permissionText}>{t('scanner.camera_permission_msg')}</Text>
-        <Button title={t('scanner.authorize_camera')} onPress={requestPermission} />
+        <View style={styles.permissionCard}>
+          <Camera color={colors.primary} size={64} />
+          <Text style={styles.permissionTitle}>{t('scanner.camera_permission_msg')}</Text>
+          <Text style={styles.permissionText}>{t('scanner.camera_permission_detail')}</Text>
+          <Text style={styles.permissionSubtext}>{t('scanner.camera_permission_backend')}</Text>
+          <Text style={styles.permissionUrl}>{PUBLIC_PRIVACY_POLICY_URL}</Text>
+          <View style={styles.permissionButtonStack}>
+            <View style={styles.permissionButtonWrapper}>
+              <Button
+                title={t('settings.privacy_policy')}
+                onPress={() => router.push('/privacy-policy')}
+                variant="outline"
+              />
+            </View>
+            <View style={styles.permissionButtonWrapper}>
+              <Button title={t('scanner.authorize_camera')} onPress={requestPermission} />
+            </View>
+          </View>
+        </View>
       </View>
     );
   }
@@ -475,15 +765,26 @@ export default function ScannerScreen() {
   return (
     <View style={styles.container}>
       {alertElement}
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
       <View style={{ flex: 1 }}>
-        <CameraView ref={cameraRef} style={styles.camera} facing={facing} />
+        <CameraView
+          ref={cameraRef}
+          style={styles.camera}
+          facing={facing}
+          autofocus={captureSequenceActive ? 'on' : 'off'}
+          animateShutter={false}
+          mirror={false}
+          testID="scanner-camera-view"
+        />
 
-        {/* Header supprimé par demande utilisateur */}
+        <View style={styles.cameraInteractionLayer} pointerEvents="none" testID="scanner-focus-overlay">
+          <CameraGuide scanType={selectedScanType} visible={!!selectedScanType} />
+        </View>
 
-        {/* Bannière erreur réseau */}
-        {networkError && (
+        {/* Header removed on request */}
+
+        {/* Network error banner */}
+        {shouldShowConnectivityBanner && (
           <TouchableOpacity
             style={styles.networkErrorBanner}
             onPress={handleManualRetry}
@@ -501,9 +802,7 @@ export default function ScannerScreen() {
           </TouchableOpacity>
         )}
 
-        <CameraGuide scanType={selectedScanType} />
-
-        {/* Sélecteur de type de scan - déplacé en bas */}
+        {/* Scan type selector moved to the bottom */}
         <View style={styles.scanTypeSelector}>
           {renderScanTypeButton('health')}
           {renderScanTypeButton('body')}
@@ -511,13 +810,14 @@ export default function ScannerScreen() {
           {renderSuperScanButton()}
         </View>
 
-        {/* Contrôles flottants transparents */}
+        {/* Transparent floating controls */}
         <View style={styles.controlsOverlay}>
           <TouchableOpacity
             style={styles.sideButton}
             onPress={pickImage}
             activeOpacity={0.7}
-            disabled={checkingEligibility}
+            disabled={interactionsLocked}
+            testID="scanner-gallery-button"
           >
             <ImageIcon color="#FFFFFF" size={26} strokeWidth={2} />
           </TouchableOpacity>
@@ -526,7 +826,8 @@ export default function ScannerScreen() {
             style={styles.captureButton}
             onPress={takePicture}
             activeOpacity={0.8}
-            disabled={checkingEligibility}
+            disabled={interactionsLocked}
+            testID="scanner-capture-button"
           >
             <View style={styles.captureButtonOuter}>
               <View style={styles.captureButtonInner} />
@@ -537,6 +838,8 @@ export default function ScannerScreen() {
             style={styles.sideButton}
             onPress={toggleCameraFacing}
             activeOpacity={0.7}
+            disabled={interactionsLocked}
+            testID="scanner-flip-camera-button"
           >
             <CameraFlipIcon size={30} color="#FFFFFF" strokeWidth={2} />
           </TouchableOpacity>
@@ -556,7 +859,7 @@ export default function ScannerScreen() {
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, insets: any) => StyleSheet.create({
   // === CONTAINER PRINCIPAL ===
   container: {
     flex: 1,
@@ -569,18 +872,59 @@ const createStyles = (colors: any) => StyleSheet.create({
     padding: SPACING.page,
     backgroundColor: colors.background,
   },
+  permissionCard: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: colors.cardBackground,
+    borderRadius: 24,
+    paddingVertical: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+  },
+  permissionTitle: {
+    fontSize: SIZES.text20,
+    fontWeight: FONT_WEIGHTS.bold,
+    color: colors.primaryText,
+    textAlign: 'center',
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.md,
+  },
   permissionText: {
     fontSize: SIZES.text16,
     color: colors.primaryText,
     textAlign: 'center',
-    marginVertical: SPACING.xl,
+    lineHeight: 24,
+    marginBottom: SPACING.md,
+  },
+  permissionSubtext: {
+    fontSize: SIZES.text14,
+    color: colors.gray,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: SPACING.md,
+  },
+  permissionUrl: {
+    fontSize: SIZES.text12,
+    color: colors.primary,
+    textAlign: 'center',
+    marginBottom: SPACING.lg,
+  },
+  permissionButtonStack: {
+    width: '100%',
+    gap: SPACING.sm,
+  },
+  permissionButtonWrapper: {
+    width: '100%',
   },
 
-  // === CAMERA PLEIN ÉCRAN ===
+  // === FULLSCREEN CAMERA ===
   camera: {
-    flex: 1,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    ...StyleSheet.absoluteFillObject,
+  },
+  cameraInteractionLayer: {
+    ...StyleSheet.absoluteFillObject,
   },
 
   // === HEADER FLOTTANT ===
@@ -610,43 +954,45 @@ const createStyles = (colors: any) => StyleSheet.create({
     textShadowRadius: 4,
   },
 
-  // === SÉLECTEUR DE TYPE DE SCAN ===
+  // === SCAN TYPE SELECTOR ===
   scanTypeSelector: {
     position: 'absolute',
-    bottom: 130,
+    bottom: insets.bottom + 112,
     left: 0,
     right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    gap: SPACING.sm,
-    paddingHorizontal: SPACING.md,
+    alignItems: 'stretch',
+    gap: 4,
+    paddingHorizontal: SPACING.sm,
   },
   scanTypeContainer: {
     flex: 1,
     alignItems: 'center',
-    maxWidth: 90,
+    minWidth: 0,
+    maxWidth: 84,
   },
   scanTypeButton: {
     width: '100%',
-    minHeight: 60,
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.xs,
+    height: 58,
+    paddingVertical: 2,
+    paddingHorizontal: 3,
     borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.35)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.45)',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 1,
   },
   scanTypeButtonSelected: {
     backgroundColor: 'rgba(0, 122, 255, 0.9)',
     borderColor: 'rgba(0, 122, 255, 0.95)',
   },
   scanTypeButtonDisabled: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    opacity: 0.6,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: 'rgba(255, 255, 255, 0.24)',
+    opacity: 1,
   },
   scanTypeButtonWelcome: {
     borderWidth: 2,
@@ -659,33 +1005,48 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: 'rgba(0, 122, 255, 0.35)',
   },
   scanTypeText: {
-    fontSize: SIZES.text14,
+    fontSize: SIZES.text10,
     fontWeight: FONT_WEIGHTS.semiBold,
     color: '#FFFFFF',
     textAlign: 'center',
+    lineHeight: 11,
+    width: '100%',
   },
   scanTypeTextSelected: {
     color: colors.white,
   },
-  limitLabel: {
-    fontSize: SIZES.text10,
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginTop: 4,
-    textAlign: 'center',
+  scanTypeSecondarySlot: {
+    minHeight: 9,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scanTypeSecondarySpacer: {
+    height: 9,
+    width: '100%',
+  },
+  scanTypeFooterSlot: {
+    minHeight: 10,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  scanTypeFooterSpacer: {
+    height: 10,
+    width: '100%',
   },
   countLabel: {
-    fontSize: SIZES.text12,
+    fontSize: 9,
     color: '#FFFFFF',
-    marginTop: 2,
     fontWeight: FONT_WEIGHTS.bold,
     textAlign: 'center',
+    lineHeight: 10,
   },
   welcomeCreditsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
-    marginTop: 6,
+    gap: 2,
   },
   welcomeCreditsLabel: {
     fontSize: SIZES.text10,
@@ -706,45 +1067,47 @@ const createStyles = (colors: any) => StyleSheet.create({
   superScanHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    justifyContent: 'center',
+    gap: 3,
+    width: '100%',
   },
   superScanText: {
-    fontSize: SIZES.text14,
+    fontSize: SIZES.text10,
     fontWeight: FONT_WEIGHTS.bold,
     color: '#FFFFFF',
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    lineHeight: 11,
   },
   superScanLimit: {
-    fontSize: SIZES.text10,
+    fontSize: 9,
     color: 'rgba(255, 255, 255, 0.9)',
-    marginTop: 4,
     textAlign: 'center',
+    lineHeight: 10,
   },
   premiumBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
     borderRadius: 8,
-    marginTop: 4,
-    gap: 3,
+    gap: 2,
   },
   premiumBadgeText: {
-    fontSize: 9,
+    fontSize: 7,
     fontWeight: FONT_WEIGHTS.bold,
     color: '#FFFFFF',
   },
 
 
-  // === BANNIÈRES ===
+  // === BANNERS ===
   networkErrorBanner: {
     position: 'absolute',
-    top: 185,
+    top: insets.top + 96,
     left: SPACING.page,
     right: SPACING.page,
     flexDirection: 'row',
@@ -764,10 +1127,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     textAlign: 'center',
   },
 
-  // === CONTRÔLES FLOTTANTS ===
+  // === FLOATING CONTROLS ===
   controlsOverlay: {
     position: 'absolute',
-    bottom: 40,
+    bottom: insets.bottom + SPACING.lg,
     left: 0,
     right: 0,
     flexDirection: 'row',

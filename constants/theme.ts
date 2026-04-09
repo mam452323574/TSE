@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export const LIGHT_COLORS = {
   background: '#F2F2F7',
   cardBackground: '#FFFFFF',
@@ -118,11 +120,28 @@ export const SHADOWS = {
     elevation: 0,
   },
   card: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    ...(Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
+      },
+      default: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.04,
+        shadowRadius: 12,
+        elevation: 2,
+      },
+    }) ?? {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.04,
+      shadowRadius: 12,
+      elevation: 2,
+    }),
   },
   cardHover: {
     shadowColor: '#000000',
@@ -132,11 +151,28 @@ export const SHADOWS = {
     elevation: 5,
   },
   header: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    ...(Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+      },
+      default: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.025,
+        shadowRadius: 8,
+        elevation: 1,
+      },
+    }) ?? {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.025,
+      shadowRadius: 8,
+      elevation: 1,
+    }),
   },
   button: {
     shadowColor: '#007AFF',
@@ -146,3 +182,105 @@ export const SHADOWS = {
     elevation: 2,
   },
 };
+
+export type ThemeColors = typeof LIGHT_COLORS;
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function normalizeHex(color: string) {
+  if (!color.startsWith('#')) {
+    return null;
+  }
+
+  const hex = color.slice(1);
+  if (hex.length === 3) {
+    return hex
+      .split('')
+      .map((char) => char + char)
+      .join('');
+  }
+
+  if (hex.length === 6) {
+    return hex;
+  }
+
+  return null;
+}
+
+function hexToRgb(color: string) {
+  const normalized = normalizeHex(color);
+  if (!normalized) {
+    return null;
+  }
+
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+function rgbToHex(value: number) {
+  return clamp(Math.round(value), 0, 255).toString(16).padStart(2, '0');
+}
+
+export function withAlpha(color: string, alpha: number) {
+  const rgb = hexToRgb(color);
+  if (!rgb) {
+    return color;
+  }
+
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${clamp(alpha, 0, 1)})`;
+}
+
+export function mixColors(baseColor: string, tintColor: string, tintOpacity: number) {
+  const base = hexToRgb(baseColor);
+  const tint = hexToRgb(tintColor);
+
+  if (!base || !tint) {
+    return baseColor;
+  }
+
+  const opacity = clamp(tintOpacity, 0, 1);
+  const mixChannel = (baseValue: number, tintValue: number) =>
+    baseValue + (tintValue - baseValue) * opacity;
+
+  return `#${rgbToHex(mixChannel(base.r, tint.r))}${rgbToHex(mixChannel(base.g, tint.g))}${rgbToHex(
+    mixChannel(base.b, tint.b)
+  )}`;
+}
+
+interface AndroidLightSurfaceOptions {
+  accentColor?: string;
+  shadowColor?: string;
+  backgroundAlpha?: number;
+  borderAlpha?: number;
+  overlayAlpha?: number;
+  shadowOpacity?: number;
+  shadowRadius?: number;
+  shadowOffsetY?: number;
+  elevation?: number;
+}
+
+export function getAndroidLightSurface(colors: ThemeColors, options: AndroidLightSurfaceOptions = {}) {
+  const accentColor = options.accentColor ?? colors.primary;
+  const shadowTint = options.shadowColor ?? accentColor;
+  const backgroundColor = mixColors(colors.cardBackground, accentColor, options.backgroundAlpha ?? 0.06);
+  const borderColor = mixColors(colors.lightGray, accentColor, options.borderAlpha ?? 0.16);
+  const overlayColor = withAlpha(accentColor, options.overlayAlpha ?? 0.1);
+
+  return {
+    backgroundColor,
+    borderColor,
+    overlayColor,
+    shadowStyle: {
+      shadowColor: mixColors(colors.gray, shadowTint, 0.24),
+      shadowOffset: { width: 0, height: options.shadowOffsetY ?? 6 },
+      shadowOpacity: options.shadowOpacity ?? 0.08,
+      shadowRadius: options.shadowRadius ?? 16,
+      elevation: options.elevation ?? 2,
+    },
+  };
+}

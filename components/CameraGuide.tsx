@@ -1,145 +1,187 @@
 import { useMemo } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { ScanType } from '@/types';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
-interface CameraGuideProps {
-  scanType: ScanType | null;
+import { useTheme } from '@/contexts/ThemeContext';
+import { ScanType } from '@/types';
+
+export interface CameraGuideLayout {
+  frameWidth: number;
+  frameHeight: number;
+  frameOffsetY: number;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+export interface CameraGuideProps {
+  scanType: ScanType | null;
+  visible?: boolean;
+}
 
-const CORNER_SIZE = 30;
-const CORNER_THICKNESS = 4;
+const { width: DEFAULT_SCREEN_WIDTH, height: DEFAULT_SCREEN_HEIGHT } = Dimensions.get('window');
 
-export function CameraGuide({ scanType }: CameraGuideProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+const BODY_GUIDE_OFFSET_Y = Math.min(40, Math.max(28, Math.round(DEFAULT_SCREEN_HEIGHT * 0.045)));
+const FRAME_CORNER_SIZE = 28;
+const FRAME_CORNER_THICKNESS = 1.2;
 
-  if (!scanType) return null;
-
-  let width: number;
-  let height: number;
-
+export function getCameraGuideLayout(
+  scanType: ScanType,
+  screenWidth = DEFAULT_SCREEN_WIDTH,
+  screenHeight = DEFAULT_SCREEN_HEIGHT
+): CameraGuideLayout {
   switch (scanType) {
     case 'nutrition':
-      width = SCREEN_WIDTH * 0.7;
-      height = width;
-      break;
+      return {
+        frameWidth: screenWidth * 0.7,
+        frameHeight: screenWidth * 0.7,
+        frameOffsetY: 0,
+      };
     case 'body':
-      width = SCREEN_WIDTH * 0.7; // Aussi large que nutrition
-      height = SCREEN_HEIGHT * 0.45; // Plus haut que nutrition mais sans toucher les boutons
-      break;
+      return {
+        frameWidth: screenWidth * 0.7,
+        frameHeight: screenHeight * 0.45,
+        frameOffsetY: -BODY_GUIDE_OFFSET_Y,
+      };
     case 'health':
     case 'super':
-      width = SCREEN_WIDTH * 0.5;
-      height = SCREEN_HEIGHT * 0.35;
-      break;
     default:
+      return {
+        frameWidth: screenWidth * 0.5,
+        frameHeight: screenHeight * 0.35,
+        frameOffsetY: 0,
+      };
+  }
+}
+
+function CameraCorners({
+  cornerSize,
+  thickness,
+  color,
+  testIDPrefix,
+}: {
+  cornerSize: number;
+  thickness: number;
+  color: string;
+  testIDPrefix?: string;
+}) {
+  return (
+    <>
+      <View
+        testID={testIDPrefix ? `${testIDPrefix}-corner-top-left` : undefined}
+        style={[
+          styles.corner,
+          {
+            width: cornerSize,
+            height: cornerSize,
+            borderTopWidth: thickness,
+            borderLeftWidth: thickness,
+            borderColor: color,
+            top: 0,
+            left: 0,
+          },
+        ]}
+      />
+      <View
+        testID={testIDPrefix ? `${testIDPrefix}-corner-top-right` : undefined}
+        style={[
+          styles.corner,
+          {
+            width: cornerSize,
+            height: cornerSize,
+            borderTopWidth: thickness,
+            borderRightWidth: thickness,
+            borderColor: color,
+            top: 0,
+            right: 0,
+          },
+        ]}
+      />
+      <View
+        testID={testIDPrefix ? `${testIDPrefix}-corner-bottom-left` : undefined}
+        style={[
+          styles.corner,
+          {
+            width: cornerSize,
+            height: cornerSize,
+            borderBottomWidth: thickness,
+            borderLeftWidth: thickness,
+            borderColor: color,
+            bottom: 0,
+            left: 0,
+          },
+        ]}
+      />
+      <View
+        testID={testIDPrefix ? `${testIDPrefix}-corner-bottom-right` : undefined}
+        style={[
+          styles.corner,
+          {
+            width: cornerSize,
+            height: cornerSize,
+            borderBottomWidth: thickness,
+            borderRightWidth: thickness,
+            borderColor: color,
+            bottom: 0,
+            right: 0,
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function CameraGuide({ scanType, visible = true }: CameraGuideProps) {
+  const { colors } = useTheme();
+  const stylesMemo = useMemo(() => createStyles(), []);
+  const layout = useMemo(() => {
+    if (!scanType) {
       return null;
+    }
+
+    return getCameraGuideLayout(scanType);
+  }, [scanType]);
+
+  if (!scanType || !visible || !layout) {
+    return null;
   }
 
-  const isSuper = scanType === 'super';
-
   return (
-    <View style={styles.centeringContainer}>
-      <View style={[styles.guideFrame, { width, height }]}>
-        <View style={[styles.cornerTopLeft, styles.corner, isSuper && styles.superCornerTopLeft]} />
-        <View style={[styles.cornerTopRight, styles.corner, isSuper && styles.superCornerTopRight]} />
-        <View style={[styles.cornerBottomLeft, styles.corner, isSuper && styles.superCornerBottomLeft]} />
-        <View style={[styles.cornerBottomRight, styles.corner, isSuper && styles.superCornerBottomRight]} />
+    <View pointerEvents="none" style={stylesMemo.root}>
+      <View
+        testID="camera-guide-frame"
+        style={[
+          stylesMemo.frame,
+          {
+            width: layout.frameWidth,
+            height: layout.frameHeight,
+            transform: [{ translateY: layout.frameOffsetY }],
+          },
+        ]}
+      >
+        <CameraCorners
+          color={colors.white}
+          cornerSize={FRAME_CORNER_SIZE}
+          thickness={FRAME_CORNER_THICKNESS}
+          testIDPrefix="camera-guide-frame"
+        />
       </View>
     </View>
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
-  centeringContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    pointerEvents: 'none',
-  },
-  guideFrame: {
-    position: 'relative',
-  },
+const styles = StyleSheet.create({
   corner: {
     position: 'absolute',
-    width: CORNER_SIZE,
-    height: CORNER_SIZE,
-  },
-  cornerTopLeft: {
-    top: 0,
-    left: 0,
-    borderTopWidth: CORNER_THICKNESS,
-    borderLeftWidth: CORNER_THICKNESS,
-    borderColor: colors.secondaryText,
-  },
-  cornerTopRight: {
-    top: 0,
-    right: 0,
-    borderTopWidth: CORNER_THICKNESS,
-    borderRightWidth: CORNER_THICKNESS,
-    borderColor: colors.secondaryText,
-  },
-  cornerBottomLeft: {
-    bottom: 0,
-    left: 0,
-    borderBottomWidth: CORNER_THICKNESS,
-    borderLeftWidth: CORNER_THICKNESS,
-    borderColor: colors.secondaryText,
-  },
-  cornerBottomRight: {
-    bottom: 0,
-    right: 0,
-    borderBottomWidth: CORNER_THICKNESS,
-    borderRightWidth: CORNER_THICKNESS,
-    borderColor: colors.secondaryText,
-  },
-  // Super Scan Styles
-  superCornerTopLeft: {
-    borderColor: '#FFD700',
-    borderTopWidth: CORNER_THICKNESS + 2,
-    borderLeftWidth: CORNER_THICKNESS + 2,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  superCornerTopRight: {
-    borderColor: '#FFD700',
-    borderTopWidth: CORNER_THICKNESS + 2,
-    borderRightWidth: CORNER_THICKNESS + 2,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  superCornerBottomLeft: {
-    borderColor: '#FFD700',
-    borderBottomWidth: CORNER_THICKNESS + 2,
-    borderLeftWidth: CORNER_THICKNESS + 2,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  superCornerBottomRight: {
-    borderColor: '#FFD700',
-    borderBottomWidth: CORNER_THICKNESS + 2,
-    borderRightWidth: CORNER_THICKNESS + 2,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 8,
   },
 });
+
+const createStyles = () =>
+  StyleSheet.create({
+    root: {
+      ...StyleSheet.absoluteFillObject,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    frame: {
+      position: 'absolute',
+    },
+  });
+
+export default CameraGuide;

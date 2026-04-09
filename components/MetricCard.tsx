@@ -1,120 +1,376 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { Lock } from 'lucide-react-native';
+
 import { useTheme } from '@/contexts/ThemeContext';
-import { SIZES, SPACING, FONT_WEIGHTS, SHADOWS, BORDER_RADIUS } from '@/constants/theme';
+import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  FONT_WEIGHTS,
+  SIZES,
+  SPACING,
+  withAlpha,
+} from '@/constants/theme';
+import {
+  RESULT_TEXT_PROPS,
+  getResultLayoutState,
+  getResultSurfaceChrome,
+} from '@/utils/resultLayout';
+import { PremiumRenderState } from '@/utils/subscription';
 
 interface MetricCardProps {
-    title: string;
-    value: string;
-    icon: string;
-    isLocked?: boolean;
-    onPremiumPress?: () => void;
+  title: string;
+  value: string;
+  icon?: React.ReactNode | string;
+  isLocked?: boolean;
+  premiumRenderState?: PremiumRenderState;
+  onPremiumPress?: () => void;
+  valueVariant?: 'numeric' | 'fraction' | 'text';
+  titleMaxLines?: number;
+  valueMaxLines?: number;
 }
 
 export const MetricCard: React.FC<MetricCardProps> = ({
-    title,
-    value,
-    icon,
-    isLocked = false,
-    onPremiumPress,
+  title,
+  value,
+  icon,
+  isLocked = false,
+  premiumRenderState,
+  onPremiumPress,
+  valueVariant = 'text',
+  titleMaxLines = 2,
+  valueMaxLines = valueVariant === 'text' ? 3 : 1,
 }) => {
-    const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+  const { t } = useLanguage();
+  const { width } = useWindowDimensions();
+  const layout = useMemo(() => getResultLayoutState(width), [width]);
+  const styles = useMemo(() => createStyles(layout), [layout]);
+  const premiumLabel = t('metric_card.premium_label');
+  const loadingLabel = t('metric_card.loading_label');
+  const resolvedPremiumRenderState =
+    premiumRenderState ?? (isLocked ? 'locked' : 'unlocked');
+  const isLoading = resolvedPremiumRenderState === 'loading';
+  const isLockedState = resolvedPremiumRenderState === 'locked';
+  const isUnlocked = resolvedPremiumRenderState === 'unlocked';
 
-    const CardContent = () => (
-        <View style={[styles.container, { backgroundColor: colors.cardBackground }, SHADOWS.card]}>
-            <Text style={styles.icon}>{icon}</Text>
-            <View style={styles.content}>
-                <Text style={[styles.title, { color: colors.gray }]}>{title}</Text>
+  const valueTextProps =
+    valueVariant === 'text'
+      ? {
+          numberOfLines: valueMaxLines,
+        }
+      : {
+          adjustsFontSizeToFit: true,
+          minimumFontScale: valueVariant === 'fraction' ? 0.82 : 0.84,
+          numberOfLines: 1 as const,
+        };
 
-                {isLocked ? (
-                    <View style={styles.lockedContainer}>
-                        <View style={[styles.blurOverlay, { backgroundColor: colors.grayMedium }]}>
-                            <Text style={[styles.blurredText, { color: colors.grayMedium }]}>••••••</Text>
-                        </View>
-                        <View style={[styles.lockBadge, { backgroundColor: colors.primary }]}>
-                            <Lock color={colors.white} size={12} />
-                        </View>
-                    </View>
-                ) : (
-                    <Text style={[styles.value, { color: colors.primaryText }]}>{value}</Text>
-                )}
-            </View>
-
-            {isLocked && (
-                <View style={[styles.premiumTag, { backgroundColor: colors.primaryLight }]}>
-                    <Text style={[styles.premiumText, { color: colors.primary }]}>PREMIUM</Text>
-                </View>
-            )}
-        </View>
-    );
-
-    if (isLocked && onPremiumPress) {
-        return (
-            <TouchableOpacity onPress={onPremiumPress} activeOpacity={0.7}>
-                <CardContent />
-            </TouchableOpacity>
-        );
+  const renderIcon = () => {
+    if (!icon) {
+      return null;
     }
 
-    return <CardContent />;
+    if (typeof icon === 'string') {
+      return <Text style={styles.iconText}>{icon}</Text>;
+    }
+
+    if (React.isValidElement(icon) && typeof icon.type !== 'string') {
+      return React.cloneElement(
+        icon as React.ReactElement<{ size?: number }>,
+        {
+          size: layout.metricCardIconGlyphSize,
+        },
+      );
+    }
+
+    return icon;
+  };
+
+  const cardContent = (
+    <View
+      testID="metric-card-root"
+      style={[
+        styles.container,
+        getResultSurfaceChrome({
+          colors,
+          isDark,
+          kind: 'standard',
+        }),
+      ]}
+    >
+      <View style={styles.mainRow}>
+        <View
+          testID="metric-card-icon-wrap"
+          style={[
+            styles.iconWrap,
+            {
+              backgroundColor: isDark
+                ? withAlpha(colors.white, 0.06)
+                : withAlpha(colors.primary, 0.08),
+            },
+          ]}
+        >
+          {renderIcon()}
+        </View>
+
+        <View style={styles.content}>
+          <Text
+            {...RESULT_TEXT_PROPS}
+            testID="metric-card-title"
+            numberOfLines={titleMaxLines}
+            style={[styles.title, { color: colors.gray }]}
+          >
+            {title}
+          </Text>
+
+          {isUnlocked ? (
+            <Text
+              {...RESULT_TEXT_PROPS}
+              {...valueTextProps}
+              testID="metric-card-value"
+              style={[
+                styles.value,
+                valueVariant === 'text'
+                  ? styles.valueText
+                  : styles.valueCompact,
+                valueVariant === 'text'
+                  ? styles.valueTextWeight
+                  : styles.valueNumericWeight,
+                { color: colors.primaryText },
+              ]}
+            >
+              {value}
+            </Text>
+          ) : (
+            <View style={styles.lockedRow}>
+              <View
+                testID={
+                  isLoading
+                    ? 'metric-card-loading-overlay'
+                    : 'metric-card-blur-overlay'
+                }
+                accessibilityElementsHidden={isLockedState}
+                accessible={false}
+                importantForAccessibility={
+                  isLockedState ? 'no-hide-descendants' : 'no'
+                }
+                style={[
+                  styles.blurOverlay,
+                  {
+                    backgroundColor: isDark
+                      ? withAlpha(colors.white, 0.08)
+                      : colors.grayLight ?? colors.grayMedium,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.lockedPlaceholder,
+                    {
+                      backgroundColor: isDark
+                        ? withAlpha(colors.white, 0.22)
+                        : withAlpha(colors.primaryText, 0.16),
+                    },
+                  ]}
+                />
+              </View>
+
+              {isLockedState ? (
+                <View
+                  style={[styles.lockBadge, { backgroundColor: colors.primary }]}
+                >
+                  <Lock color={colors.white} size={12} />
+                </View>
+              ) : null}
+            </View>
+          )}
+        </View>
+      </View>
+
+      {isLockedState ? (
+        <View
+          testID="metric-card-premium-tag"
+          style={[
+            styles.statusTag,
+            layout.isCompact && styles.statusTagCompactRow,
+            { backgroundColor: colors.primaryLight },
+          ]}
+        >
+          <Text
+            {...RESULT_TEXT_PROPS}
+            numberOfLines={1}
+            style={[styles.statusText, { color: colors.primary }]}
+          >
+            {premiumLabel}
+          </Text>
+        </View>
+      ) : isLoading ? (
+        <View
+          testID="metric-card-loading-tag"
+          style={[
+            styles.statusTag,
+            layout.isCompact && styles.statusTagCompactRow,
+            {
+              backgroundColor: isDark
+                ? withAlpha(colors.white, 0.08)
+                : withAlpha(colors.primaryText, 0.06),
+            },
+          ]}
+        >
+          <Text
+            {...RESULT_TEXT_PROPS}
+            numberOfLines={1}
+            style={[styles.statusText, { color: colors.gray }]}
+          >
+            {loadingLabel}
+          </Text>
+        </View>
+      ) : null}
+    </View>
+  );
+
+  if (isLockedState && onPremiumPress) {
+    return (
+      <TouchableOpacity
+        accessibilityLabel={`${title}. ${premiumLabel}`}
+        accessibilityRole="button"
+        activeOpacity={0.86}
+        onPress={onPremiumPress}
+      >
+        {cardContent}
+      </TouchableOpacity>
+    );
+  }
+
+  return cardContent;
 };
 
-const styles = StyleSheet.create({
+const createStyles = (layout: ReturnType<typeof getResultLayoutState>) =>
+  StyleSheet.create({
     container: {
-        borderRadius: BORDER_RADIUS.xl,
-        padding: SPACING.md,
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: SPACING.sm,
+      minHeight: layout.metricMinHeight,
+      borderRadius: layout.standardRadius,
+      borderWidth: 1,
+      paddingHorizontal: layout.metricCardPaddingHorizontal,
+      paddingVertical: layout.metricCardPaddingVertical,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: layout.isCompact ? 'flex-start' : 'center',
+      gap: layout.metricCardGap,
+      marginBottom: SPACING.sm,
     },
-    icon: {
-        fontSize: 24,
-        marginRight: SPACING.md,
+    mainRow: {
+      flexDirection: 'row',
+      alignItems: layout.isCompact ? 'flex-start' : 'center',
+      gap: layout.metricCardGap,
+      flexBasis: 0,
+      flexGrow: 1,
+      flexShrink: 1,
+      minWidth: 0,
+    },
+    iconWrap: {
+      width: layout.metricCardIconSize,
+      height: layout.metricCardIconSize,
+      borderRadius: layout.standardRadius,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: SPACING.xs,
+      flexShrink: 0,
+    },
+    iconText: {
+      fontSize: layout.metricCardIconGlyphSize - 1,
+      lineHeight: layout.metricCardIconGlyphSize,
+      textAlign: 'center',
+      includeFontPadding: false,
     },
     content: {
-        flex: 1,
+      flex: 1,
+      flexShrink: 1,
+      minWidth: 0,
+      gap: layout.metricCardTextGap,
     },
     title: {
-        fontSize: SIZES.sm,
-        marginBottom: 2,
+      fontSize: layout.metricCardLabelFontSize,
+      lineHeight: layout.metricCardLabelLineHeight,
+      fontWeight: FONT_WEIGHTS.medium,
+      flexShrink: 1,
+      minWidth: 0,
+      includeFontPadding: false,
     },
     value: {
-        fontSize: SIZES.md,
-        fontWeight: FONT_WEIGHTS.semiBold,
+      flexShrink: 1,
+      minWidth: 0,
+      includeFontPadding: false,
     },
-    lockedContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: SPACING.xs,
+    valueCompact: {
+      fontSize: layout.metricCardValueFontSize,
+      lineHeight: layout.metricCardValueLineHeight,
+    },
+    valueText: {
+      fontSize: layout.metricCardValueFontSize,
+      lineHeight: layout.metricCardValueLineHeight,
+      alignSelf: 'stretch',
+    },
+    valueNumericWeight: {
+      fontWeight: FONT_WEIGHTS.bold,
+    },
+    valueTextWeight: {
+      fontWeight: FONT_WEIGHTS.semiBold,
+    },
+    lockedRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: SPACING.xs,
+      minWidth: 0,
     },
     blurOverlay: {
-        paddingHorizontal: SPACING.sm,
-        paddingVertical: 2,
-        borderRadius: BORDER_RADIUS.sm,
+      minWidth: layout.isCompact ? 64 : 72,
+      flexShrink: 1,
+      paddingHorizontal: SPACING.sm,
+      paddingVertical: layout.isCompact ? 3 : 4,
+      borderRadius: layout.standardRadius,
+      justifyContent: 'center',
     },
-    blurredText: {
-        fontSize: SIZES.md,
-        fontWeight: FONT_WEIGHTS.semiBold,
-        letterSpacing: 2,
+    lockedPlaceholder: {
+      width: layout.isCompact ? 62 : 72,
+      height: layout.isCompact ? 11 : 12,
+      borderRadius: 9999,
     },
     lockBadge: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
     },
-    premiumTag: {
-        paddingHorizontal: SPACING.sm,
-        paddingVertical: SPACING.xs,
-        borderRadius: BORDER_RADIUS.sm,
+    statusTag: {
+      maxWidth: 96,
+      borderRadius: 9999,
+      paddingHorizontal: SPACING.sm,
+      paddingVertical: layout.isCompact ? 3 : SPACING.xs,
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: layout.isCompact ? 'flex-start' : 'center',
+      flexShrink: 0,
     },
-    premiumText: {
-        fontSize: SIZES.xs,
-        fontWeight: FONT_WEIGHTS.bold,
-        letterSpacing: 0.5,
+    statusTagCompactRow: {
+      flexBasis: '100%',
     },
-});
+    statusText: {
+      fontSize: SIZES.xs,
+      lineHeight: layout.isCompact ? 14 : 15,
+      fontWeight: FONT_WEIGHTS.semiBold,
+      letterSpacing: layout.isCompact ? 0.35 : 0.45,
+      textAlign: 'center',
+      includeFontPadding: false,
+    },
+  });
 
 export default MetricCard;

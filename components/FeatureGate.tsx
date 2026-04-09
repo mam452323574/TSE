@@ -1,11 +1,12 @@
-import { useRef, useEffect, useState, useMemo, ReactNode } from 'react';
-import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { ReactNode, useMemo } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Crown, Lock } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS, SHADOWS } from '@/constants/theme';
+import { SIZES, SPACING, BORDER_RADIUS } from '@/constants/theme';
+import { hasPremiumAccessFromProfile } from '@/utils/subscription';
 
 interface FeatureGateProps {
   featureKey: string;
@@ -16,7 +17,6 @@ interface FeatureGateProps {
 }
 
 export function FeatureGate({
-  featureKey,
   featureName,
   featureDescription,
   children,
@@ -24,11 +24,11 @@ export function FeatureGate({
 }: FeatureGateProps) {
   const router = useRouter();
   const { userProfile } = useAuth();
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const { t } = useLanguage();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
-  const isPremium = userProfile?.account_tier === 'premium' || userProfile?.account_tier === 'admin';
+  const isPremium = hasPremiumAccessFromProfile(userProfile);
 
   const handleUpgrade = () => {
     router.push('/premium-upgrade');

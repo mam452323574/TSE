@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, Bell, Award, Sparkles, Save } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,10 +13,11 @@ import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 export default function NotificationSettingsScreen() {
   const router = useRouter();
-  const { userProfile, updateUserProfile } = useAuth();
+  const { userProfile, updateNotificationSettings } = useAuth();
   const { colors, isDark } = useTheme();
   const { t } = useLanguage();
-  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(colors, isDark, insets), [colors, insets, isDark]);
   const [saving, setSaving] = useState(false);
   const { showAlert, alertElement } = useCustomAlert();
 
@@ -42,9 +44,7 @@ export default function NotificationSettingsScreen() {
     try {
       setSaving(true);
 
-      await updateUserProfile({
-        notification_settings: settings,
-      });
+      await updateNotificationSettings(settings);
 
       showAlert(
         t('notification_settings.saved_title'),
@@ -169,7 +169,7 @@ export default function NotificationSettingsScreen() {
   );
 }
 
-const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean, insets: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -178,7 +178,7 @@ const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: SPACING.xxxl,
+    paddingTop: insets.top + SPACING.sm,
     paddingBottom: SPACING.md,
     paddingHorizontal: SPACING.page,
     backgroundColor: colors.cardBackground,
@@ -268,6 +268,7 @@ const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: SPACING.page,
-    paddingVertical: SPACING.xl,
+    paddingTop: SPACING.xl,
+    paddingBottom: SPACING.xl + insets.bottom,
   },
 });

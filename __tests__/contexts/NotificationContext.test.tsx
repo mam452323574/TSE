@@ -1,12 +1,43 @@
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NotificationProvider, useNotificationContext } from '@/contexts/NotificationContext';
 
-// Mock dependencies
 const mockSubscribe = jest.fn().mockReturnValue({ unsubscribe: jest.fn() });
 const mockSelect = jest.fn();
 const mockUpdate = jest.fn();
 const mockInsert = jest.fn();
+const mockScheduleDailyReminder = jest.fn().mockResolvedValue(undefined);
+const mockScheduleMotivationalNotification = jest.fn().mockResolvedValue(undefined);
+const mockScheduleLocalNotification = jest.fn().mockResolvedValue(undefined);
+const mockScheduleSuperScanReset = jest.fn().mockResolvedValue(undefined);
+const mockScheduleScanReadyNotification = jest.fn().mockResolvedValue(undefined);
+
+const mockAuthState: {
+  user: { id: string } | null;
+  userProfile:
+    | {
+        notification_settings: {
+          reminders: boolean;
+          achievements: boolean;
+          newContent: boolean;
+        };
+      }
+    | null;
+} = {
+  user: { id: 'user-123' },
+  userProfile: {
+    notification_settings: {
+      reminders: true,
+      achievements: true,
+      newContent: true,
+    },
+  },
+};
+
+const mockLocaleState = {
+  locale: 'fr',
+};
 
 jest.mock('@/services/supabase', () => ({
   supabase: {
@@ -14,7 +45,7 @@ jest.mock('@/services/supabase', () => ({
       on: jest.fn().mockReturnThis(),
       subscribe: mockSubscribe,
     })),
-    from: jest.fn((table: string) => ({
+    from: jest.fn(() => ({
       select: mockSelect,
       update: mockUpdate,
       insert: mockInsert,
@@ -23,30 +54,61 @@ jest.mock('@/services/supabase', () => ({
 }));
 
 jest.mock('@/contexts/AuthContext', () => ({
-  useAuth: () => ({
-    user: { id: 'user-123' },
+  useAuth: () => mockAuthState,
+}));
+
+jest.mock('@/contexts/LanguageContext', () => ({
+  useLanguage: () => ({
+    t: (key: string) => key,
+    locale: mockLocaleState.locale,
   }),
 }));
 
 jest.mock('@/hooks/useNotifications', () => ({
   useNotifications: () => ({
     expoPushToken: 'test-token',
-    scheduleLocalNotification: jest.fn().mockResolvedValue(undefined),
+    scheduleLocalNotification: mockScheduleLocalNotification,
+    scheduleDailyReminder: mockScheduleDailyReminder,
+    scheduleSuperScanReset: mockScheduleSuperScanReset,
+    scheduleMotivationalNotification: mockScheduleMotivationalNotification,
+    scheduleScanReadyNotification: mockScheduleScanReadyNotification,
   }),
 }));
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <NotificationProvider>{children}</NotificationProvider>
-);
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <NotificationProvider>{children}</NotificationProvider>
+    </QueryClientProvider>
+  );
+};
 
 describe('NotificationContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAuthState.user = { id: 'user-123' };
+    mockAuthState.userProfile = {
+      notification_settings: {
+        reminders: true,
+        achievements: true,
+        newContent: true,
+      },
+    };
+    mockLocaleState.locale = 'fr';
+
     mockSelect.mockReturnValue({
       eq: jest.fn().mockReturnValue({
         is: jest.fn().mockResolvedValue({ count: 0, error: null }),
-        single: jest.fn().mockResolvedValue({ data: null }),
-        maybeSingle: jest.fn().mockResolvedValue({ data: null }),
+        single: jest.fn().mockResolvedValue({ data: null, error: null }),
+        maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
       }),
     });
     mockUpdate.mockReturnValue({
@@ -58,27 +120,13 @@ describe('NotificationContext', () => {
   });
 
   it('provides default notification state', async () => {
-    const { result } = renderHook(() => useNotificationContext(), { wrapper });
+    const { result } = renderHook(() => useNotificationContext(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.hasUnreadNotifications).toBe(false);
       expect(result.current.notificationCount).toBe(0);
-    });
-  });
-
-  it('provides markNotificationAsRead function', async () => {
-    const { result } = renderHook(() => useNotificationContext(), { wrapper });
-
-    await waitFor(() => {
-      expect(typeof result.current.markNotificationAsRead).toBe('function');
-    });
-  });
-
-  it('provides checkForAchievements function', async () => {
-    const { result } = renderHook(() => useNotificationContext(), { wrapper });
-
-    await waitFor(() => {
-      expect(typeof result.current.checkForAchievements).toBe('function');
     });
   });
 
@@ -88,23 +136,10 @@ describe('NotificationContext', () => {
     }).toThrow('useNotificationContext must be used within a NotificationProvider');
   });
 
-  it('updates notification count when unread notifications change', async () => {
-    mockSelect.mockReturnValueOnce({
-      eq: jest.fn().mockReturnValue({
-        is: jest.fn().mockResolvedValue({ count: 5, error: null }),
-      }),
+  it('marks notifications as read through Supabase', async () => {
+    const { result } = renderHook(() => useNotificationContext(), {
+      wrapper: createWrapper(),
     });
-
-    const { result } = renderHook(() => useNotificationContext(), { wrapper });
-
-    await waitFor(() => {
-      // Initial state may vary based on mock
-      expect(typeof result.current.notificationCount).toBe('number');
-    });
-  });
-
-  it('can mark notification as read', async () => {
-    const { result } = renderHook(() => useNotificationContext(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.markNotificationAsRead).toBeDefined();
@@ -114,31 +149,43 @@ describe('NotificationContext', () => {
       await result.current.markNotificationAsRead('notification-123');
     });
 
-    // markNotificationAsRead should call supabase update
-  });
-
-  it('provides checkForAchievements function that can be called', async () => {
-    const { result } = renderHook(() => useNotificationContext(), { wrapper });
-
-    await waitFor(() => {
-      expect(result.current.checkForAchievements).toBeDefined();
-      expect(typeof result.current.checkForAchievements).toBe('function');
+    expect(mockUpdate).toHaveBeenCalledWith({
+      read_at: expect.any(String),
     });
   });
-});
 
-describe('NotificationContext - No User', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  it('dedupes startup notification scheduling for equivalent rerenders and reruns on locale change', async () => {
+    const { rerender } = renderHook(() => useNotificationContext(), {
+      wrapper: createWrapper(),
+    });
 
-  it('does not fetch notifications when no user', async () => {
-    jest.doMock('@/contexts/AuthContext', () => ({
-      useAuth: () => ({
-        user: null,
-      }),
-    }));
+    await waitFor(() => {
+      expect(mockScheduleDailyReminder).toHaveBeenCalledTimes(1);
+      expect(mockScheduleMotivationalNotification).toHaveBeenCalledTimes(1);
+    });
 
-    // Context would not fetch when no user is available
+    mockAuthState.userProfile = {
+      notification_settings: {
+        reminders: true,
+        achievements: true,
+        newContent: true,
+      },
+    };
+
+    rerender({});
+
+    await waitFor(() => {
+      expect(mockScheduleDailyReminder).toHaveBeenCalledTimes(1);
+      expect(mockScheduleMotivationalNotification).toHaveBeenCalledTimes(1);
+    });
+
+    mockLocaleState.locale = 'en';
+
+    rerender({});
+
+    await waitFor(() => {
+      expect(mockScheduleDailyReminder).toHaveBeenCalledTimes(2);
+      expect(mockScheduleMotivationalNotification).toHaveBeenCalledTimes(2);
+    });
   });
 });

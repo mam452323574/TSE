@@ -1,21 +1,43 @@
 import { supabase } from './supabase';
-import Constants from 'expo-constants';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { decode } from 'base64-arraybuffer';
 import { Platform } from 'react-native';
-import { DashboardData, AnalyticsData, AnalyticsPeriod, Product, ScanType, ScanEligibilityResponse, AnalysisType, AnalysisResult, ScanBodyResult, ScanFaceResult, ScanNutritionResult, SuperScanResult, BodyScoreHistoryItem, FaceScoreHistoryItem, NutritionHistoryItem, SuperScanHistoryItem } from '@/types';
-import { STORAGE_BUCKET_NAME, SCAN_TYPE_TO_ANALYSIS_TYPE, ANALYSIS_TYPE_LABELS, SCAN_TYPE_LABELS } from '@/constants/scan';
-import { N8nWebhookService, N8nAnalysisData } from './n8nWebhook';
+import { DashboardData, AnalyticsData, AnalyticsPeriod, Product, ScanType, ScanEligibilityResponse, AnalysisResult, ScanBodyResult, ScanFaceResult, ScanNutritionResult, SuperScanResult, BodyScoreHistoryItem, FaceScoreHistoryItem, NutritionHistoryItem, SuperScanHistoryItem, PremiumPotentialHistoryPoint, PremiumPotentialInputs, Scan, GamificationData } from '@/types';
+import { resolveGamification } from '@/constants/gamification';
+import { STORAGE_BUCKET_NAME } from '@/constants/scan';
+import {
+  buildAnalyzeScanRequest,
+  buildCanonicalScanImagePath,
+  buildCheckAndRecordScanRequest,
+} from '@/shared/scanContract';
+import { resolveFaceGlowScore } from '@/utils/faceGlow';
+import { logOperationalError } from '@/utils/observability';
+import { getRuntimeConfig, getSupabaseFunctionUrl } from './runtimeConfig';
 
-const SUPABASE_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const SUPABASE_URL = getRuntimeConfig().supabaseUrl;
+const GAMIFICATION_ASSET_BUCKET_NAME = 'gamification-assets';
 
 // Types d'erreurs pour une meilleure gestion
-export type ApiErrorType = 'NETWORK' | 'DATABASE' | 'VALIDATION' | 'AUTH' | 'ANALYSIS' | 'TYPE_MISMATCH' | 'UNKNOWN';
+export type ApiErrorType =
+  | 'NETWORK'
+  | 'TIMEOUT'
+  | 'DATABASE'
+  | 'VALIDATION'
+  | 'AUTH'
+  | 'ANALYSIS'
+  | 'TYPE_MISMATCH'
+  | 'UPLOAD'
+  | 'EDGE_FUNCTION'
+  | 'PROVIDER'
+  | 'UNKNOWN';
 
 export class ApiError extends Error {
   type: ApiErrorType;
   originalError?: unknown;
   context?: Record<string, unknown>;
+  code?: string;
+  status?: number;
+  requestId?: string;
 
   constructor(
     message: string,
@@ -35,9 +57,25 @@ export class ApiError extends Error {
       return (
         error.message.includes('Network request failed') ||
         error.message.includes('fetch failed') ||
+        error.message.includes('network request timed out') ||
         error.name === 'TypeError'
       );
     }
+    return false;
+  }
+
+  static isTimeoutError(error: unknown): boolean {
+    if (error instanceof ApiError) {
+      return error.type === 'TIMEOUT';
+    }
+
+    if (error instanceof Error) {
+      return (
+        error.name === 'AbortError' ||
+        error.message.toLowerCase().includes('timed out')
+      );
+    }
+
     return false;
   }
 
@@ -57,6 +95,499 @@ export interface ScanWithAnalysisResult {
   analysisError?: ApiError;
 }
 
+interface PremiumPotentialRpcRow {
+  scan_type: ScanType;
+  current_scan: Scan | null;
+  historical_average_30d: number | string | null;
+  scan_count_total: number | string;
+  recent_score_history?: unknown;
+}
+
+interface GamificationRpcRow {
+  scan_count?: number | string | null;
+  mascot_stage?: number | string | null;
+  mascot_filename?: string | null;
+  mascot_image_url?: string | null;
+}
+
+interface SupabaseErrorLike {
+  code?: string;
+  message?: string;
+  details?: string | null;
+  hint?: string | null;
+}
+
+interface FunctionErrorPayload {
+  success?: boolean;
+  error?: string;
+  code?: string;
+  request_id?: string;
+}
+
+interface StorageUploadErrorLike {
+  message?: string;
+  error?: string;
+  statusCode?: number;
+  status?: number;
+}
+
+interface InvokeAuthedFunctionOptions {
+  timeoutMs?: number;
+  context?: Record<string, unknown>;
+}
+
+const missingGamificationRpcWarnings = new Set<string>();
+
+function toSupabaseErrorLike(error: unknown): SupabaseErrorLike {
+  if (!error || typeof error !== 'object') {
+    return {};
+  }
+
+  return error as SupabaseErrorLike;
+}
+
+function isMissingGamificationStateRpcError(error: unknown) {
+  const supabaseError = toSupabaseErrorLike(error);
+  if (supabaseError.code !== 'PGRST202') {
+    return false;
+  }
+
+  const haystack = [
+    supabaseError.message,
+    supabaseError.details,
+    supabaseError.hint,
+  ]
+    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' ')
+    .toLowerCase();
+
+  return haystack.includes('get_user_gamification_state');
+}
+
+function warnMissingGamificationStateRpc(error: unknown) {
+  const supabaseError = toSupabaseErrorLike(error);
+  const warningId = JSON.stringify({
+    code: supabaseError.code ?? 'UNKNOWN',
+    message: supabaseError.message ?? '',
+    details: supabaseError.details ?? '',
+  });
+
+  if (missingGamificationRpcWarnings.has(warningId)) {
+    return;
+  }
+
+  missingGamificationRpcWarnings.add(warningId);
+  console.warn(
+    '[API] Gamification RPC unavailable, falling back to default state:',
+    {
+      code: supabaseError.code ?? 'UNKNOWN',
+      message: supabaseError.message ?? 'Unknown gamification RPC error',
+    }
+  );
+}
+
+function parsePremiumPotentialHistory(
+  payload: unknown,
+): PremiumPotentialHistoryPoint[] {
+  const rawPoints =
+    typeof payload === 'string'
+      ? (() => {
+          try {
+            return JSON.parse(payload);
+          } catch {
+            return [];
+          }
+        })()
+      : payload;
+
+  if (!Array.isArray(rawPoints)) {
+    return [];
+  }
+
+  return rawPoints
+    .map((item) => {
+      if (!item || typeof item !== 'object') {
+        return null;
+      }
+
+      const date =
+        typeof (item as { date?: unknown }).date === 'string'
+          ? (item as { date: string }).date
+          : null;
+      const rawScore = (item as { score?: unknown }).score;
+      const score =
+        typeof rawScore === 'number'
+          ? rawScore
+          : typeof rawScore === 'string'
+            ? Number(rawScore)
+            : NaN;
+
+      if (!date || Number.isNaN(score)) {
+        return null;
+      }
+
+      return { date, score };
+    })
+    .filter((item): item is PremiumPotentialHistoryPoint => item !== null);
+}
+
+function getGamificationAssetUrl(filename: string) {
+  return `${SUPABASE_URL}/storage/v1/object/public/${GAMIFICATION_ASSET_BUCKET_NAME}/${filename}`;
+}
+
+function resolveGamificationData(
+  payload: GamificationRpcRow | null | undefined,
+): GamificationData {
+  const gamification = resolveGamification(payload?.scan_count, {
+    mascotStage: payload?.mascot_stage,
+    mascotFilename: payload?.mascot_filename,
+    mascotImageUrl: payload?.mascot_image_url,
+  });
+
+  return {
+    ...gamification,
+    mascotImageUrl:
+      gamification.mascotImageUrl ||
+      getGamificationAssetUrl(gamification.mascotFilename),
+  };
+}
+
+function describeScanMetricsWriteError(error: unknown) {
+  const supabaseError = toSupabaseErrorLike(error);
+  const code = supabaseError.code ?? 'UNKNOWN';
+  const message = supabaseError.message ?? 'Unknown scan_metrics write error';
+
+  if (code === 'PGRST204') {
+    return {
+      category: 'schema_mismatch',
+      code,
+      message,
+      likelyCause:
+        'scan_metrics schema cache is missing the new Premium Potential columns on the active Supabase project.',
+      action:
+        'Apply the premium potential migration on the linked Supabase project and reload the PostgREST schema cache before retrying.',
+    };
+  }
+
+  if (code === '42P10') {
+    return {
+      category: 'missing_unique_constraint',
+      code,
+      message,
+      likelyCause:
+        'scan_metrics(scan_id) is not backed by a unique or exclusion constraint on the active Supabase project.',
+      action:
+        'Create the unique index or constraint on scan_metrics(scan_id) from the premium potential migration, then retry the upsert.',
+    };
+  }
+
+  if (
+    code === '42501' ||
+    message.toLowerCase().includes('row-level security') ||
+    message.toLowerCase().includes('permission denied')
+  ) {
+    return {
+      category: 'rls_or_permissions',
+      code,
+      message,
+      likelyCause:
+        'The authenticated client is missing UPDATE permission on scan_metrics or an RLS policy blocks the upsert.',
+      action:
+        'Verify the scan_metrics UPDATE policy introduced by the premium potential migration and confirm the client writes as the owning user.',
+    };
+  }
+
+  return {
+    category: 'unknown_database_error',
+    code,
+    message,
+    likelyCause: 'Unexpected database error while upserting scan_metrics.',
+    action: 'Inspect the PostgREST error details and the active database schema before retrying.',
+  };
+}
+
+async function getAuthenticatedSessionOrThrow() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new ApiError('api_errors.unauthorized', 'AUTH');
+  }
+
+  return session;
+}
+
+function readFunctionErrorPayload(value: unknown): FunctionErrorPayload {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {};
+  }
+
+  const payload = value as Record<string, unknown>;
+  return {
+    success:
+      typeof payload.success === 'boolean' ? payload.success : undefined,
+    error: typeof payload.error === 'string' ? payload.error : undefined,
+    code: typeof payload.code === 'string' ? payload.code : undefined,
+    request_id:
+      typeof payload.request_id === 'string' ? payload.request_id : undefined,
+  };
+}
+
+function isValidationErrorCode(code?: string) {
+  return Boolean(
+    code &&
+      (code.startsWith('invalid_') ||
+        code === 'payload_too_large' ||
+        code === 'text_too_long')
+  );
+}
+
+const ANALYZE_SCAN_PROVIDER_ERROR_CODES = new Set([
+  'scan_webhook_not_configured',
+  'analysis_provider_failed',
+  'analysis_failed',
+  'invalid_analysis_response',
+]);
+
+const ANALYZE_SCAN_UPLOAD_ERROR_CODES = new Set([
+  'scan_image_not_found',
+  'invalid_scan_image_type',
+]);
+
+const ANALYZE_SCAN_EDGE_FUNCTION_ERROR_CODES = new Set([
+  'scan_not_found',
+  'scan_persistence_failed',
+  'scan_refund_failed',
+]);
+
+export function isConnectivityApiError(error: unknown): error is ApiError {
+  if (error instanceof ApiError) {
+    return error.type === 'NETWORK' || error.type === 'TIMEOUT';
+  }
+
+  return ApiError.isNetworkError(error) || ApiError.isTimeoutError(error);
+}
+
+function resolveAnalyzeScanApiErrorType(
+  status: number,
+  code?: string,
+): ApiErrorType {
+  if (code && ANALYZE_SCAN_PROVIDER_ERROR_CODES.has(code)) {
+    return 'PROVIDER';
+  }
+
+  if (code && ANALYZE_SCAN_UPLOAD_ERROR_CODES.has(code)) {
+    return 'UPLOAD';
+  }
+
+  if (code && ANALYZE_SCAN_EDGE_FUNCTION_ERROR_CODES.has(code)) {
+    return 'EDGE_FUNCTION';
+  }
+
+  if (status === 502 || status === 503) {
+    return 'PROVIDER';
+  }
+
+  if (status >= 500) {
+    return 'EDGE_FUNCTION';
+  }
+
+  return 'UNKNOWN';
+}
+
+function resolveFunctionApiErrorType(
+  functionName: string,
+  status: number,
+  code?: string,
+): ApiErrorType {
+  if (code === 'analysis_type_mismatch' || code === 'scan_type_mismatch') {
+    return 'TYPE_MISMATCH';
+  }
+
+  if (
+    status === 401 ||
+    code === 'missing_authorization' ||
+    code === 'invalid_authorization' ||
+    code === 'invalid_authentication'
+  ) {
+    return 'AUTH';
+  }
+
+  if (status === 400 || status === 422 || isValidationErrorCode(code)) {
+    return 'VALIDATION';
+  }
+
+  if (functionName === 'check-and-record-scan' && status >= 500) {
+    return 'DATABASE';
+  }
+
+  if (functionName === 'analyze-scan') {
+    return resolveAnalyzeScanApiErrorType(status, code);
+  }
+
+  return 'UNKNOWN';
+}
+
+function createFunctionApiError(
+  functionName: string,
+  status: number,
+  payload: FunctionErrorPayload,
+) {
+  const apiError = new ApiError(
+    payload.error || `${functionName} failed (${status})`,
+    resolveFunctionApiErrorType(functionName, status, payload.code),
+    undefined,
+    {
+      functionName,
+      status,
+      code: payload.code,
+      stage:
+        functionName === 'check-and-record-scan'
+          ? 'eligibility'
+          : functionName === 'analyze-scan'
+            ? 'analysis'
+            : 'function',
+    },
+  );
+  apiError.code = payload.code;
+  apiError.status = status;
+  apiError.requestId = payload.request_id;
+  return apiError;
+}
+
+function normalizeScanEligibilityResponse(data: ScanEligibilityResponse) {
+  if (
+    data.remaining === undefined &&
+    typeof data.limit === 'number' &&
+    typeof data.current_count === 'number'
+  ) {
+    data.remaining = Math.max(0, data.limit - data.current_count);
+  }
+
+  if (
+    data.welcome_credits === undefined &&
+    typeof data.remaining_welcome_credits === 'number'
+  ) {
+    data.welcome_credits = Math.max(0, data.remaining_welcome_credits);
+  }
+
+  return data;
+}
+
+async function invokeAuthedFunction<TResponse>(
+  functionName: string,
+  payload: Record<string, unknown>,
+  options: InvokeAuthedFunctionOptions = {},
+) {
+  const session = await getAuthenticatedSessionOrThrow();
+  let response: Response;
+  const controller =
+    typeof options.timeoutMs === 'number' ? new AbortController() : null;
+  const timeoutId =
+    controller && typeof options.timeoutMs === 'number'
+      ? setTimeout(() => controller.abort(), options.timeoutMs)
+      : null;
+
+  try {
+    response = await fetch(getSupabaseFunctionUrl(functionName), {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json; charset=utf-8',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify(payload),
+      ...(controller ? { signal: controller.signal } : {}),
+    });
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
+    const timedOut =
+      ApiError.isTimeoutError(error) || controller?.signal.aborted === true;
+    const apiError = new ApiError(
+      timedOut
+        ? `${functionName} timed out after ${options.timeoutMs}ms`
+        : error instanceof Error
+          ? error.message
+          : 'Network request failed',
+      timedOut
+        ? 'TIMEOUT'
+        : ApiError.isNetworkError(error)
+          ? 'NETWORK'
+          : 'UNKNOWN',
+      error,
+      {
+        functionName,
+        timeout_ms: options.timeoutMs,
+        ...options.context,
+      },
+    );
+    if (timedOut) {
+      apiError.code = 'request_timeout';
+    }
+    throw apiError;
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  const rawResponseBody = await response.json().catch(() => ({}));
+  const responseBody = readFunctionErrorPayload(rawResponseBody);
+  if (!response.ok) {
+    throw createFunctionApiError(functionName, response.status, responseBody);
+  }
+
+  return rawResponseBody as TResponse;
+}
+
+function toStorageUploadErrorLike(error: unknown): StorageUploadErrorLike {
+  if (!error || typeof error !== 'object') {
+    return {};
+  }
+
+  return error as StorageUploadErrorLike;
+}
+
+function createUploadApiError(
+  error: unknown,
+  context: Record<string, unknown>,
+) {
+  const uploadError = toStorageUploadErrorLike(error);
+  const apiError = new ApiError(
+    uploadError.message || 'Scan image upload failed',
+    'UPLOAD',
+    error,
+    context,
+  );
+  if (typeof uploadError.error === 'string' && uploadError.error.length > 0) {
+    apiError.code = uploadError.error;
+  }
+  if (typeof uploadError.statusCode === 'number') {
+    apiError.status = uploadError.statusCode;
+  } else if (typeof uploadError.status === 'number') {
+    apiError.status = uploadError.status;
+  }
+  return apiError;
+}
+
+async function rollbackReservedScanAfterUploadFailure(scanId: string, scanType: ScanType) {
+  try {
+    await invokeAuthedFunction('cancel-scan-reservation', {
+      scan_id: scanId,
+      scan_type: scanType,
+    });
+  } catch (error) {
+    logOperationalError('[API] Failed to rollback reserved scan after upload error', error, {
+      scan_id: scanId,
+      scan_type: scanType,
+    });
+  }
+}
+
 export class ApiService {
   static async getDashboard(): Promise<DashboardData> {
     const { data: { user } } = await supabase.auth.getUser();
@@ -65,15 +596,80 @@ export class ApiService {
       throw new Error('api_errors.unauthorized');
     }
 
+    const userId = user.id;
+
+    {
+      const [
+        { data: globalScoreData, error: viewError },
+        { data: products, error: productsError },
+        { data: gamificationPayload, error: gamificationError },
+      ] = await Promise.all([
+        supabase
+          .from('user_current_global_score')
+          .select('global_score')
+          .eq('user_id', userId)
+          .maybeSingle(),
+        supabase
+          .from('recommended_products')
+          .select('*')
+          .eq('active', true)
+          .limit(5),
+        supabase
+          .rpc('get_user_gamification_state')
+          .maybeSingle(),
+      ]);
+
+      if (viewError) {
+        logOperationalError('[API] Failed to fetch global score', viewError, {
+          user_id: userId,
+        });
+      }
+
+      if (productsError) throw productsError;
+
+      if (gamificationError) {
+        if (isMissingGamificationStateRpcError(gamificationError)) {
+          warnMissingGamificationStateRpc(gamificationError);
+        } else {
+          logOperationalError('[API] Failed to fetch gamification state', gamificationError, {
+            user_id: userId,
+          });
+        }
+      }
+
+      const recommendedProducts: Product[] = (products || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        imageUrl: p.image_url,
+        benefits: p.benefits || [],
+        shopUrl: p.shop_url,
+      }));
+
+      return {
+        healthScore: globalScoreData?.global_score || 0,
+        calories: {
+          current: 0,
+          goal: 2000,
+        },
+        bodyfat: 0,
+        recommendedProducts,
+        gamification: resolveGamificationData(
+          gamificationError ? null : (gamificationPayload as GamificationRpcRow | null),
+        ),
+      };
+    }
+
     // 1. Récupérer le Global Score depuis la Vue SQL
     const { data: globalScoreData, error: viewError } = await supabase
       .from('user_current_global_score')
       .select('global_score')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .maybeSingle();
 
     if (viewError) {
-      console.error('[API] Error fetching global score:', viewError);
+      logOperationalError('[API] Failed to fetch global score', viewError, {
+        user_id: userId,
+      });
     }
 
     // 2. Récupérer les produits recommandés (inchangé)
@@ -105,6 +701,7 @@ export class ApiService {
       bodyfat: 0,
 
       recommendedProducts,
+      gamification: resolveGamificationData(null),
     };
   }
 
@@ -157,7 +754,9 @@ export class ApiService {
     const { data: scanMetrics, error: metricsError } = metricsResult;
     // Si la table n'existe pas encore, on continue sans erreur
     if (metricsError) {
-      console.error('[API] Error fetching scan_metrics:', metricsError);
+      logOperationalError('[API] Failed to fetch scan_metrics', metricsError, {
+        user_id: user.id,
+      });
     }
 
     const metrics = scanMetrics || [];
@@ -286,12 +885,13 @@ export class ApiService {
   static async saveMetricsToHistory(
     scanId: string,
     scanType: ScanType,
-    analysisResult: AnalysisResult | SuperScanResult
+    analysisResult: AnalysisResult | SuperScanResult,
+    recordedAt?: string | null
   ): Promise<void> {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      console.error('[API] saveMetricsToHistory: User not authenticated');
+      console.warn('[API] saveMetricsToHistory skipped: user not authenticated');
       return;
     }
 
@@ -300,7 +900,7 @@ export class ApiService {
       const metricsData: any = {
         user_id: user.id,
         scan_id: scanId,
-        recorded_at: new Date().toISOString(),
+        recorded_at: recordedAt ?? new Date().toISOString(),
       };
 
       // Mapper le scan_type au type d'analyse
@@ -309,41 +909,95 @@ export class ApiService {
       if (resultType === 'body') {
         const bodyResult = analysisResult as ScanBodyResult;
         metricsData.scan_type = 'body';
-        metricsData.body_score = bodyResult.body_score;
-        metricsData.body_fat_percentage = bodyResult.body_fat_percentage;
-        metricsData.waist_estimation_cm = bodyResult.waist_estimation_cm;
+        metricsData.body_score = Math.round(Number(bodyResult.body_score) || 0);
+        metricsData.body_fat_percentage = Math.round(Number(bodyResult.body_fat_percentage) || 0);
+        metricsData.waist_estimation_cm = Math.round(Number(bodyResult.waist_estimation_cm) || 0);
+        metricsData.body_metabolic_age = Math.round(Number(bodyResult.metabolic_age) || 0);
+        metricsData.body_strength_index = Math.round(Number(bodyResult.strength_index) || 0);
       } else if (resultType === 'face') {
         const faceResult = analysisResult as ScanFaceResult;
         metricsData.scan_type = 'face';
-        metricsData.face_score = faceResult.face_score;
-        metricsData.skin_quality_score = faceResult.skin_quality_score;
-        metricsData.fatigue_level = faceResult.fatigue_level;
+        metricsData.face_score = Math.round(Number(faceResult.face_score) || 0);
+        metricsData.skin_quality_score = Math.round(Number(faceResult.skin_quality_score) || 0);
+        metricsData.fatigue_level = Math.round(Number(faceResult.fatigue_level) || 0);
+        metricsData.face_symmetry_percentage = Math.round(Number(faceResult.symmetry_percentage) || 0);
+        const energyScore = resolveFaceGlowScore(faceResult);
+        metricsData.face_energy_score = energyScore != null ? Math.round(Number(energyScore)) : null;
       } else if (resultType === 'nutrition') {
         const nutritionResult = analysisResult as ScanNutritionResult;
         metricsData.scan_type = 'nutrition';
-        metricsData.plate_health_score = nutritionResult.plate_health_score;
-        metricsData.calories_estimate = nutritionResult.calories_estimate;
-        metricsData.protein_grams = nutritionResult.protein_grams;
+        metricsData.plate_health_score = Math.round(Number(nutritionResult.plate_health_score) || 0);
+        metricsData.calories_estimate = Math.round(Number(nutritionResult.calories_estimate) || 0);
+        metricsData.protein_grams = Math.round(Number(nutritionResult.protein_grams) || 0);
+        metricsData.nutrition_satiety_index = Math.round(Number(nutritionResult.satiety_index) || 0);
       } else if (resultType === 'super_health_v2') {
         const superResult = analysisResult as SuperScanResult;
         metricsData.scan_type = 'super';
-        metricsData.global_risk_score = superResult.global_risk_score;
+        metricsData.global_risk_score = Math.round(Number(superResult.global_risk_score) || 0);
       } else {
-        console.warn('[API] saveMetricsToHistory: Unknown scan type:', resultType);
+        console.warn('[API] saveMetricsToHistory skipped: unknown scan type', {
+          requested_scan_type: scanType,
+          analysis_scan_type: resultType,
+        });
         return;
       }
 
       const { error } = await supabase
         .from('scan_metrics')
-        .insert(metricsData);
+        .upsert(metricsData, { onConflict: 'scan_id' });
 
       if (error) {
         // Ne pas faire échouer le scan si l'insertion des métriques échoue
-        console.error('[API] saveMetricsToHistory error:', error);
+        console.error('[API] saveMetricsToHistory failed:', {
+          scanId,
+          requestedScanType: scanType,
+          analysisScanType: resultType,
+          ...describeScanMetricsWriteError(error),
+        });
       }
     } catch (error) {
-      console.error('[API] saveMetricsToHistory exception:', error);
+      logOperationalError('[API] saveMetricsToHistory crashed', error, {
+        scan_id: scanId,
+        scan_type: scanType,
+      });
     }
+  }
+
+  static async getPremiumPotentialData(
+    scanType: ScanType,
+    scanId: string | null = null
+  ): Promise<PremiumPotentialInputs> {
+    const { data, error } = await supabase
+      .rpc('get_premium_potential_data', {
+        p_scan_type: scanType,
+        p_scan_id: scanId,
+      })
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    const row = data as PremiumPotentialRpcRow | null;
+
+    if (!row) {
+      return {
+        scanType,
+        currentScan: null,
+        historicalAverage30d: null,
+        scanCountTotal: 0,
+        recentScoreHistory: [],
+      };
+    }
+
+    return {
+      scanType: row.scan_type,
+      currentScan: row.current_scan ?? null,
+      historicalAverage30d:
+        row.historical_average_30d === null ? null : Number(row.historical_average_30d),
+      scanCountTotal: Number(row.scan_count_total ?? 0),
+      recentScoreHistory: parsePremiumPotentialHistory(row.recent_score_history),
+    };
   }
 
   static async getRecipes() {
@@ -367,114 +1021,21 @@ export class ApiService {
   }
 
   static async checkScanEligibility(scanType: ScanType): Promise<ScanEligibilityResponse> {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      throw new Error('api_errors.unauthorized');
-    }
-
-    const response = await fetch(
-      `${SUPABASE_URL}/functions/v1/check-and-record-scan`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ scanType }),
-      }
+    const data = await invokeAuthedFunction<ScanEligibilityResponse>(
+      'check-and-record-scan',
+      buildCheckAndRecordScanRequest(scanType),
     );
 
-    if (!response.ok) {
-      const error = await response.json();
-
-      // FALLBACK: Si l'erreur est "Invalid scan type" pour "super", on gère localement
-      if (scanType === 'super' && error.error === 'Invalid scan type') {
-        console.warn('[API] Backend rejected super scan. Using client-side fallback.');
-
-        // Créer l'entrée scan directement
-        const { data: scanRecord, error: scanError } = await supabase
-          .from('scans')
-          .insert({
-            user_id: session.user.id,
-            scan_type: scanType,
-          })
-          .select('id')
-          .single();
-
-        if (scanError) throw scanError;
-
-        return {
-          success: true,
-          allowed: true,
-          message: 'Scan autorisé (fallback)',
-          current_count: 0,
-          limit: 1, // Suppose premium limit
-          welcome_credits: 0,
-          scan_id: scanRecord.id,
-        };
-      }
-
-      throw new Error(error.error || 'Failed to check scan eligibility');
-    }
-
-    const data: ScanEligibilityResponse = await response.json();
-
-    // Calculer 'remaining' si absent mais limit et current_count sont présents
-    if (data.remaining === undefined && typeof data.limit === 'number' && typeof data.current_count === 'number') {
-      data.remaining = Math.max(0, data.limit - data.current_count);
-    }
-
-    return data;
+    return normalizeScanEligibilityResponse(data);
   }
 
   static async checkScanEligibilityOnly(scanType: ScanType): Promise<ScanEligibilityResponse> {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      throw new Error('api_errors.unauthorized');
-    }
-
-    const response = await fetch(
-      `${SUPABASE_URL}/functions/v1/check-and-record-scan`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ scanType, checkOnly: true }),
-      }
+    const data = await invokeAuthedFunction<ScanEligibilityResponse>(
+      'check-and-record-scan',
+      buildCheckAndRecordScanRequest(scanType, { checkOnly: true }),
     );
 
-    if (!response.ok) {
-      const error = await response.json();
-
-      // FALLBACK: Si l'erreur est "Invalid scan type" pour "super", on gère localement
-      if (scanType === 'super' && error.error === 'Invalid scan type') {
-        console.warn('[API] Backend rejected super scan check. Using client-side fallback.');
-        return {
-          success: true,
-          allowed: true, // Just allow it for testing
-          message: 'Disponible (fallback)',
-          current_count: 0,
-          limit: 1,
-          welcome_credits: 0,
-        };
-      }
-
-      throw new Error(error.error || 'Failed to check scan eligibility');
-    }
-
-    const data: ScanEligibilityResponse = await response.json();
-
-    // Calculer 'remaining' si absent mais limit et current_count sont présents
-    if (data.remaining === undefined && typeof data.limit === 'number' && typeof data.current_count === 'number') {
-      data.remaining = Math.max(0, data.limit - data.current_count);
-    }
-
-
-    return data;
+    return normalizeScanEligibilityResponse(data);
   }
 
   static async getNextAvailableScanDate(scanType: ScanType): Promise<number | null> {
@@ -482,145 +1043,10 @@ export class ApiService {
       const result = await this.checkScanEligibilityOnly(scanType);
       return result.next_available_date || null;
     } catch (error) {
-      console.error('Error getting next scan date:', error);
+      logOperationalError('[API] Failed to get next available scan date', error, {
+        scan_type: scanType,
+      });
       return null;
-    }
-  }
-
-  /**
-   * Rembourse un crédit de scan en supprimant l'entrée du scan
-   * et en restaurant le crédit de l'utilisateur.
-   * Utilisé quand l'analyse n8n échoue ou retourne un type incorrect.
-   * 
-   * @param scanId - ID du scan à rembourser
-   * @param scanType - Type de scan (health, body, nutrition)
-   * @param usedWelcomeCredit - true si un crédit de bienvenue a été utilisé, false sinon
-   */
-  static async refundScanCredit(scanId: string, scanType: ScanType, usedWelcomeCredit: boolean): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      throw new ApiError('Utilisateur non authentifié', 'AUTH');
-    }
-
-    try {
-      // 1. Récupérer les informations du scan pour vérifier qu'il appartient à l'utilisateur
-      const { data: scan, error: fetchError } = await supabase
-        .from('scans')
-        .select('id, user_id, scan_type, created_at')
-        .eq('id', scanId)
-        .eq('user_id', user.id)
-        .single();
-
-      if (fetchError || !scan) {
-        console.error('[API] Scan non trouvé pour remboursement:', { scanId, error: fetchError });
-        throw new ApiError(
-          'Scan non trouvé pour le remboursement',
-          'DATABASE',
-          fetchError,
-          { scanId, userId: user.id }
-        );
-      }
-
-      // 2. Supprimer le scan de la base de données
-      const { error: deleteError } = await supabase
-        .from('scans')
-        .delete()
-        .eq('id', scanId)
-        .eq('user_id', user.id);
-
-      if (deleteError) {
-        console.error('[API] Erreur lors de la suppression du scan:', deleteError);
-        throw new ApiError(
-          'Erreur lors de la suppression du scan',
-          'DATABASE',
-          deleteError,
-          { scanId, userId: user.id }
-        );
-      }
-
-      // 3. Restaurer le crédit selon le mode de débit utilisé
-      const { data: profile, error: profileFetchError } = await supabase
-        .from('user_profiles')
-        .select('welcome_credits, scan_usage')
-        .eq('id', user.id)
-        .single();
-
-      if (profileFetchError) {
-        console.error('[API] Erreur lors de la récupération du profil:', profileFetchError);
-        // Ne pas throw ici - le scan est déjà supprimé, on log juste l'erreur
-        return;
-      }
-
-      if (usedWelcomeCredit) {
-        // Cas 1: Rembourser un welcome_credit
-        const currentCredits = profile?.welcome_credits || { health: 0, body: 0, nutrition: 0 };
-        const updatedCredits = {
-          ...currentCredits,
-          [scanType]: (currentCredits[scanType] || 0) + 1,
-        };
-
-        const { error: updateError } = await supabase
-          .from('user_profiles')
-          .update({ welcome_credits: updatedCredits })
-          .eq('id', user.id);
-
-        if (updateError) {
-          console.error('[API] Erreur lors de la restauration du welcome_credit:', updateError);
-          return;
-        }
-      } else {
-        // Cas 2: Retirer le timestamp de scan_usage
-        const currentScanUsage = profile?.scan_usage || {
-          health: { last_scan_date: null, scan_timestamps: [] },
-          body: { last_scan_date: null, scan_timestamps: [] },
-          nutrition: { last_scan_date: null, scan_timestamps: [] },
-        };
-
-        const scanRecord = currentScanUsage[scanType] || { last_scan_date: null, scan_timestamps: [] };
-        const timestamps = scanRecord.scan_timestamps || [];
-
-        // Retirer le timestamp correspondant au scan (basé sur created_at)
-        const scanCreatedAt = scan.created_at;
-        const updatedTimestamps = timestamps.filter((ts: string) => ts !== scanCreatedAt);
-
-        // Si le timestamp exact n'est pas trouvé, retirer le dernier
-        const finalTimestamps = updatedTimestamps.length < timestamps.length
-          ? updatedTimestamps
-          : timestamps.slice(0, -1);
-
-        const updatedScanUsage = {
-          ...currentScanUsage,
-          [scanType]: {
-            ...scanRecord,
-            scan_timestamps: finalTimestamps,
-            // Mettre à jour last_scan_date si nécessaire
-            last_scan_date: finalTimestamps.length > 0
-              ? finalTimestamps[finalTimestamps.length - 1]
-              : null,
-          },
-        };
-
-        const { error: updateError } = await supabase
-          .from('user_profiles')
-          .update({ scan_usage: updatedScanUsage })
-          .eq('id', user.id);
-
-        if (updateError) {
-          console.error('[API] Erreur lors de la restauration du scan_usage:', updateError);
-          return;
-        }
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw new ApiError(
-        'Erreur lors du remboursement du crédit',
-        'UNKNOWN',
-        error,
-        { scanId, scanType, userId: user.id }
-      );
     }
   }
 
@@ -628,25 +1054,45 @@ export class ApiService {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      throw new Error('api_errors.unauthorized');
+      throw new ApiError('api_errors.unauthorized', 'AUTH', undefined, {
+        scanType,
+        stage: 'reservation',
+      });
     }
 
     const eligibility = await this.checkScanEligibility(scanType);
     const hasWelcomeCredits = (eligibility.welcome_credits || 0) > 0;
     const canScan = eligibility.allowed || hasWelcomeCredits;
     if (!canScan) {
-      throw new Error(eligibility.message || 'Scan non autorise');
+      throw new ApiError(
+        eligibility.message || 'Scan non autorise',
+        'VALIDATION',
+        undefined,
+        {
+          scanType,
+          stage: 'reservation',
+          code: eligibility.code,
+          request_id: eligibility.request_id,
+        },
+      );
     }
 
     if (!eligibility.scan_id) {
-      throw new Error('api_errors.server');
+      throw new ApiError(
+        'Scan reservation did not return a scan_id',
+        'DATABASE',
+        undefined,
+        {
+          scanType,
+          stage: 'reservation',
+        },
+      );
     }
 
     // Utiliser ImageManipulator pour normaliser et obtenir le base64
     // Fonctionne avec tous les types d'URIs (file://, content://, etc.)
 
     let base64 = '';
-    const fileExt = 'jpg';
 
     if (Platform.OS === 'web') {
       try {
@@ -682,14 +1128,18 @@ export class ApiService {
           };
 
           img.onerror = (err) => {
-            console.error('[API] Image failed to load', err);
+            logOperationalError('[API] Failed to load image for processing', err, {
+              scan_type: scanType,
+            });
             reject(new Error('Failed to load image for processing'));
           };
 
           img.src = imageUri;
         });
-      } catch (e) {
-        console.error('[API] Web image processing failed:', e);
+      } catch (error) {
+        logOperationalError('[API] Web image processing failed', error, {
+          scan_type: scanType,
+        });
         throw new Error('api_errors.image_processing_failed');
       }
     } else {
@@ -709,14 +1159,15 @@ export class ApiService {
           throw new Error('api_errors.server');
         }
         base64 = manipulatedImage.base64;
-      } catch (e) {
-        console.error('[API] Native image processing failed:', e);
-        throw e;
+      } catch (error) {
+        logOperationalError('[API] Native image processing failed', error, {
+          scan_type: scanType,
+        });
+        throw error;
       }
     }
 
-    const timestamp = Date.now();
-    const fileName = `${user.id}/${timestamp}.${fileExt}`;
+    const fileName = buildCanonicalScanImagePath(user.id, eligibility.scan_id);
 
     // Upload avec ArrayBuffer décodé depuis base64
     const { error: uploadError } = await supabase.storage
@@ -726,133 +1177,73 @@ export class ApiService {
         upsert: false,
       });
 
-    if (uploadError) throw uploadError;
-
-    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-      .from(STORAGE_BUCKET_NAME)
-      .createSignedUrl(fileName, 3600); // URL valide 1 heure
-
-    if (signedUrlError || !signedUrlData?.signedUrl) {
-      throw new Error('Impossible de générer une URL signée pour l\'image');
+    if (uploadError) {
+      await rollbackReservedScanAfterUploadFailure(eligibility.scan_id, scanType);
+      throw createUploadApiError(uploadError, {
+        scanType,
+        scan_id: eligibility.scan_id,
+        image_path: fileName,
+        bucket: STORAGE_BUCKET_NAME,
+        stage: 'upload',
+      });
     }
 
-    const { data, error } = await supabase
-      .from('scans')
-      .update({ image_url: signedUrlData.signedUrl })
-      .eq('id', eligibility.scan_id)
-      .eq('user_id', user.id)
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    // Retourner le scan avec l'info si un welcome credit a été utilisé + le base64 pour n8n
     return {
-      ...data,
-      _usedWelcomeCredit: eligibility.used_welcome_credit || false,
-      _imageBase64: `data:image/jpeg;base64,${base64}`,
+      id: eligibility.scan_id,
+      user_id: user.id,
+      scan_type: scanType,
+      image_url: null,
+      image_path: fileName,
+      used_welcome_credit: eligibility.used_welcome_credit ?? false,
+      created_at: new Date().toISOString(),
     };
   }
 
-  static async analyzeScanWithN8n(scanId: string, imageBase64: string, scanType: ScanType, language: string = 'fr') {
-    // Validation des paramètres
+  static async analyzeScan(
+    scanId: string,
+    scanType: ScanType,
+    language: string = 'fr',
+    options: { timeoutMs?: number } = {},
+  ) {
     if (!scanId || typeof scanId !== 'string') {
       throw new ApiError(
         'api_errors.validation',
         'VALIDATION',
         undefined,
-        { scanId, imageBase64: '[base64]', scanType }
+        { scanId, scanType, stage: 'analysis' }
       );
     }
-
-    if (!imageBase64 || typeof imageBase64 !== 'string' || !imageBase64.startsWith('data:image/')) {
-      throw new ApiError(
-        'api_errors.validation',
-        'VALIDATION',
-        undefined,
-        { scanId, imageBase64: '[invalid]', scanType }
-      );
-    }
-
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      throw new ApiError('api_errors.unauthorized', 'AUTH');
-    }
-
-    const context = { scanId, imageBase64: '[base64]', scanType, userId: user.id };
 
     try {
-
-      const analysisResult = await N8nWebhookService.analyzeScan(
-        imageBase64,
-        user.id,
-        scanType,
-        language
+      const result = await invokeAuthedFunction<{ success: boolean; scan: Scan }>(
+        'analyze-scan',
+        buildAnalyzeScanRequest(scanId, scanType, language),
+        {
+          timeoutMs: options.timeoutMs ?? 70000,
+          context: {
+            scanId,
+            scanType,
+            stage: 'analysis',
+          },
+        },
       );
 
-      if (!analysisResult.success || !analysisResult.data) {
-        throw new ApiError(
-          analysisResult.error || 'L\'analyse a échoué sans données',
-          'ANALYSIS',
-          undefined,
-          { ...context, analysisResult }
-        );
-      }
-
-      const { data: updateData, error: updateError } = await supabase
-        .from('scans')
-        .update({
-          analysis_result: analysisResult.data,
-          analyzed_at: new Date().toISOString(),
-        })
-        .eq('id', scanId)
-        .select()
-        .single();
-
-      if (updateError) {
-        const errorType = ApiError.isDatabaseError(updateError) ? 'DATABASE' : 'UNKNOWN';
-        throw new ApiError(
-          `Erreur lors de la sauvegarde de l'analyse: ${updateError.message}`,
-          errorType,
-          updateError,
-          { ...context, updateError }
-        );
-      }
-
-      return updateData;
+      return result.scan;
     } catch (error) {
-      // Si c'est déjà une ApiError, on la propage
       if (error instanceof ApiError) {
-        console.error('[API] Erreur analyse N8n:', {
-          type: error.type,
-          message: error.message,
-          context: error.context
-        });
         throw error;
-      }
-
-      // Sinon, on détermine le type d'erreur
-      let errorType: ApiErrorType = 'UNKNOWN';
-      if (ApiError.isNetworkError(error)) {
-        errorType = 'NETWORK';
-      } else if (ApiError.isDatabaseError(error)) {
-        errorType = 'DATABASE';
       }
 
       const apiError = new ApiError(
         error instanceof Error ? error.message : 'Erreur inconnue lors de l\'analyse',
-        errorType,
+        ApiError.isTimeoutError(error)
+          ? 'TIMEOUT'
+          : ApiError.isNetworkError(error)
+            ? 'NETWORK'
+            : 'EDGE_FUNCTION',
         error,
-        context
+        { scanId, scanType, stage: 'analysis' }
       );
-
-      console.error('[API] Erreur analyse N8n:', {
-        type: apiError.type,
-        message: apiError.message,
-        originalError: error
-      });
-
       throw apiError;
     }
   }
@@ -868,133 +1259,31 @@ export class ApiService {
       );
     }
 
-    console.log('[API] Création du scan avec analyse:', { scanType });
-    console.log('[LANG-DEBUG] createScanWithAnalysis language:', language);
-
     // Étape 1: Créer le scan (crédit débité)
     const scan = await this.createScan(imageUri, scanType);
 
     try {
-      // Étape 2: Appeler n8n pour l'analyse
-      console.log('[API] Démarrage analyse N8n:', { scanId: scan.id, scanType });
-
-      const analysisResult = await N8nWebhookService.analyzeScan(
-        scan._imageBase64,
-        scan.user_id,
+      const updateData = await this.analyzeScan(
+        scan.id,
         scanType,
         language
       );
 
-      // Étape 3: Vérifier success === true
-      if (!analysisResult.success || !analysisResult.data) {
-        console.log('[API] Analyse n8n échouée, remboursement du crédit...', {
-          success: analysisResult.success,
-          error: analysisResult.error
-        });
-
-        // Rembourser le crédit
-        await this.refundScanCredit(scan.id, scanType, scan._usedWelcomeCredit);
-
-        return {
-          scan,
-          analysisSucceeded: false,
-          analysisError: new ApiError(
-            analysisResult.error || "Oups, l'image n'a pas pu être analysée. Vérifiez la netteté et réessayez. Aucun crédit n'a été débité.",
-            'ANALYSIS',
-            undefined,
-            { scanId: scan.id, analysisResult }
-          ),
-        };
+      if (updateData?.analysis_result) {
+      await this.saveMetricsToHistory(
+        scan.id,
+        scanType,
+          updateData.analysis_result as AnalysisResult | SuperScanResult,
+        updateData?.analyzed_at ?? null
+      );
       }
-
-      // Étape 4: Vérifier que data.scan_type correspond au scanType attendu
-      const expectedAnalysisType = SCAN_TYPE_TO_ANALYSIS_TYPE[scanType];
-      // TypeScript ne sait pas que data est AnalysisResult ici, on cast
-      const analysisData = analysisResult.data as any;
-      const actualAnalysisType = analysisData.scan_type;
-
-      if (actualAnalysisType !== expectedAnalysisType) {
-        console.log('[API] Type d\'analyse incorrect, remboursement du crédit...', {
-          expected: expectedAnalysisType,
-          actual: actualAnalysisType,
-        });
-
-        // Rembourser le crédit
-        await this.refundScanCredit(scan.id, scanType, scan._usedWelcomeCredit);
-
-        const expectedLabel = ANALYSIS_TYPE_LABELS[expectedAnalysisType];
-        // Safely handle potentially undefined label
-        const actualLabel = ANALYSIS_TYPE_LABELS[actualAnalysisType as AnalysisType] || actualAnalysisType || 'Inconnu';
-
-        return {
-          scan,
-          analysisSucceeded: false,
-          analysisError: new ApiError(
-            `Type détecté incorrect : ${actualLabel} au lieu de ${expectedLabel}. Veuillez prendre une photo correspondant au type de scan sélectionné (${SCAN_TYPE_LABELS[scanType]}). Aucun crédit n'a été débité.`,
-            'TYPE_MISMATCH',
-            undefined,
-            {
-              scanId: scan.id,
-              expectedType: expectedAnalysisType,
-              actualType: actualAnalysisType,
-              analysisResult
-            }
-          ),
-        };
-      }
-
-      // Étape 5: Succès - Sauvegarder analysis_result en BDD
-      console.log('[API] Analyse N8n réussie, mise à jour de la base de données...');
-
-      const { data: updateData, error: updateError } = await supabase
-        .from('scans')
-        .update({
-          analysis_result: analysisResult.data,
-          analyzed_at: new Date().toISOString(),
-        })
-        .eq('id', scan.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        console.error('[API] Erreur lors de la sauvegarde de l\'analyse:', updateError);
-        // Ne pas rembourser ici - l'analyse a réussi, juste la sauvegarde a échoué
-        // L'utilisateur a quand même bénéficié de l'analyse
-        throw new ApiError(
-          `Erreur lors de la sauvegarde de l'analyse: ${updateError.message}`,
-          'DATABASE',
-          updateError,
-          { scanId: scan.id }
-        );
-      }
-
-      console.log('[API] Analyse sauvegardée avec succès:', { scanId: scan.id });
-
-      // Étape 6: Sauvegarder les métriques pour l'historique/graphiques
-      await this.saveMetricsToHistory(scan.id, scanType, analysisResult.data as AnalysisResult | SuperScanResult);
 
       return {
         scan: updateData,
         analysisSucceeded: true,
       };
     } catch (error) {
-      // Si c'est déjà une ApiError avec remboursement effectué, on la propage
       if (error instanceof ApiError) {
-        // Les erreurs ANALYSIS et TYPE_MISMATCH ont déjà remboursé
-        if (error.type !== 'ANALYSIS' && error.type !== 'TYPE_MISMATCH') {
-          console.error('[API] Erreur inattendue, tentative de remboursement...', {
-            type: error.type,
-            message: error.message,
-          });
-
-          try {
-            await this.refundScanCredit(scan.id, scanType, scan._usedWelcomeCredit);
-            error.message = error.message + " Aucun crédit n'a été débité.";
-          } catch (refundError) {
-            console.error('[API] Échec du remboursement:', refundError);
-          }
-        }
-
         return {
           scan,
           analysisSucceeded: false,
@@ -1002,17 +1291,8 @@ export class ApiService {
         };
       }
 
-      // Erreur non gérée - tenter un remboursement
-      console.error('[API] Erreur inconnue, tentative de remboursement...', error);
-
-      try {
-        await this.refundScanCredit(scan.id, scanType, scan._usedWelcomeCredit);
-      } catch (refundError) {
-        console.error('[API] Échec du remboursement:', refundError);
-      }
-
       const apiError = new ApiError(
-        (error instanceof Error ? error.message : 'Erreur inconnue lors de l\'analyse') + " Aucun crédit n'a été débité.",
+        error instanceof Error ? error.message : 'Erreur inconnue lors de l\'analyse',
         'UNKNOWN',
         error,
         { scanId: scan.id, scanType }
@@ -1024,14 +1304,5 @@ export class ApiService {
         analysisError: apiError,
       };
     }
-  }
-
-  /**
-   * Version legacy de createScanWithAnalysis qui retourne juste le scan
-   * @deprecated Utiliser createScanWithAnalysis à la place
-   */
-  static async createScanWithAnalysisLegacy(imageUri: string, scanType: ScanType, language: string) {
-    const result = await this.createScanWithAnalysis(imageUri, scanType, language);
-    return result.scan;
   }
 }

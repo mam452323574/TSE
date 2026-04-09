@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import { Redirect } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useStartupDiagnostics } from '@/contexts/StartupDiagnosticsContext';
+import { usePostSignupOnboardingPending } from '@/hooks/usePostSignupOnboardingPending';
 
 /**
  * Point d'entrée de l'application
@@ -10,9 +13,38 @@ import { useTheme } from '@/contexts/ThemeContext';
 export default function Index() {
   const { user, loading, userProfile, isEmailVerified } = useAuth();
   const { colors } = useTheme();
+  const { markStartup } = useStartupDiagnostics();
+  const {
+    isPending: isPostSignupOnboardingPending,
+    isLoading: isPostSignupOnboardingPendingLoading,
+  } = usePostSignupOnboardingPending(user?.id);
+  const shouldWaitForOnboardingDecision =
+    !!user &&
+    isEmailVerified &&
+    !!userProfile?.username &&
+    !userProfile?.has_seen_tutorial &&
+    isPostSignupOnboardingPendingLoading;
+  const shouldShowPostSignupOnboarding =
+    !!user &&
+    isEmailVerified &&
+    !!userProfile?.username &&
+    !userProfile?.has_seen_tutorial &&
+    isPostSignupOnboardingPending;
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    markStartup('index-rendered', {
+      hasSession: !!user,
+      hasProfile: !!userProfile,
+      isEmailVerified,
+    });
+  }, [isEmailVerified, loading, markStartup, user, userProfile]);
 
   // Attendre le chargement de l'auth
-  if (loading) {
+  if (loading || shouldWaitForOnboardingDecision) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -33,6 +65,10 @@ export default function Index() {
   // Utilisateur connecté mais pas de username
   if (isEmailVerified && !userProfile?.username) {
     return <Redirect href="/username-setup" />;
+  }
+
+  if (shouldShowPostSignupOnboarding) {
+    return <Redirect href={'/post-signup-onboarding' as any} />;
   }
 
   // Utilisateur complètement connecté → Tabs

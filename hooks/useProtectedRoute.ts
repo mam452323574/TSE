@@ -1,109 +1,161 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter, useSegments, useRootNavigationState } from 'expo-router';
-import { Alert } from 'react-native';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useStartupDiagnostics } from '@/contexts/StartupDiagnosticsContext';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { usePostSignupOnboardingPending } from '@/hooks/usePostSignupOnboardingPending';
 import {
   isPublicRoute,
+  isSharedRoute,
   isEmailVerificationRoute,
   isProfileSetupRoute,
+  isPostSignupOnboardingRoute,
   isProtectedRoute,
   isSpecialRoute,
 } from '@/constants/routes';
 
-// Configuration de la détection de boucles
 const LOOP_DETECTION = {
   THRESHOLD: 5,
   TIME_WINDOW: 1000,
 } as const;
 
+const SAME_REDIRECT_DEBOUNCE_MS = 500;
+
 interface NavigationState {
   forceLogout: boolean;
 }
 
-/**
- * Hook personnalisé pour gérer la navigation protégée
- * Gère les redirections selon l'état d'authentification et détecte les boucles
- */
+interface RouteState {
+  isRootEntry: boolean;
+  isPublic: boolean;
+  isShared: boolean;
+  isEmailVerification: boolean;
+  isProfileSetup: boolean;
+  isPostSignupOnboarding: boolean;
+  isProtected: boolean;
+  isSpecial: boolean;
+  segment: string;
+}
+
 export function useProtectedRoute() {
   const { user, userProfile, loading, isEmailVerified, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const { markStartup } = useStartupDiagnostics();
+  const { showAlert, alertElement } = useCustomAlert();
   const segments = useSegments();
   const router = useRouter();
   const navigationState = useRootNavigationState();
+  const {
+    isPending: isPostSignupOnboardingPending,
+    isLoading: isPostSignupOnboardingPendingLoading,
+  } = usePostSignupOnboardingPending(user?.id);
 
   const [state, setState] = useState<NavigationState>({
     forceLogout: false,
   });
 
   const lastRedirectTime = useRef<number>(0);
+  const lastRedirectSignatureRef = useRef<string>('');
   const redirectCountRef = useRef<number>(0);
   const loopDetectedRef = useRef<boolean>(false);
+  const routeReadyLoggedRef = useRef<boolean>(false);
 
-  // Vérifier si le routeur est prêt
   const isRouterReady = navigationState?.key != null;
 
-  // Détermine l'état actuel de la route
-  const getCurrentRouteState = useCallback(() => {
-    const currentSegment = segments[0] || '';
+  useEffect(() => {
+    if (!isRouterReady || routeReadyLoggedRef.current) {
+      return;
+    }
+
+    routeReadyLoggedRef.current = true;
+    markStartup('route-ready', {
+      segment: segments[0] || '',
+    });
+  }, [isRouterReady, markStartup, segments]);
+
+  const getCurrentRouteState = useCallback((): RouteState => {
+    const currentSegment = String(segments[0] ?? '');
 
     return {
+      isRootEntry: currentSegment === '' || currentSegment === 'index',
       isPublic: isPublicRoute(currentSegment),
+      isShared: isSharedRoute(currentSegment),
       isEmailVerification: isEmailVerificationRoute(currentSegment),
       isProfileSetup: isProfileSetupRoute(currentSegment),
+      isPostSignupOnboarding: isPostSignupOnboardingRoute(currentSegment),
       isProtected: isProtectedRoute(currentSegment),
       isSpecial: isSpecialRoute(currentSegment),
       segment: currentSegment,
     };
   }, [segments]);
 
-  // Détermine l'état d'authentification de l'utilisateur
   const getAuthState = useCallback(() => {
     return {
       isAuthenticated: !!user,
       hasProfile: !!userProfile,
       isVerified: isEmailVerified,
       hasUsername: !!userProfile?.username,
+      hasSeenTutorial: userProfile?.has_seen_tutorial ?? false,
       userEmail: user?.email || '',
       userId: user?.id || '',
     };
   }, [user, userProfile, isEmailVerified]);
 
-  // Effectue une redirection sécurisée
-  const safeRedirect = useCallback((path: string, params?: Record<string, string>) => {
-    const now = Date.now();
-    lastRedirectTime.current = now;
+  const safeRedirect = useCallback(
+    (path: string, params?: Record<string, string>) => {
+      const now = Date.now();
+      const redirectSignature = JSON.stringify({
+        path,
+        params: params ?? null,
+      });
 
-    if (params) {
-      router.replace({ pathname: path as any, params });
-    } else {
-      router.replace(path as any);
-    }
-  }, [router]);
+      if (
+        lastRedirectSignatureRef.current === redirectSignature &&
+        now - lastRedirectTime.current < SAME_REDIRECT_DEBOUNCE_MS
+      ) {
+        return;
+      }
 
-  // Réinitialise l'état de détection de boucles
+      lastRedirectTime.current = now;
+      lastRedirectSignatureRef.current = redirectSignature;
+
+      if (params) {
+        router.replace({ pathname: path as any, params });
+      } else {
+        router.replace(path as any);
+      }
+    },
+    [router]
+  );
+
   const resetLoopDetection = useCallback(() => {
     redirectCountRef.current = 0;
     loopDetectedRef.current = false;
   }, []);
 
-  // Gère la déconnexion d'urgence
   const handleEmergencyLogout = useCallback(async () => {
     try {
       console.log('[Navigation] Emergency logout initiated');
       await signOut();
-      setState(prev => ({ ...prev, forceLogout: true }));
+      setState((prev) => ({ ...prev, forceLogout: true }));
     } catch (error) {
       console.error('[Navigation] Error during emergency logout:', error);
-      setState(prev => ({ ...prev, forceLogout: true }));
+      setState((prev) => ({ ...prev, forceLogout: true }));
     }
   }, [signOut]);
 
-  // Affiche l'alerte de boucle détectée
   const showLoopAlert = useCallback(() => {
-    Alert.alert(
-      t('navigation.loop_error_title'),
-      t('navigation.loop_error_msg'),
+    const isFrench = locale === 'fr';
+    const title = isFrench ? 'Navigation mise en pause' : 'Navigation paused';
+    const message = isFrench
+      ? 'On a detecte trop de redirections. Vous pouvez vous deconnecter en securite puis revenir tranquillement.'
+      : 'We detected too many redirects. You can safely sign out and come back in a clean session.';
+
+    showAlert(
+      title,
+      message,
       [
         {
           text: t('navigation.logout_btn'),
@@ -115,16 +167,21 @@ export function useProtectedRoute() {
           style: 'cancel',
           onPress: resetLoopDetection,
         },
-      ]
+      ],
+      undefined,
+      {
+        variant: 'danger',
+        emoji: '!',
+        dismissible: false,
+      }
     );
-  }, [handleEmergencyLogout, resetLoopDetection]);
+  }, [handleEmergencyLogout, locale, resetLoopDetection, showAlert, t]);
 
-  // Logique principale de navigation
   useEffect(() => {
-    // Attendre que le routeur soit prêt
-    if (!isRouterReady) return;
+    if (!isRouterReady) {
+      return;
+    }
 
-    // Gestion du logout forcé
     if (state.forceLogout) {
       redirectCountRef.current = 0;
       loopDetectedRef.current = false;
@@ -133,56 +190,91 @@ export function useProtectedRoute() {
       return;
     }
 
-    // Attendre le chargement de l'authentification
-    if (loading) return;
-
-    const routeState = getCurrentRouteState();
-    const authState = getAuthState();
-    const now = Date.now();
-    const timeSinceLastRedirect = now - lastRedirectTime.current;
-
-    // Ignorer les routes spéciales pour éviter les boucles
-    if ((routeState.segment as string) === '+not-found' || (routeState.segment as string) === 'index' || (routeState.segment as string) === '') {
+    if (loading) {
       return;
     }
 
-    // Détection des boucles de redirection
+    const routeState = getCurrentRouteState();
+    const authState = getAuthState();
+    const shouldWaitForOnboardingDecision =
+      authState.isAuthenticated &&
+      authState.isVerified &&
+      authState.hasUsername &&
+      !authState.hasSeenTutorial &&
+      isPostSignupOnboardingPendingLoading;
+    const shouldShowPostSignupOnboarding =
+      authState.isAuthenticated &&
+      authState.isVerified &&
+      authState.hasUsername &&
+      !authState.hasSeenTutorial &&
+      isPostSignupOnboardingPending;
+    const now = Date.now();
+    const timeSinceLastRedirect = now - lastRedirectTime.current;
+
+    if (routeState.segment === '+not-found') {
+      return;
+    }
+
+    if (shouldWaitForOnboardingDecision) {
+      return;
+    }
+
     if (timeSinceLastRedirect < LOOP_DETECTION.TIME_WINDOW) {
-      if (!routeState.isProtected && !routeState.isPublic
-          && !routeState.isEmailVerification && !routeState.isProfileSetup
-          && !routeState.isSpecial) {
+      if (
+        !routeState.isProtected &&
+        !routeState.isPublic &&
+        !routeState.isShared &&
+        !routeState.isEmailVerification &&
+        !routeState.isProfileSetup &&
+        !routeState.isSpecial &&
+        !routeState.isRootEntry
+      ) {
         redirectCountRef.current++;
       }
-    } else if (routeState.isProtected || routeState.isPublic) {
+    } else if (
+      routeState.isProtected ||
+      routeState.isPublic ||
+      routeState.isShared ||
+      routeState.isRootEntry
+    ) {
       if (redirectCountRef.current > 0) {
         resetLoopDetection();
       }
     }
 
-    // Alerte si boucle détectée
-    if (redirectCountRef.current >= LOOP_DETECTION.THRESHOLD && !loopDetectedRef.current) {
+    if (
+      redirectCountRef.current >= LOOP_DETECTION.THRESHOLD &&
+      !loopDetectedRef.current
+    ) {
       console.error('[Navigation] LOOP DETECTED - Too many redirects!');
       loopDetectedRef.current = true;
       showLoopAlert();
       return;
     }
 
-    // STOP si boucle déjà détectée
-    if (loopDetectedRef.current) return;
+    if (loopDetectedRef.current) {
+      return;
+    }
 
-    // === LOGIQUE DE REDIRECTION ===
-
-    // 1. Utilisateur non authentifié sur route protégée → Login
     if (!authState.isAuthenticated) {
-      if (!routeState.isPublic && !routeState.isEmailVerification) {
+      if (
+        routeState.isRootEntry ||
+        (!routeState.isPublic &&
+          !routeState.isShared &&
+          !routeState.isEmailVerification)
+      ) {
         safeRedirect('/login');
       }
       return;
     }
 
-    // 2. Utilisateur authentifié mais email non vérifié → Vérification
     if (authState.hasProfile && !authState.isVerified) {
-      if (!routeState.isEmailVerification && !routeState.isPublic) {
+      if (
+        routeState.isRootEntry ||
+        (!routeState.isEmailVerification &&
+          !routeState.isPublic &&
+          !routeState.isShared)
+      ) {
         safeRedirect('/email-verification', {
           email: authState.userEmail,
           userId: authState.userId,
@@ -192,17 +284,28 @@ export function useProtectedRoute() {
       return;
     }
 
-    // 3. Email vérifié mais pas de username → Configuration du profil
     if (authState.isVerified && !authState.hasUsername) {
-      if (!routeState.isProfileSetup && !routeState.isEmailVerification) {
+      if (
+        routeState.isRootEntry ||
+        (!routeState.isProfileSetup &&
+          !routeState.isEmailVerification &&
+          !routeState.isPostSignupOnboarding &&
+          !routeState.isShared)
+      ) {
         safeRedirect('/username-setup');
       }
       return;
     }
 
-    // 4. Utilisateur complètement authentifié sur une route publique → Home
+    if (shouldShowPostSignupOnboarding) {
+      if (!routeState.isPostSignupOnboarding && !routeState.isShared) {
+        safeRedirect('/post-signup-onboarding');
+      }
+      return;
+    }
+
     if (authState.isVerified && authState.hasUsername) {
-      if (routeState.isPublic) {
+      if (routeState.isRootEntry || routeState.isPublic) {
         safeRedirect('/(tabs)');
       }
     }
@@ -220,10 +323,13 @@ export function useProtectedRoute() {
     showLoopAlert,
     router,
     isRouterReady,
+    isPostSignupOnboardingPending,
+    isPostSignupOnboardingPendingLoading,
   ]);
 
   return {
     isLoading: loading,
     isLoopDetected: loopDetectedRef.current,
+    alertElement,
   };
 }

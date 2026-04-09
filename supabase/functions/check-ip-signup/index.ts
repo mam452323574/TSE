@@ -1,12 +1,10 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.39.3';
-import { getCorsHeaders, handleCorsPreflightRequest } from '../_shared/cors.ts';
+import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 
 Deno.serve(async (req: Request) => {
     if (req.method === 'OPTIONS') {
         return handleCorsPreflightRequest(req);
     }
-
-    const corsHeaders = getCorsHeaders(req);
 
     try {
         const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -30,7 +28,7 @@ Deno.serve(async (req: Request) => {
         // Action: RECORD a new signup
         if (action === 'record') {
             if (!userId) {
-                return new Response(JSON.stringify({ error: 'UserID required for recording' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+                return jsonResponse(req, { error: 'UserID required for recording' }, { status: 400 });
             }
 
             const { error } = await supabase.rpc('record_ip_signup', {
@@ -40,10 +38,7 @@ Deno.serve(async (req: Request) => {
 
             if (error) throw error;
 
-            return new Response(
-                JSON.stringify({ success: true }),
-                { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            );
+            return jsonResponse(req, { success: true }, { status: 200 });
         }
 
         // Default Action: CHECK eligibility
@@ -59,36 +54,22 @@ Deno.serve(async (req: Request) => {
         const result = data && data[0] ? data[0] : { allowed: true };
 
         if (!result.allowed) {
-            return new Response(
-                JSON.stringify({
+            return jsonResponse(
+                req,
+                {
                     allowed: false,
                     reason: result.reason,
                     error: 'Signup limit reached'
-                }),
-                {
-                    status: 429,
-                    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-                }
+                },
+                { status: 429 }
             );
         }
 
-        return new Response(
-            JSON.stringify({ allowed: true }),
-            {
-                status: 200,
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            }
-        );
+        return jsonResponse(req, { allowed: true }, { status: 200 });
 
 
     } catch (error) {
         console.error('[CheckIP] Unexpected error:', error);
-        return new Response(
-            JSON.stringify({ error: 'Internal Server Error' }),
-            {
-                status: 500,
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            }
-        );
+        return jsonResponse(req, { error: 'Internal Server Error' }, { status: 500 });
     }
 });

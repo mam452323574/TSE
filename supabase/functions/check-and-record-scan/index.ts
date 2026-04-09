@@ -1,10 +1,31 @@
-import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
-import { getCorsHeaders, handleCorsPreflightRequest } from '../_shared/cors.ts';
-
-interface ScanCheckRequest {
-  scanType: 'body' | 'health' | 'nutrition' | 'super';
-  checkOnly?: boolean;
-}
+import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
+import {
+  createServiceRoleClient,
+  requireAuthenticatedUser,
+} from '../_shared/phase2Auth.ts';
+import {
+  Phase2HttpError,
+  toPhase2ErrorPayload,
+} from '../_shared/phase2Errors.ts';
+import {
+  createRequestId,
+  logPhase2Error,
+} from '../_shared/phase2Observability.ts';
+import {
+  assertNoUnknownKeys,
+  readJsonBody,
+} from '../_shared/phase2Utils.ts';
+import {
+  createScanReservationProfileSnapshot,
+  normalizeScanUsage,
+  normalizeWelcomeCredits,
+  restoreScanReservationProfile,
+} from '../_shared/scanReservations.ts';
+import {
+  CHECK_AND_RECORD_SCAN_REQUEST_KEYS,
+  LEGACY_CHECK_AND_RECORD_SCAN_REQUEST_KEYS,
+  isAppScanType,
+} from '../../../shared/scanContract.ts';
 
 interface ScanUsageRecord {
   last_scan_date: string | null;
@@ -24,14 +45,17 @@ interface WelcomeCredits {
   nutrition: number;
 }
 
+type AccountTier = 'free' | 'premium' | 'admin';
+type ScanType = 'body' | 'health' | 'nutrition' | 'super';
+
 const SCAN_LIMITS: Record<
-  string,
-  Record<string, { count: number; periodMs: number }>
+  AccountTier,
+  Record<ScanType, { count: number; periodMs: number }>
 > = {
   free: {
-    health: { count: 1, periodMs: 7 * 24 * 60 * 60 * 1000 },
-    body: { count: 1, periodMs: 30 * 24 * 60 * 60 * 1000 },
-    nutrition: { count: 1, periodMs: 3 * 24 * 60 * 60 * 1000 },
+    health: { count: 1, periodMs: 24 * 60 * 60 * 1000 },
+    body: { count: 1, periodMs: 24 * 60 * 60 * 1000 },
+    nutrition: { count: 1, periodMs: 24 * 60 * 60 * 1000 },
     super: { count: 0, periodMs: 24 * 60 * 60 * 1000 },
   },
   premium: {
@@ -48,11 +72,11 @@ const SCAN_LIMITS: Record<
   },
 };
 
-const SCAN_MESSAGES: Record<string, Record<string, string>> = {
+const LEGACY_SCAN_MESSAGES: Record<AccountTier, Record<ScanType, string>> = {
   free: {
-    health: 'Limite hebdomadaire atteinte. Prochain scan disponible dans',
-    body: 'Limite mensuelle atteinte. Prochain scan disponible dans',
-    nutrition: 'Limite atteinte. Prochain scan disponible dans',
+    health: 'Limite quotidienne atteinte (1 scan). Prochain scan disponible dans',
+    body: 'Limite quotidienne atteinte (1 scan). Prochain scan disponible dans',
+    nutrition: 'Limite quotidienne atteinte (1 scan). Prochain scan disponible dans',
     super: 'Le Super Scan est réservé aux membres Premium',
   },
   premium: {
@@ -73,135 +97,205 @@ const SCAN_MESSAGES: Record<string, Record<string, string>> = {
   },
 };
 
+const SCAN_MESSAGE_KEYS: Partial<
+  Record<AccountTier, Partial<Record<ScanType, string>>>
+> = {
+  free: {
+    health: 'scan_limits.msg_daily_reached_1_with_time',
+    body: 'scan_limits.msg_daily_reached_1_with_time',
+    nutrition: 'scan_limits.msg_daily_reached_1_with_time',
+    super: 'scan_limits.msg_premium_only',
+  },
+  premium: {
+    health: 'scan_limits.msg_daily_reached_3_with_time',
+    body: 'scan_limits.msg_daily_reached_3_with_time',
+    nutrition: 'scan_limits.msg_daily_reached_3_with_time',
+    super: 'scan_limits.msg_daily_reached_1_with_time',
+  },
+};
+
+function getScanLimitMessagePayload(accountTier: AccountTier, scanType: ScanType) {
+  return {
+    message:
+      LEGACY_SCAN_MESSAGES[accountTier]?.[scanType] ??
+      LEGACY_SCAN_MESSAGES.free[scanType],
+    message_key:
+      SCAN_MESSAGE_KEYS[accountTier]?.[scanType] ??
+      undefined,
+  };
+}
+
+function normalizeAccountTier(value: unknown): AccountTier {
+  return value === 'premium' || value === 'admin' ? value : 'free';
+}
+
+function getRemaining(limit: number, currentCount: number) {
+  return Math.max(0, limit - currentCount);
+}
+
+function readWelcomeCreditsForScanType(
+  welcomeCredits: WelcomeCredits,
+  scanType: ScanType,
+) {
+  return scanType === 'super' ? 0 : welcomeCredits[scanType];
+}
+
+function readValidTimestamps(record: ScanUsageRecord | undefined, cutoffTime: number) {
+  return (record?.scan_timestamps || []).filter(
+    (timestamp: string) => new Date(timestamp).getTime() > cutoffTime,
+  );
+}
+
+function parseScanCheckRequest(payload: unknown) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Phase2HttpError(400, 'invalid_payload', 'Request body must be an object');
+  }
+
+  const requestBody = payload as Record<string, unknown>;
+  assertNoUnknownKeys(
+    requestBody,
+    [
+      ...CHECK_AND_RECORD_SCAN_REQUEST_KEYS,
+      ...LEGACY_CHECK_AND_RECORD_SCAN_REQUEST_KEYS,
+    ],
+    'Scan reservation request',
+  );
+
+  const rawScanType = requestBody.scan_type ?? requestBody.scanType;
+  if (!isAppScanType(rawScanType)) {
+    throw new Phase2HttpError(400, 'invalid_scan_type', 'scan_type is invalid');
+  }
+
+  const rawCheckOnly = requestBody.check_only ?? requestBody.checkOnly;
+  if (rawCheckOnly !== undefined && typeof rawCheckOnly !== 'boolean') {
+    throw new Phase2HttpError(400, 'invalid_payload', 'check_only must be a boolean');
+  }
+
+  return {
+    scanType: rawScanType,
+    checkOnly: rawCheckOnly === true,
+  };
+}
+
+async function createReservedScanRecord(
+  client: ReturnType<typeof createServiceRoleClient>,
+  userId: string,
+  scanType: ScanType,
+  createdAt: string,
+  usedWelcomeCredit: boolean,
+) {
+  const { data: scanRecord, error: scanError } = await client
+    .from('scans')
+    .insert({
+      user_id: userId,
+      scan_type: scanType,
+      created_at: createdAt,
+      used_welcome_credit: usedWelcomeCredit,
+    })
+    .select('id')
+    .single();
+
+  if (scanError || !scanRecord?.id) {
+    throw new Phase2HttpError(
+      500,
+      'scan_reservation_failed',
+      'Failed to create scan reservation',
+    );
+  }
+
+  return scanRecord.id;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return handleCorsPreflightRequest(req);
   }
 
-  const corsHeaders = getCorsHeaders(req);
+  const requestId = createRequestId();
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    if (req.method !== 'POST') {
+      throw new Phase2HttpError(405, 'method_not_allowed', 'Method not allowed');
+    }
+
+    const client = createServiceRoleClient();
+    const user = await requireAuthenticatedUser(client, req);
+    const { scanType, checkOnly } = parseScanCheckRequest(
+      await readJsonBody(req, { maxBytes: 4 * 1024 }),
     );
 
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('Missing authorization header');
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const {
-      data: { user },
-      error: authError,
-    } = await supabaseClient.auth.getUser(token);
-
-    if (authError || !user) {
-      throw new Error('Invalid authentication');
-    }
-
-    const { scanType, checkOnly }: ScanCheckRequest = await req.json();
-
-    if (
-      !scanType ||
-      !['body', 'health', 'nutrition', 'super'].includes(scanType)
-    ) {
-      throw new Error('Invalid scan type');
-    }
-
-    const { data: profile, error: profileError } = await supabaseClient
+    const { data: profile, error: profileError } = await client
       .from('user_profiles')
       .select('account_tier, scan_usage, welcome_credits')
       .eq('id', user.id)
       .maybeSingle();
 
     if (profileError || !profile) {
-      throw new Error('Failed to fetch user profile');
+      throw new Phase2HttpError(
+        500,
+        'scan_profile_lookup_failed',
+        'Failed to fetch user profile for scan reservation',
+      );
     }
 
-    const accountTier = profile.account_tier as 'free' | 'premium' | 'admin';
-    const scanUsage: ScanUsage = profile.scan_usage || {
-      health: { last_scan_date: null, scan_timestamps: [] },
-      body: { last_scan_date: null, scan_timestamps: [] },
-      nutrition: { last_scan_date: null, scan_timestamps: [] },
-      super: { last_scan_date: null, scan_timestamps: [] },
-    };
-    const welcomeCredits: WelcomeCredits = profile.welcome_credits || {
-      health: 0,
-      body: 0,
-      nutrition: 0,
-    };
+    const accountTier = normalizeAccountTier(profile.account_tier);
+    const snapshot = createScanReservationProfileSnapshot(
+      profile.scan_usage,
+      profile.welcome_credits,
+    );
+    const scanUsage = normalizeScanUsage(snapshot.scanUsage) as ScanUsage;
+    const welcomeCredits = normalizeWelcomeCredits(
+      snapshot.welcomeCredits,
+    ) as WelcomeCredits;
 
+    const limit = SCAN_LIMITS[accountTier][scanType];
     const now = Date.now();
     const nowIso = new Date(now).toISOString();
+    const cutoffTime = now - limit.periodMs;
+    const existingRecord = scanUsage[scanType];
+    const validTimestamps = readValidTimestamps(existingRecord, cutoffTime);
+    const welcomeCreditCount = readWelcomeCreditsForScanType(welcomeCredits, scanType);
 
-    // Gestion spéciale pour Super Scan - Premium/Admin only
     if (scanType === 'super' && accountTier === 'free') {
-      return new Response(
-        JSON.stringify({
-          success: true,
-          allowed: false,
-          message: SCAN_MESSAGES.free.super,
-          current_count: 0,
-          limit: 0,
-          welcome_credits: 0,
-        }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+      const messagePayload = getScanLimitMessagePayload(accountTier, scanType);
+      return jsonResponse(req, {
+        success: true,
+        allowed: false,
+        ...messagePayload,
+        current_count: 0,
+        limit: 0,
+        remaining: 0,
+        welcome_credits: 0,
+      });
     }
 
-    // Si l'utilisateur a des credits de bienvenue pour ce type de scan (pas applicable pour super)
-    if (scanType !== 'super' && welcomeCredits[scanType] > 0) {
-      // Si c'est juste une verification, retourner sans consommer le credit
+    if (scanType !== 'super' && welcomeCreditCount > 0) {
       if (checkOnly) {
-        return new Response(
-          JSON.stringify({
-            success: true,
-            allowed: true,
-            message: 'Credit de bienvenue disponible',
-            welcome_credits: welcomeCredits[scanType],
-            current_count: 0,
-            limit: SCAN_LIMITS[accountTier][scanType].count,
-          }),
-          {
-            headers: {
-              ...corsHeaders,
-              'Content-Type': 'application/json',
-            },
-          },
-        );
+        return jsonResponse(req, {
+          success: true,
+          allowed: true,
+          message: 'Credit de bienvenue disponible',
+          welcome_credits: welcomeCreditCount,
+          current_count: validTimestamps.length,
+          limit: limit.count,
+          remaining: getRemaining(limit.count, validTimestamps.length),
+        });
       }
 
-      // Consommer le credit de bienvenue ET enregistrer dans scan_usage
       const updatedWelcomeCredits = {
         ...welcomeCredits,
-        [scanType]: welcomeCredits[scanType] - 1,
+        [scanType]: welcomeCreditCount - 1,
       };
-
-      // Aussi mettre a jour scan_usage pour que le current_count soit correct
-      const limit = SCAN_LIMITS[accountTier][scanType];
-      const cutoffTime = now - limit.periodMs;
-      const record = scanUsage[scanType] || { last_scan_date: null, scan_timestamps: [] };
-      const validTimestamps = (record.scan_timestamps || []).filter(
-        (ts: string) => new Date(ts).getTime() > cutoffTime,
-      );
-      validTimestamps.push(nowIso);
-
+      const nextTimestamps = [...validTimestamps, nowIso].slice(-limit.count);
       const updatedScanUsage = {
         ...scanUsage,
         [scanType]: {
           last_scan_date: nowIso,
-          scan_timestamps: validTimestamps.slice(-limit.count),
+          scan_timestamps: nextTimestamps,
         },
       };
 
-      const { error: updateCreditsError } = await supabaseClient
+      const { error: updateProfileError } = await client
         .from('user_profiles')
         .update({
           welcome_credits: updatedWelcomeCredits,
@@ -209,169 +303,139 @@ Deno.serve(async (req: Request) => {
         })
         .eq('id', user.id);
 
-      if (updateCreditsError) {
-        throw updateCreditsError;
+      if (updateProfileError) {
+        throw new Phase2HttpError(
+          500,
+          'scan_profile_update_failed',
+          'Failed to reserve scan allowance',
+        );
       }
 
-      const { data: scanRecord, error: scanError } = await supabaseClient
-        .from('scans')
-        .insert({
-          user_id: user.id,
-          scan_type: scanType,
-          created_at: nowIso,
-        })
-        .select('id')
-        .single();
+      try {
+        const scanId = await createReservedScanRecord(
+          client,
+          user.id,
+          scanType,
+          nowIso,
+          true,
+        );
 
-      if (scanError) {
-        console.error('Error creating scan record:', scanError);
-      }
-
-      return new Response(
-        JSON.stringify({
+        return jsonResponse(req, {
           success: true,
           allowed: true,
           message: 'Scan autorise (credit de bienvenue utilise)',
           used_welcome_credit: true,
           remaining_welcome_credits: updatedWelcomeCredits[scanType],
           welcome_credits: updatedWelcomeCredits[scanType],
-          current_count: validTimestamps.length,
+          current_count: nextTimestamps.length,
           limit: limit.count,
-          scan_id: scanRecord?.id || null,
-        }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+          remaining: getRemaining(limit.count, nextTimestamps.length),
+          scan_id: scanId,
+        });
+      } catch (error) {
+        await restoreScanReservationProfile(client, user.id, snapshot);
+        throw error;
+      }
     }
 
-    const limit = SCAN_LIMITS[accountTier][scanType];
-    const cutoffTime = now - limit.periodMs;
-
-    const record = scanUsage[scanType] || { last_scan_date: null, scan_timestamps: [] };
-    const validTimestamps = (record.scan_timestamps || []).filter(
-      (ts: string) => new Date(ts).getTime() > cutoffTime,
-    );
-
-    // Limite atteinte
     if (validTimestamps.length >= limit.count) {
-      const sortedTimestamps = validTimestamps.sort(
+      const sortedTimestamps = [...validTimestamps].sort(
         (a: string, b: string) => new Date(a).getTime() - new Date(b).getTime(),
       );
       const oldestTimestamp = sortedTimestamps[0];
       const nextAvailableDate =
         new Date(oldestTimestamp).getTime() + limit.periodMs;
+      const messagePayload = getScanLimitMessagePayload(accountTier, scanType);
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          allowed: false,
-          message:
-            SCAN_MESSAGES[accountTier]?.[scanType] ||
-            SCAN_MESSAGES.free[scanType],
-          next_available_date: nextAvailableDate,
-          current_count: validTimestamps.length,
-          limit: limit.count,
-          welcome_credits: scanType === 'super' ? 0 : welcomeCredits[scanType],
-        }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+      return jsonResponse(req, {
+        success: true,
+        allowed: false,
+        ...messagePayload,
+        next_available_date: nextAvailableDate,
+        current_count: validTimestamps.length,
+        limit: limit.count,
+        remaining: 0,
+        welcome_credits: welcomeCreditCount,
+      });
     }
 
-    // Si c'est juste une verification, retourner sans enregistrer
     if (checkOnly) {
-      return new Response(
-        JSON.stringify({
-          success: true,
-          allowed: true,
-          message: 'Scan disponible',
-          current_count: validTimestamps.length,
-          limit: limit.count,
-          welcome_credits: scanType === 'super' ? 0 : welcomeCredits[scanType],
-        }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+      return jsonResponse(req, {
+        success: true,
+        allowed: true,
+        message: 'Scan disponible',
+        current_count: validTimestamps.length,
+        limit: limit.count,
+        remaining: getRemaining(limit.count, validTimestamps.length),
+        welcome_credits: welcomeCreditCount,
+      });
     }
 
-    // Enregistrer le scan
-    validTimestamps.push(nowIso);
-
+    const nextTimestamps = [...validTimestamps, nowIso].slice(-limit.count);
     const updatedScanUsage = {
       ...scanUsage,
       [scanType]: {
         last_scan_date: nowIso,
-        scan_timestamps: validTimestamps.slice(-limit.count),
+        scan_timestamps: nextTimestamps,
       },
     };
 
-    const { error: updateError } = await supabaseClient
+    const { error: updateProfileError } = await client
       .from('user_profiles')
       .update({ scan_usage: updatedScanUsage })
       .eq('id', user.id);
 
-    if (updateError) {
-      throw updateError;
+    if (updateProfileError) {
+      throw new Phase2HttpError(
+        500,
+        'scan_profile_update_failed',
+        'Failed to reserve scan allowance',
+      );
     }
 
-    const { data: scanRecord, error: scanError } = await supabaseClient
-      .from('scans')
-      .insert({
-        user_id: user.id,
-        scan_type: scanType,
-        created_at: nowIso,
-      })
-      .select('id')
-      .single();
+    try {
+      const scanId = await createReservedScanRecord(
+        client,
+        user.id,
+        scanType,
+        nowIso,
+        false,
+      );
 
-    if (scanError) {
-      console.error('Error creating scan record:', scanError);
-    }
-
-    return new Response(
-      JSON.stringify({
+      return jsonResponse(req, {
         success: true,
         allowed: true,
         message: 'Scan autorisé',
-        current_count: validTimestamps.length,
+        current_count: nextTimestamps.length,
         limit: limit.count,
-        welcome_credits: scanType === 'super' ? 0 : welcomeCredits[scanType],
-        scan_id: scanRecord?.id || null,
-      }),
-      {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+        remaining: getRemaining(limit.count, nextTimestamps.length),
+        welcome_credits: welcomeCreditCount,
+        used_welcome_credit: false,
+        scan_id: scanId,
+      });
+    } catch (error) {
+      await restoreScanReservationProfile(client, user.id, snapshot);
+      throw error;
+    }
   } catch (error) {
-    console.error('Error checking scan eligibility:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        allowed: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      }),
-      {
-        status: 400,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      },
+    if (error instanceof Phase2HttpError) {
+      logPhase2Error('[check-and-record-scan] Request failed', error, {
+        request_id: requestId,
+      });
+      return jsonResponse(
+        req,
+        toPhase2ErrorPayload(error, { requestId }),
+        { status: error.status },
+      );
+    }
+
+    logPhase2Error('[check-and-record-scan] Unexpected error', error, {
+      request_id: requestId,
+    });
+    return jsonResponse(
+      req,
+      toPhase2ErrorPayload(error, { requestId }),
+      { status: 500 },
     );
   }
 });

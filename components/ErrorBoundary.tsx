@@ -77,7 +77,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <View style={styles.content}>
             <Text style={styles.title}>Oups!</Text>
             <Text style={styles.message}>
-              Une erreur inattendue s'est produite
+              Une erreur inattendue s’est produite
             </Text>
             {__DEV__ && this.state.error && (
               <View style={styles.errorDetails}>

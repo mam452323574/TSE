@@ -1,8 +1,10 @@
 import { ScanType, ScanLimitConfig, AnalysisType } from '@/types';
+import {
+  PROVIDER_SCAN_TYPE_BY_APP_SCAN_TYPE,
+  SCAN_IMAGE_BUCKET,
+} from '@/shared/scanContract';
 
-export const MAX_SCANS_PER_TYPE = 3;
-export const RATE_LIMIT_HOURS = 24;
-export const STORAGE_BUCKET_NAME = 'scan-images';
+export const STORAGE_BUCKET_NAME = SCAN_IMAGE_BUCKET;
 
 export const SCAN_TYPE_LABELS: Record<ScanType, string> = {
   body: 'scan_types.body',
@@ -11,15 +13,11 @@ export const SCAN_TYPE_LABELS: Record<ScanType, string> = {
   super: 'scan_types.super',
 };
 
-// Mapping entre le type de scan (application) et le type d'analyse (n8n)
-export const SCAN_TYPE_TO_ANALYSIS_TYPE: Record<ScanType, AnalysisType> = {
-  health: 'face',
-  body: 'body',
-  nutrition: 'nutrition',
-  super: 'super_health_v2',
-};
+// Mapping between app scan types and provider analysis types.
+export const SCAN_TYPE_TO_ANALYSIS_TYPE: Record<ScanType, AnalysisType> =
+  PROVIDER_SCAN_TYPE_BY_APP_SCAN_TYPE as Record<ScanType, AnalysisType>;
 
-// Labels pour les types d'analyse retournés par n8n (USED INTERNALLY OR DISPLAYED? If displayed, use keys)
+// Labels for provider analysis types returned by the scan pipeline.
 export const ANALYSIS_TYPE_LABELS: Record<AnalysisType, string> = {
   face: 'scan_types.health',
   body: 'scan_types.body',
@@ -30,18 +28,18 @@ export const ANALYSIS_TYPE_LABELS: Record<AnalysisType, string> = {
 export const FREE_SCAN_LIMITS: Record<ScanType, ScanLimitConfig> = {
   health: {
     count: 1,
-    periodMs: 7 * 24 * 60 * 60 * 1000,
-    label: 'scan_limits.week_1',
+    periodMs: 24 * 60 * 60 * 1000,
+    label: 'scan_limits.day_1',
   },
   body: {
     count: 1,
-    periodMs: 30 * 24 * 60 * 60 * 1000,
-    label: 'scan_limits.month_1',
+    periodMs: 24 * 60 * 60 * 1000,
+    label: 'scan_limits.day_1',
   },
   nutrition: {
     count: 1,
-    periodMs: 3 * 24 * 60 * 60 * 1000,
-    label: 'scan_limits.days_3_1',
+    periodMs: 24 * 60 * 60 * 1000,
+    label: 'scan_limits.day_1',
   },
   super: {
     count: 0,
@@ -75,15 +73,15 @@ export const PREMIUM_SCAN_LIMITS: Record<ScanType, ScanLimitConfig> = {
 
 export const SCAN_LIMIT_MESSAGES: Record<ScanType, { free: string; premium: string }> = {
   health: {
-    free: 'scan_limits.msg_weekly_reached',
+    free: 'scan_limits.msg_daily_reached_1',
     premium: 'scan_limits.msg_daily_reached_3',
   },
   body: {
-    free: 'scan_limits.msg_monthly_reached',
+    free: 'scan_limits.msg_daily_reached_1',
     premium: 'scan_limits.msg_daily_reached_3',
   },
   nutrition: {
-    free: 'scan_limits.msg_days_3_reached',
+    free: 'scan_limits.msg_daily_reached_1',
     premium: 'scan_limits.msg_daily_reached_3',
   },
   super: {

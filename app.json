@@ -15,9 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.healthscan.app"
+      "bundleIdentifier": "com.healthscan.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "versionCode": 2,
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#1E3A2B"
@@ -25,12 +30,17 @@
       "package": "com.healthscan.app",
       "permissions": [
         "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "com.android.vending.BILLING",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "com.android.vending.BILLING"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.SYSTEM_ALERT_WINDOW"
       ]
+    },
+    "androidNavigationBar": {
+      "barStyle": "light-content",
+      "enforceContrast": false
     },
     "web": {
       "bundler": "metro",
@@ -39,12 +49,21 @@
     },
     "plugins": [
       "expo-router",
+      "expo-dev-client",
       "expo-font",
       "expo-web-browser",
       [
         "expo-camera",
         {
-          "cameraPermission": "Nous avons besoin d'accéder à votre caméra pour scanner votre santé."
+          "cameraPermission": "Health Scan a besoin d'acceder a votre camera pour capturer des photos destinees a l'analyse sante par IA."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Health Scan a besoin d'acceder a vos photos pour choisir une photo de profil.",
+          "cameraPermission": "Health Scan a besoin d'acceder a votre camera pour capturer des photos destinees a l'analyse sante par IA.",
+          "microphonePermission": false
         }
       ],
       [
@@ -55,13 +74,7 @@
           "sounds": []
         }
       ],
-      "expo-localization",
-      [
-        "react-native-iap",
-        {
-          "paymentProvider": "Play Store"
-        }
-      ]
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

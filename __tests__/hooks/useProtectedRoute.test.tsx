@@ -1,6 +1,5 @@
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react-native';
-import { Alert } from 'react-native';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 
 // Mock expo-router
@@ -17,15 +16,35 @@ jest.mock('expo-router', () => ({
   useRootNavigationState: () => mockUseRootNavigationState(),
 }));
 
-// Mock Alert
-jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+const mockShowAlert = jest.fn();
+const mockAlertElement = 'AlertElement';
+jest.mock('@/hooks/useCustomAlert', () => ({
+  useCustomAlert: () => ({
+    showAlert: mockShowAlert,
+    alertElement: mockAlertElement,
+  }),
+}));
+
+const mockUsePostSignupOnboardingPending = jest.fn();
+jest.mock('@/hooks/usePostSignupOnboardingPending', () => ({
+  usePostSignupOnboardingPending: () => mockUsePostSignupOnboardingPending(),
+}));
 
 // Mock route helpers
 jest.mock('@/constants/routes', () => ({
   isPublicRoute: jest.fn((segment: string) => ['login', 'signup'].includes(segment)),
+  isSharedRoute: jest.fn((segment: string) => segment === 'privacy-policy'),
   isEmailVerificationRoute: jest.fn((segment: string) => segment === 'email-verification'),
   isProfileSetupRoute: jest.fn((segment: string) => segment === 'username-setup'),
-  isProtectedRoute: jest.fn((segment: string) => ['(tabs)', 'recipes', 'exercises'].includes(segment)),
+  isPostSignupOnboardingRoute: jest.fn(
+    (segment: string) => segment === 'post-signup-onboarding'
+  ),
+  isProtectedRoute: jest.fn(
+    (segment: string) =>
+      ['(tabs)', 'recipes', 'exercises', 'post-signup-onboarding'].includes(
+        segment
+      )
+  ),
   isSpecialRoute: jest.fn((segment: string) => segment === 'premium-upgrade'),
 }));
 
@@ -40,6 +59,12 @@ jest.mock('@/contexts/AuthContext', () => ({
 describe('useProtectedRoute', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockShowAlert.mockClear();
+    mockUsePostSignupOnboardingPending.mockReturnValue({
+      isPending: false,
+      isLoading: false,
+      refresh: jest.fn(),
+    });
     mockUseAuth.mockReturnValue({
       user: null,
       userProfile: null,
@@ -117,7 +142,24 @@ describe('useProtectedRoute', () => {
     });
 
     renderHook(() => useProtectedRoute());
-    
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('does not redirect when on privacy-policy page and not authenticated', () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['privacy-policy']);
+
+    mockUseAuth.mockReturnValue({
+      user: null,
+      userProfile: null,
+      loading: false,
+      isEmailVerified: false,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
@@ -166,6 +208,40 @@ describe('useProtectedRoute', () => {
     });
   });
 
+  it('does not redirect to email-verification when privacy-policy is opened before verification', () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['privacy-policy']);
+
+    mockUseAuth.mockReturnValue({
+      user: { id: 'user-123', email: 'test@example.com' },
+      userProfile: { id: 'user-123', username: null },
+      loading: false,
+      isEmailVerified: false,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('does not redirect to username-setup when privacy-policy is opened before profile completion', () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['privacy-policy']);
+
+    mockUseAuth.mockReturnValue({
+      user: { id: 'user-123', email: 'test@example.com' },
+      userProfile: { id: 'user-123', username: null },
+      loading: false,
+      isEmailVerified: true,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
   it('redirects to (tabs) when fully authenticated on public route', async () => {
     const { useSegments } = require('expo-router');
     // Use a public route (login) to trigger the redirect to (tabs)
@@ -186,6 +262,23 @@ describe('useProtectedRoute', () => {
     });
   });
 
+  it('does not redirect to (tabs) when fully authenticated on privacy-policy', () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['privacy-policy']);
+
+    mockUseAuth.mockReturnValue({
+      user: { id: 'user-123', email: 'test@example.com' },
+      userProfile: { id: 'user-123', username: 'testuser' },
+      loading: false,
+      isEmailVerified: true,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
   it('does not redirect when already on protected route', () => {
     const { useSegments } = require('expo-router');
     useSegments.mockReturnValue(['(tabs)']);
@@ -200,6 +293,86 @@ describe('useProtectedRoute', () => {
 
     renderHook(() => useProtectedRoute());
     
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('redirects to post-signup-onboarding when pending onboarding exists', async () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['(tabs)']);
+    mockUsePostSignupOnboardingPending.mockReturnValue({
+      isPending: true,
+      isLoading: false,
+      refresh: jest.fn(),
+    });
+
+    mockUseAuth.mockReturnValue({
+      user: { id: 'user-123', email: 'test@example.com' },
+      userProfile: {
+        id: 'user-123',
+        username: 'testuser',
+        has_seen_tutorial: false,
+      },
+      loading: false,
+      isEmailVerified: true,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith('/post-signup-onboarding');
+    });
+  });
+
+  it('does not redirect away when already on post-signup-onboarding', () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['post-signup-onboarding']);
+    mockUsePostSignupOnboardingPending.mockReturnValue({
+      isPending: true,
+      isLoading: false,
+      refresh: jest.fn(),
+    });
+
+    mockUseAuth.mockReturnValue({
+      user: { id: 'user-123', email: 'test@example.com' },
+      userProfile: {
+        id: 'user-123',
+        username: 'testuser',
+        has_seen_tutorial: false,
+      },
+      loading: false,
+      isEmailVerified: true,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('does not redirect away from privacy-policy when post-signup onboarding is pending', () => {
+    const { useSegments } = require('expo-router');
+    useSegments.mockReturnValue(['privacy-policy']);
+    mockUsePostSignupOnboardingPending.mockReturnValue({
+      isPending: true,
+      isLoading: false,
+      refresh: jest.fn(),
+    });
+
+    mockUseAuth.mockReturnValue({
+      user: { id: 'user-123', email: 'test@example.com' },
+      userProfile: {
+        id: 'user-123',
+        username: 'testuser',
+        has_seen_tutorial: false,
+      },
+      loading: false,
+      isEmailVerified: true,
+      signOut: mockSignOut,
+    });
+
+    renderHook(() => useProtectedRoute());
+
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
@@ -267,7 +440,7 @@ describe('useProtectedRoute', () => {
       expect(mockReplace).not.toHaveBeenCalled();
     });
 
-    it('does not redirect on index route', () => {
+    it('redirects to login on index route when unauthenticated', async () => {
       const { useSegments } = require('expo-router');
       useSegments.mockReturnValue(['index']);
       
@@ -280,11 +453,13 @@ describe('useProtectedRoute', () => {
       });
 
       renderHook(() => useProtectedRoute());
-      
-      expect(mockReplace).not.toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(mockReplace).toHaveBeenCalledWith('/login');
+      });
     });
 
-    it('does not redirect on empty segment', () => {
+    it('redirects to login on empty segment when unauthenticated', async () => {
       const { useSegments } = require('expo-router');
       useSegments.mockReturnValue(['']);
       
@@ -297,8 +472,29 @@ describe('useProtectedRoute', () => {
       });
 
       renderHook(() => useProtectedRoute());
-      
-      expect(mockReplace).not.toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(mockReplace).toHaveBeenCalledWith('/login');
+      });
+    });
+
+    it('redirects to tabs on empty segment when fully authenticated', async () => {
+      const { useSegments } = require('expo-router');
+      useSegments.mockReturnValue(['']);
+
+      mockUseAuth.mockReturnValue({
+        user: { id: 'user-123', email: 'test@example.com' },
+        userProfile: { id: 'user-123', username: 'testuser' },
+        loading: false,
+        isEmailVerified: true,
+        signOut: mockSignOut,
+      });
+
+      renderHook(() => useProtectedRoute());
+
+      await waitFor(() => {
+        expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
+      });
     });
   });
 
@@ -327,7 +523,7 @@ describe('useProtectedRoute', () => {
         expect(result.current.isLoopDetected).toBe(false);
       });
       
-      expect(Alert.alert).not.toHaveBeenCalled();
+      expect(mockShowAlert).not.toHaveBeenCalled();
     });
 
     it('does not show loop alert when navigating to different route types', async () => {
@@ -407,7 +603,7 @@ describe('useProtectedRoute', () => {
     it('shows emergency logout option in alert when loop is detected', () => {
       // Verify the Alert structure that would be shown
       // We can't easily trigger the loop in tests, but we can verify the mock setup
-      const alertMock = Alert.alert as jest.Mock;
+      const alertMock = mockShowAlert as jest.Mock;
       
       // The alert should accept title, message, and buttons array
       // When loop is detected, it should show "Se Déconnecter" and "Annuler" buttons

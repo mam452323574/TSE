@@ -19,7 +19,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { user, userProfile } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const {
     expoPushToken,
     scheduleLocalNotification,
@@ -30,6 +30,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   } = useNotifications();
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
+  const scheduledNotificationsSignatureRef = useRef<string | null>(null);
 
   const fetchUnreadNotifications = useCallback(async () => {
     if (!user) return;
@@ -76,10 +77,26 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   // Initialiser les notifications planifiees au demarrage
   // Initialiser et mettre à jour les notifications planifiees
   useEffect(() => {
-    if (!user || !userProfile) return;
+    if (!user || !userProfile) {
+      scheduledNotificationsSignatureRef.current = null;
+      return;
+    }
 
     const initScheduledNotifications = async () => {
       const settings = userProfile.notification_settings;
+      const schedulingSignature = JSON.stringify({
+        userId: user.id,
+        locale,
+        reminders: settings?.reminders !== false,
+        achievements: settings?.achievements !== false,
+        newContent: settings?.newContent !== false,
+      });
+
+      if (scheduledNotificationsSignatureRef.current === schedulingSignature) {
+        return;
+      }
+
+      scheduledNotificationsSignatureRef.current = schedulingSignature;
 
       // Verifier si les rappels sont actives
       if (settings?.reminders !== false) {
@@ -94,13 +111,20 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
           console.log('[NotificationContext] Notifications reprogrammées avec succès');
         } catch (error) {
+          scheduledNotificationsSignatureRef.current = null;
           console.error('[NotificationContext] Erreur initialisation notifications:', error);
         }
       }
     };
 
     initScheduledNotifications();
-  }, [user, userProfile, scheduleDailyReminder, scheduleMotivationalNotification]);
+  }, [
+    locale,
+    scheduleDailyReminder,
+    scheduleMotivationalNotification,
+    user,
+    userProfile,
+  ]);
 
   const markNotificationAsRead = useCallback(async (notificationId: string) => {
     if (!user) return;

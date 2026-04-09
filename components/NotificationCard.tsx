@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Award, Bell, Sparkles, Clock } from 'lucide-react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { i18n } from '@/i18n/translations';
 import { SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS } from '@/constants/theme';
 
 interface NotificationCardProps {
@@ -28,7 +27,7 @@ export function NotificationCard({
   onMarkAsRead,
 }: NotificationCardProps) {
   const { colors, isDark } = useTheme();
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const getIcon = () => {
@@ -70,7 +69,7 @@ export function NotificationCard({
     } else if (diffInDays < 7) {
       return t('common.time_ago.days_ago', { count: diffInDays });
     } else {
-      return then.toLocaleDateString(i18n.locale, { day: 'numeric', month: 'short' });
+      return then.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
     }
   };
 

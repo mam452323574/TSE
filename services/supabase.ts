@@ -1,9 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
-import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getRuntimeConfig } from './runtimeConfig';
 
-const supabaseUrl = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY || process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const { supabaseUrl, supabaseAnonKey } = getRuntimeConfig();
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('[Supabase] CRITICAL: Missing Supabase configuration');

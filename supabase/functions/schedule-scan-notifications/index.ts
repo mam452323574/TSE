@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
-import { getCorsHeaders, handleCorsPreflightRequest } from '../_shared/cors.ts';
+import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 
 interface ScanUsageRecord {
   last_scan_date: string | null;
@@ -47,8 +47,6 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return handleCorsPreflightRequest(req);
   }
-
-  const corsHeaders = getCorsHeaders(req);
 
   try {
     const supabaseClient = createClient(
@@ -148,34 +146,21 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: `Processed ${users.length} free users, sent ${sentCount} notifications`,
-        notifications_sent: sentCount,
-        users_checked: users.length,
-      }),
-      {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    return jsonResponse(req, {
+      success: true,
+      message: `Processed ${users.length} free users, sent ${sentCount} notifications`,
+      notifications_sent: sentCount,
+      users_checked: users.length,
+    });
   } catch (error) {
     console.error('Error scheduling scan notifications:', error);
-    return new Response(
-      JSON.stringify({
+    return jsonResponse(
+      req,
+      {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-      }),
-      {
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      }
+      },
+      { status: 500 }
     );
   }
 });

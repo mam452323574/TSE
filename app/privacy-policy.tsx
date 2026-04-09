@@ -1,21 +1,22 @@
 import { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { SIZES, SPACING, FONT_WEIGHTS } from '@/constants/theme';
+import { PRIVACY_POLICY_CONTENT } from '@/constants/privacyPolicy';
 
 export default function PrivacyPolicyScreen() {
   const router = useRouter();
   const { colors } = useTheme();
-  const { t } = useLanguage();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ title: 'Privacy Policy' }} />
+
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -24,64 +25,45 @@ export default function PrivacyPolicyScreen() {
         >
           <ChevronLeft color={colors.primaryText} size={24} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('privacy.title')}</Text>
+        <Text style={styles.headerTitle}>Privacy Policy</Text>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.lastUpdated}>{t('privacy.last_updated')}</Text>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.pageTitle}>Privacy Policy / Politique de confidentialite</Text>
+        <Text style={styles.paragraph}>
+          This privacy policy is currently available directly in the app.
+        </Text>
 
-        {/* 1. Introduction */}
-        <Text style={styles.sectionTitle}>{t('privacy.intro_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.intro_content')}</Text>
+        {PRIVACY_POLICY_CONTENT.map((policy) => (
+          <View key={policy.locale} style={styles.localeSection}>
+            <View style={styles.localeBadge}>
+              <Text style={styles.localeBadgeText}>{policy.label}</Text>
+            </View>
+            <Text style={styles.localeTitle}>{policy.title}</Text>
+            <Text style={styles.lastUpdated}>{policy.lastUpdated}</Text>
+            <Text style={styles.paragraph}>{policy.intro}</Text>
 
-        {/* 2. Data Collected */}
-        <Text style={styles.sectionTitle}>{t('privacy.data_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.data_content')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.data_account')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.data_scans')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.data_device')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.data_usage')}</Text>
-
-        {/* 3. Camera Usage */}
-        <Text style={styles.sectionTitle}>{t('privacy.camera_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.camera_content')}</Text>
-
-        {/* 4. Data Usage */}
-        <Text style={styles.sectionTitle}>{t('privacy.usage_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.usage_content')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.usage_analysis')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.usage_improve')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.usage_personalize')}</Text>
-
-        {/* 5. Storage and Security */}
-        <Text style={styles.sectionTitle}>{t('privacy.storage_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.storage_content')}</Text>
-
-        {/* 6. Data Sharing */}
-        <Text style={styles.sectionTitle}>{t('privacy.sharing_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.sharing_content')}</Text>
-
-        {/* 7. Your Rights */}
-        <Text style={styles.sectionTitle}>{t('privacy.rights_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.rights_content')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.rights_access')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.rights_delete')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.rights_export')}</Text>
-        <Text style={styles.bulletPoint}>• {t('privacy.rights_withdraw')}</Text>
-
-        {/* 8. Children */}
-        <Text style={styles.sectionTitle}>{t('privacy.children_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.children_content')}</Text>
-
-        {/* 9. Updates */}
-        <Text style={styles.sectionTitle}>{t('privacy.updates_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.updates_content')}</Text>
-
-        {/* 10. Contact */}
-        <Text style={styles.sectionTitle}>{t('privacy.contact_title')}</Text>
-        <Text style={styles.paragraph}>{t('privacy.contact_content')}</Text>
-        <Text style={styles.contactInfo}>Email : privacy@healthscan.cloud</Text>
-        <Text style={styles.contactInfo}>Support : support@healthscan.cloud</Text>
+            {policy.sections.map((section) => (
+              <View key={`${policy.locale}-${section.title}`} style={styles.sectionBlock}>
+                <Text style={styles.sectionTitle}>{section.title}</Text>
+                {section.paragraphs.map((paragraph) => (
+                  <Text key={paragraph} style={styles.paragraph}>
+                    {paragraph}
+                  </Text>
+                ))}
+                {section.bullets?.map((bullet) => (
+                  <Text key={bullet} style={styles.bulletPoint}>
+                    {'\u2022'} {bullet}
+                  </Text>
+                ))}
+              </View>
+            ))}
+          </View>
+        ))}
 
         <View style={styles.bottomSpacing} />
       </ScrollView>
@@ -97,7 +79,7 @@ const createStyles = (colors: any, insets: any) => StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? Math.max(insets.top, SPACING.md) : SPACING.xxxl,
+    paddingTop: insets.top + SPACING.sm,
     paddingBottom: SPACING.md,
     paddingHorizontal: SPACING.page,
     backgroundColor: colors.cardBackground,
@@ -115,14 +97,52 @@ const createStyles = (colors: any, insets: any) => StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  contentContainer: {
     paddingHorizontal: SPACING.page,
     paddingTop: SPACING.lg,
+  },
+  pageTitle: {
+    fontSize: SIZES.text20,
+    fontWeight: FONT_WEIGHTS.bold,
+    color: colors.primaryText,
+    marginBottom: SPACING.md,
+  },
+  localeSection: {
+    marginBottom: SPACING.xl,
+    padding: SPACING.lg,
+    borderRadius: 24,
+    backgroundColor: colors.cardBackground,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+  },
+  localeBadge: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    backgroundColor: colors.primary,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    marginBottom: SPACING.md,
+  },
+  localeBadgeText: {
+    color: colors.white,
+    fontSize: SIZES.text12,
+    fontWeight: FONT_WEIGHTS.bold,
+  },
+  localeTitle: {
+    fontSize: SIZES.text18,
+    fontWeight: FONT_WEIGHTS.bold,
+    color: colors.primaryText,
+    marginBottom: SPACING.xs,
   },
   lastUpdated: {
     fontSize: SIZES.text12,
     color: colors.gray,
     fontStyle: 'italic',
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.lg,
+  },
+  sectionBlock: {
+    marginTop: SPACING.sm,
   },
   sectionTitle: {
     fontSize: SIZES.text18,
@@ -144,14 +164,7 @@ const createStyles = (colors: any, insets: any) => StyleSheet.create({
     marginBottom: SPACING.xs,
     paddingLeft: SPACING.md,
   },
-  contactInfo: {
-    fontSize: SIZES.text16,
-    color: colors.primary,
-    lineHeight: 24,
-    marginBottom: SPACING.xs,
-    fontWeight: FONT_WEIGHTS.semiBold,
-  },
   bottomSpacing: {
-    height: SPACING.xxxl,
+    height: SPACING.xl + insets.bottom,
   },
 });

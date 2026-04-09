@@ -46,6 +46,7 @@ describe('BadgeContext', () => {
     await waitFor(() => {
       expect(result.current.badges).toEqual({
         analytics: false,
+        social: false,
         recipes: false,
         exercises: false,
       });
@@ -109,11 +110,13 @@ describe('BadgeContext', () => {
 
     act(() => {
       result.current.setBadge('analytics');
+      result.current.setBadge('social');
       result.current.setBadge('recipes');
       result.current.setBadge('exercises');
     });
 
     expect(result.current.badges.analytics).toBe(true);
+    expect(result.current.badges.social).toBe(true);
     expect(result.current.badges.recipes).toBe(true);
     expect(result.current.badges.exercises).toBe(true);
 
@@ -122,6 +125,7 @@ describe('BadgeContext', () => {
     });
 
     expect(result.current.badges.analytics).toBe(true);
+    expect(result.current.badges.social).toBe(true);
     expect(result.current.badges.recipes).toBe(false);
     expect(result.current.badges.exercises).toBe(true);
   });

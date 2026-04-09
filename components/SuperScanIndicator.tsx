@@ -1,311 +1,426 @@
 import { useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Sparkles, Crown, Zap, Lock } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { SIZES, SPACING, FONT_WEIGHTS, BORDER_RADIUS, SHADOWS } from '@/constants/theme';
+import {
+  SIZES,
+  SPACING,
+  FONT_WEIGHTS,
+  BORDER_RADIUS,
+  SHADOWS,
+  getAndroidLightSurface,
+  mixColors,
+  withAlpha,
+} from '@/constants/theme';
 import { NextScanTimer } from '@/components/NextScanTimer';
-
-interface ScanEligibility {
-    allowed: boolean;
-    remaining?: number;
-    message: string;
-    next_available_date?: number;
-    welcome_credits?: number;
-}
+import { ScanEligibilityResponse } from '@/types';
 
 interface SuperScanIndicatorProps {
-    isPremium: boolean;
-    eligibility?: ScanEligibility;
-    onLockedPress?: () => void;
+  isPremium: boolean;
+  eligibility?: ScanEligibilityResponse;
+  onLockedPress?: () => void;
 }
 
 export function SuperScanIndicator({ isPremium, eligibility, onLockedPress }: SuperScanIndicatorProps) {
-    const { colors, isDark } = useTheme();
-    const { t } = useLanguage();
-    const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+  const { colors, isDark } = useTheme();
+  const { t } = useLanguage();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
-    // Dériver isAvailable à partir de eligibility
-    const isAvailable = isPremium && eligibility?.allowed === true;
+  const isAvailable = isPremium && eligibility?.allowed === true;
+  const resolvedLimit = Math.max(eligibility?.limit ?? 1, 1);
+  const resolvedRemaining = Math.max(
+    0,
+    eligibility?.remaining ?? (resolvedLimit - (eligibility?.current_count ?? 0))
+  );
+  const progressRatio = isPremium ? Math.min(100, (resolvedRemaining / resolvedLimit) * 100) : 0;
+  const gradientColors = isPremium
+    ? [
+        mixColors(colors.gold, colors.white, 0.18),
+        mixColors(colors.gold, colors.warning, 0.22),
+        mixColors(colors.warning, colors.gold, 0.68),
+      ] as const
+    : isDark
+      ? [
+          mixColors(colors.grayLight, colors.darkGray, 0.32),
+          mixColors(colors.lightGray, colors.darkGray, 0.18),
+          mixColors(colors.grayLight, colors.darkGray, 0.32),
+        ] as const
+      : [
+          mixColors(colors.lightGray, colors.cardBackground, 0.08),
+          mixColors(colors.lightGray, colors.gray, 0.14),
+          mixColors(colors.lightGray, colors.cardBackground, 0.08),
+        ] as const;
 
-    // Couleurs du dégradé adaptées au thème
-    const gradientColors = isPremium
-        ? ['#FFD700', '#FFA500', '#FFD700'] as const
-        : isDark
-            ? ['#3A3A3C', '#2C2C2E', '#3A3A3C'] as const
-            : ['#E0E0E0', '#BDBDBD', '#E0E0E0'] as const;
+  const progressGradientColors = isAvailable
+    ? [mixColors(colors.gold, colors.white, 0.12), mixColors(colors.warning, colors.gold, 0.72)] as const
+    : isDark
+      ? [mixColors(colors.grayLight, colors.darkGray, 0.28), mixColors(colors.lightGray, colors.darkGray, 0.16)] as const
+      : [mixColors(colors.lightGray, colors.cardBackground, 0.2), mixColors(colors.lightGray, colors.gray, 0.14)] as const;
 
-    const progressGradientColors = isAvailable
-        ? ['#FFD700', '#FFA500'] as const
-        : isDark
-            ? ['#3A3A3C', '#2C2C2E'] as const
-            : ['#E0E0E0', '#BDBDBD'] as const;
+  const Container = !isPremium && onLockedPress ? TouchableOpacity : View;
+  const containerProps = !isPremium && onLockedPress
+    ? ({ onPress: onLockedPress, activeOpacity: 0.7 } as const)
+    : {};
 
-    const Container = (!isPremium && onLockedPress) ? TouchableOpacity : View;
-    const containerProps = (!isPremium && onLockedPress)
-        ? { onPress: onLockedPress, activeOpacity: 0.7 } as const
-        : {};
+  return (
+    <Container
+      {...containerProps}
+      style={[styles.shell, isPremium ? styles.shellPremium : styles.shellLocked]}
+      testID="super-scan-shell"
+    >
+      <View
+        style={[styles.surface, isPremium ? styles.surfacePremium : styles.surfaceLocked]}
+        testID="super-scan-surface"
+      >
+        <View style={[styles.backgroundGlow, isPremium ? styles.backgroundGlowPremium : styles.backgroundGlowLocked]} />
 
-    return (
-        <Container {...containerProps} style={[styles.container, !isPremium && styles.containerLocked]}>
-            {/* Background avec effet premium */}
-            <View style={styles.backgroundGlow} />
+        <View style={styles.content}>
+          <View style={[styles.iconWrapper, !isPremium && styles.iconWrapperLocked]}>
+            <LinearGradient
+              colors={gradientColors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[styles.iconGradient, isPremium ? styles.iconGradientPremium : styles.iconGradientLocked]}
+            >
+              <Sparkles
+                color={isPremium ? '#FFFFFF' : colors.gray}
+                size={22}
+                strokeWidth={2.5}
+                fill={isPremium ? '#FFFFFF' : 'transparent'}
+              />
+            </LinearGradient>
+            {isAvailable && <View style={[styles.availableDot, styles.availableDotPremium]} />}
+          </View>
 
-            <View style={styles.content}>
-                {/* Icône principale avec cercle lumineux */}
-                <View style={[styles.iconWrapper, !isPremium && styles.iconWrapperLocked]}>
-                    <LinearGradient
-                        colors={gradientColors}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.iconGradient}
-                    >
-                        <Sparkles
-                            color={isPremium ? '#FFFFFF' : colors.gray}
-                            size={22}
-                            strokeWidth={2.5}
-                            fill={isPremium ? '#FFFFFF' : 'transparent'}
-                        />
-                    </LinearGradient>
-                    {isAvailable && (
-                        <View style={styles.availableDot} />
-                    )}
+          <View style={styles.textContainer}>
+            <View style={styles.titleRow}>
+              <Text style={[styles.title, !isPremium && styles.titleLocked]} numberOfLines={1}>
+                {t('components.super_scan.title')}
+              </Text>
+              {!isPremium && (
+                <View style={styles.premiumBadge}>
+                  <Crown color={colors.gold} size={10} fill={colors.gold} />
+                  <Text style={styles.premiumBadgeText}>{t('components.feature_list.premium')}</Text>
                 </View>
-
-                {/* Texte et statut */}
-                <View style={styles.textContainer}>
-                    <View style={styles.titleRow}>
-                        <Text style={[styles.title, !isPremium && styles.titleLocked]}>
-                            {t('components.super_scan.title')}
-                        </Text>
-                        {!isPremium && (
-                            <View style={styles.premiumBadge}>
-                                <Crown color="#FFD700" size={10} fill="#FFD700" />
-                                <Text style={styles.premiumBadgeText}>{t('components.feature_list.premium')}</Text>
-                            </View>
-                        )}
-                    </View>
-                    <Text style={styles.subtitle}>
-                        {!isPremium
-                            ? t('components.super_scan.subtitle_locked')
-                            : !isAvailable
-                                ? t('components.super_scan.subtitle_used')
-                                : t('components.super_scan.subtitle_available')}
-                    </Text>
-                </View>
-
-                {/* Indicateur de statut */}
-                <View style={styles.statusContainer}>
-                    {!isPremium ? (
-                        <View style={styles.lockedBadge}>
-                            <Lock color={colors.gray} size={14} />
-                        </View>
-                    ) : isAvailable ? (
-                        <View style={styles.availableBadge}>
-                            <Zap color="#FFD700" size={14} fill="#FFD700" />
-                            <Text style={styles.availableText}>{eligibility?.remaining ?? 1}</Text>
-                        </View>
-                    ) : (
-                        <View style={styles.usedBadge}>
-                            <Text style={styles.usedText}>{eligibility?.remaining ?? 0}</Text>
-                        </View>
-                    )}
-                </View>
+              )}
             </View>
+            <Text style={styles.subtitle} numberOfLines={2}>
+              {!isPremium
+                ? t('components.super_scan.subtitle_locked')
+                : !isAvailable
+                  ? t('components.super_scan.subtitle_used')
+                  : t('components.super_scan.subtitle_available')}
+            </Text>
+          </View>
 
-            {/* Barre de progression stylisée */}
-            <View style={styles.progressContainer}>
-                <View style={[styles.progressBar, !isPremium && styles.progressBarLocked]}>
-                    <LinearGradient
-                        colors={progressGradientColors}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={[
-                            styles.progressFill,
-                            { width: isAvailable ? '100%' : '0%' }
-                        ]}
-                    />
-                </View>
-                <Text style={[styles.progressLabel, !isPremium && styles.progressLabelLocked]}>
-                    {!isPremium
-                        ? t('components.super_scan.status_locked')
-                        : !isAvailable
-                            ? t('components.super_scan.status_used')
-                            : t('components.super_scan.status_available')}
-                </Text>
+          <View style={styles.statusContainer}>
+            {!isPremium ? (
+              <View style={styles.lockedBadge}>
+                <Lock color={colors.gray} size={14} />
+              </View>
+            ) : isAvailable ? (
+              <View style={styles.availableBadge}>
+                <Zap color={colors.gold} size={14} fill={colors.gold} />
+                <Text style={styles.availableText}>{`${resolvedRemaining}/${resolvedLimit}`}</Text>
+              </View>
+            ) : (
+              <View style={styles.usedBadge}>
+                <Text style={styles.usedText}>{`${resolvedRemaining}/${resolvedLimit}`}</Text>
+              </View>
+            )}
+          </View>
+        </View>
 
-                {isPremium && eligibility?.next_available_date && (
-                    <View style={styles.timerContainer}>
-                        <NextScanTimer
-                            nextAvailableDate={eligibility.next_available_date}
-                            scanLabel={t('scan_limit.recharge')}
-                            textColor={colors.gray}
-                            iconColor={colors.gray}
-                        />
-                    </View>
-                )}
+        <View style={styles.progressContainer}>
+          <View style={[styles.progressBar, !isPremium && styles.progressBarLocked]}>
+            <LinearGradient
+              colors={progressGradientColors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[
+                styles.progressFill,
+                { width: `${progressRatio}%` },
+              ]}
+            />
+          </View>
+          <Text style={[styles.progressLabel, !isPremium && styles.progressLabelLocked]} numberOfLines={1}>
+            {!isPremium
+              ? t('components.super_scan.status_locked')
+              : !isAvailable
+                ? t('components.super_scan.status_used')
+                : t('components.super_scan.status_available')}
+          </Text>
+
+          {isPremium && eligibility?.next_available_date && (
+            <View style={styles.timerContainer}>
+              <NextScanTimer
+                nextAvailableDate={eligibility.next_available_date}
+                scanLabel={t('scan_limit.recharge')}
+                textColor={colors.gray}
+                iconColor={colors.gray}
+              />
             </View>
-        </Container>
-    );
+          )}
+        </View>
+      </View>
+    </Container>
+  );
 }
 
-const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
-    container: {
-        backgroundColor: isDark ? colors.cardBackground : '#FFFEF5',
-        borderRadius: BORDER_RADIUS.xl,
-        padding: SPACING.lg,
-        borderWidth: 1.5,
-        borderColor: isDark ? 'rgba(255, 215, 0, 0.3)' : 'rgba(255, 215, 0, 0.4)',
-        overflow: 'hidden',
-        ...SHADOWS.card,
+const createStyles = (colors: any, isDark: boolean) => {
+  const isAndroidLight = Platform.OS === 'android' && !isDark;
+  const premiumSurface = isAndroidLight
+    ? getAndroidLightSurface(colors, {
+        accentColor: colors.gold,
+        shadowColor: colors.gold,
+        backgroundAlpha: 0.08,
+        borderAlpha: 0.16,
+        overlayAlpha: 0.16,
+        shadowOpacity: 0.12,
+        shadowRadius: 18,
+        shadowOffsetY: 8,
+        elevation: 4,
+      })
+    : {
+        backgroundColor: isDark ? colors.cardBackground : mixColors(colors.cardBackground, colors.gold, 0.08),
+        borderColor: isDark ? withAlpha(colors.gold, 0.3) : withAlpha(colors.gold, 0.28),
+        overlayColor: isDark ? withAlpha(colors.gold, 0.1) : withAlpha(colors.gold, 0.14),
+        shadowStyle: SHADOWS.card,
+      };
+  const lockedSurface = isAndroidLight
+    ? getAndroidLightSurface(colors, {
+        accentColor: colors.gray,
+        shadowColor: colors.gray,
+        backgroundAlpha: 0.05,
+        borderAlpha: 0.12,
+        overlayAlpha: 0.08,
+        shadowOpacity: 0.06,
+        shadowRadius: 14,
+        shadowOffsetY: 6,
+        elevation: 2,
+      })
+    : {
+        backgroundColor: isDark ? colors.grayLight : mixColors(colors.cardBackground, colors.gray, 0.05),
+        borderColor: isDark ? colors.lightGray : mixColors(colors.lightGray, colors.gray, 0.18),
+        overlayColor: isDark ? withAlpha(colors.white, 0.05) : withAlpha(colors.gray, 0.06),
+        shadowStyle: SHADOWS.card,
+      };
+  const premiumIconShadow = isAndroidLight
+    ? {
+        shadowColor: colors.gold,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        elevation: 2,
+      }
+    : SHADOWS.card;
+  const lockedIconShadow = isAndroidLight
+    ? {
+        shadowColor: colors.gray,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 1,
+      }
+    : SHADOWS.none;
+
+  return StyleSheet.create({
+    shell: {
+      borderRadius: BORDER_RADIUS.xl,
+      minWidth: 0,
     },
-    containerLocked: {
-        backgroundColor: colors.grayLight,
-        borderColor: colors.lightGray,
+    shellPremium: {
+      ...premiumSurface.shadowStyle,
+    },
+    shellLocked: {
+      ...lockedSurface.shadowStyle,
+    },
+    surface: {
+      borderRadius: BORDER_RADIUS.xl,
+      padding: SPACING.lg,
+      overflow: 'hidden',
+      minWidth: 0,
+      borderWidth: 1,
+    },
+    surfacePremium: {
+      backgroundColor: premiumSurface.backgroundColor,
+      borderColor: premiumSurface.borderColor,
+    },
+    surfaceLocked: {
+      backgroundColor: lockedSurface.backgroundColor,
+      borderColor: lockedSurface.borderColor,
     },
     backgroundGlow: {
-        position: 'absolute',
-        top: -50,
-        right: -50,
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: isDark ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 215, 0, 0.15)',
+      position: 'absolute',
+      top: isAndroidLight ? -34 : -50,
+      right: isAndroidLight ? -24 : -50,
+      width: isAndroidLight ? 96 : 120,
+      height: isAndroidLight ? 96 : 120,
+      borderRadius: isAndroidLight ? 48 : 60,
+    },
+    backgroundGlowPremium: {
+      backgroundColor: premiumSurface.overlayColor,
+    },
+    backgroundGlowLocked: {
+      backgroundColor: lockedSurface.overlayColor,
     },
     content: {
-        flexDirection: 'row',
-        alignItems: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
+      minWidth: 0,
     },
     iconWrapper: {
-        position: 'relative',
+      position: 'relative',
     },
     iconWrapperLocked: {
-        opacity: 0.6,
+      opacity: 0.6,
     },
     iconGradient: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        justifyContent: 'center',
-        alignItems: 'center',
-        ...SHADOWS.card,
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    iconGradientPremium: {
+      ...premiumIconShadow,
+    },
+    iconGradientLocked: {
+      ...lockedIconShadow,
     },
     availableDot: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        backgroundColor: '#4CAF50',
-        borderWidth: 2,
-        borderColor: isDark ? colors.cardBackground : '#FFFEF5',
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      backgroundColor: colors.success,
+      borderWidth: 2,
+    },
+    availableDotPremium: {
+      borderColor: premiumSurface.backgroundColor,
     },
     textContainer: {
-        flex: 1,
-        marginLeft: SPACING.md,
+      flex: 1,
+      marginLeft: SPACING.md,
+      minWidth: 0,
     },
     titleRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: SPACING.sm,
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: SPACING.sm,
+      minWidth: 0,
     },
     title: {
-        fontSize: SIZES.text16,
-        fontWeight: FONT_WEIGHTS.bold,
-        color: colors.primaryText,
+      fontSize: SIZES.text16,
+      fontWeight: FONT_WEIGHTS.bold,
+      color: colors.primaryText,
+      flexShrink: 1,
     },
     titleLocked: {
-        color: colors.gray,
+      color: colors.gray,
     },
     subtitle: {
-        fontSize: SIZES.text12,
-        color: colors.gray,
-        marginTop: 2,
+      fontSize: SIZES.text12,
+      color: colors.gray,
+      marginTop: 2,
+      minWidth: 0,
     },
     premiumBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: isDark ? 'rgba(255, 215, 0, 0.2)' : 'rgba(255, 215, 0, 0.15)',
-        paddingHorizontal: SPACING.sm,
-        paddingVertical: 2,
-        borderRadius: BORDER_RADIUS.sm,
-        gap: 3,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: withAlpha(colors.gold, isDark ? 0.2 : 0.14),
+      paddingHorizontal: SPACING.sm,
+      paddingVertical: 2,
+      borderRadius: BORDER_RADIUS.sm,
+      gap: 3,
     },
     premiumBadgeText: {
-        fontSize: SIZES.text10,
-        fontWeight: FONT_WEIGHTS.bold,
-        color: isDark ? '#FFD700' : '#B8860B',
+      fontSize: SIZES.text10,
+      fontWeight: FONT_WEIGHTS.bold,
+      color: colors.gold,
     },
     statusContainer: {
-        marginLeft: SPACING.sm,
+      marginLeft: SPACING.sm,
+      flexShrink: 0,
     },
     lockedBadge: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: colors.lightGray,
-        justifyContent: 'center',
-        alignItems: 'center',
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: withAlpha(colors.gray, isDark ? 0.16 : 0.12),
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     availableBadge: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: isDark ? 'rgba(255, 215, 0, 0.25)' : 'rgba(255, 215, 0, 0.2)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        gap: 2,
+      minWidth: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: withAlpha(colors.gold, isDark ? 0.25 : 0.18),
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
+      paddingHorizontal: 6,
+      gap: 3,
     },
     availableText: {
-        fontSize: SIZES.text14,
-        fontWeight: FONT_WEIGHTS.bold,
-        color: isDark ? '#FFD700' : '#B8860B',
+      fontSize: SIZES.text10,
+      fontWeight: FONT_WEIGHTS.bold,
+      color: colors.gold,
     },
     usedBadge: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: colors.lightGray,
-        justifyContent: 'center',
-        alignItems: 'center',
+      minWidth: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: withAlpha(colors.gray, isDark ? 0.16 : 0.12),
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 6,
     },
     usedText: {
-        fontSize: SIZES.text14,
-        fontWeight: FONT_WEIGHTS.bold,
-        color: colors.gray,
+      fontSize: SIZES.text10,
+      fontWeight: FONT_WEIGHTS.bold,
+      color: colors.gray,
     },
     progressContainer: {
-        marginTop: SPACING.md,
+      marginTop: SPACING.md,
+      minWidth: 0,
     },
     progressBar: {
-        height: 6,
-        backgroundColor: isDark ? 'rgba(255, 215, 0, 0.15)' : 'rgba(255, 215, 0, 0.2)',
-        borderRadius: 3,
-        overflow: 'hidden',
+      height: 6,
+      backgroundColor: withAlpha(colors.gold, isDark ? 0.15 : 0.18),
+      borderRadius: 3,
+      overflow: 'hidden',
     },
     progressBarLocked: {
-        backgroundColor: colors.lightGray,
+      backgroundColor: withAlpha(colors.gray, isDark ? 0.18 : 0.14),
     },
     progressFill: {
-        height: '100%',
-        borderRadius: 3,
+      height: '100%',
+      borderRadius: 3,
     },
     progressLabel: {
-        fontSize: SIZES.text10,
-        color: isDark ? '#FFD700' : '#B8860B',
-        marginTop: SPACING.xs,
-        textAlign: 'center',
-        fontWeight: FONT_WEIGHTS.medium,
+      fontSize: SIZES.text10,
+      color: colors.gold,
+      marginTop: SPACING.xs,
+      textAlign: 'center',
+      fontWeight: FONT_WEIGHTS.medium,
+      flexShrink: 1,
     },
     progressLabelLocked: {
-        color: colors.gray,
+      color: colors.gray,
     },
     timerContainer: {
-        marginTop: 2,
-        alignItems: 'center',
-        justifyContent: 'center',
+      marginTop: 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      minWidth: 0,
     },
-});
+  });
+};

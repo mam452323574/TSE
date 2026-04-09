@@ -1,76 +1,245 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { StyleSheet } from 'react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { ConditionCard } from '@/components/ConditionCard';
 
-// Mock dependencies
 const mockPush = jest.fn();
+const useWindowDimensionsSpy = jest.spyOn(
+  require('react-native'),
+  'useWindowDimensions',
+);
+
 jest.mock('expo-router', () => ({
-    useRouter: () => ({
-        push: mockPush,
-    }),
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
+
+jest.mock('react-native-svg', () => ({
+  __esModule: true,
+  default: 'Svg',
+  Circle: 'Circle',
+  Line: 'Line',
+  Path: 'Path',
 }));
 
 jest.mock('@/contexts/ThemeContext', () => ({
-    useTheme: () => ({
-        colors: {
-            primaryText: '#000',
-            gray: '#ccc',
-            bg: '#fff',
-            border: '#000',
-            text: '#000',
-            lightGray: '#eee',
-            white: '#fff',
-            primary: '#007AFF',
-        },
-    }),
+  useTheme: () => ({
+    colors: {
+      primaryText: '#000000',
+      gray: '#8E8E93',
+      lightGray: '#E5E5EA',
+      white: '#FFFFFF',
+      primary: '#007AFF',
+      cardBackground: '#FFFFFF',
+      background: '#F2F2F7',
+    },
+    isDark: false,
+  }),
 }));
 
 jest.mock('@/contexts/LanguageContext', () => ({
-    useLanguage: () => ({
-        t: (key: string) => key,
-    }),
+  useLanguage: () => ({
+    locale: 'en',
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'common.metrics.explanation': 'Explanation',
+        'common.metrics.advice': 'Advice',
+        'common.metrics.probability': 'Probability',
+        'condition_card.unlock': 'Unlock',
+        'condition_card.locked.explanation_teaser':
+          'Premium adds the full explanation behind this signal.',
+        'condition_card.locked.advice_teaser':
+          'Premium unlocks the next-step guidance for this signal.',
+        'condition_card.loading.explanation': 'Explanation is syncing.',
+        'condition_card.loading.advice': 'Advice is syncing.',
+        'qualitative_levels.severity.moderate': 'Moderate',
+        'scan.super.conditions.unknown.label': 'Unknown finding',
+        'scan.super.categories.general': 'General',
+        'scan.super.categories.unknown': 'Other',
+        'scan.super.categories.posture': 'Posture',
+        'scan.super.explanations.unknown': 'Details unavailable.',
+        'scan.super.advice.unknown': 'Advice unavailable.',
+        'scan.super.explanations.test_explanation':
+          'Premium explanation kept behind the lock.',
+        'scan.super.advice.test_advice':
+          'Premium advice kept behind the lock.',
+      };
+
+      return translations[key] ?? key;
+    },
+  }),
 }));
 
-// Mock lucide icons
-jest.mock('lucide-react-native', () => ({
-    Lock: 'Lock',
-}));
+jest.mock('lucide-react-native', () => {
+  const ReactLocal = require('react');
+  const { Text: RNText } = require('react-native');
+  const makeIcon = (label: string) => (props: any) =>
+    ReactLocal.createElement(RNText, props, label);
+
+  return new Proxy(
+    {},
+    {
+      get: (_target, prop) => {
+        if (prop === '__esModule') {
+          return true;
+        }
+
+        return makeIcon(String(prop));
+      },
+    },
+  );
+});
 
 describe('ConditionCard', () => {
-    const mockCondition = {
-        condition_name: 'Test Condition',
-        category: 'Test Category',
-        probability: 85,
-        severity: 'Modérée' as const,
-        explanation: 'Test Explanation',
-        actionable_advice: 'Test Advice',
-    };
+  const lockedCondition = {
+    condition_key: 'test_condition',
+    category_key: 'general',
+    probability: 85,
+    severity_key: 'moderate' as const,
+    explanation_key: 'test_explanation',
+    advice_key: 'test_advice',
+  };
 
-    beforeEach(() => {
-        mockPush.mockClear();
+  const unknownCondition = {
+    condition_key: 'unknown',
+    category_key: 'general',
+    probability: 85,
+    severity_key: 'moderate' as const,
+    explanation_key: 'unknown',
+    advice_key: 'unknown',
+  };
+
+  const postureCondition = {
+    ...lockedCondition,
+    category_key: 'posture',
+  };
+
+  const unknownCategoryCondition = {
+    ...lockedCondition,
+    category_key: 'mystery_signal',
+  };
+
+  beforeEach(() => {
+    mockPush.mockClear();
+    useWindowDimensionsSpy.mockReturnValue({
+      width: 390,
+      height: 844,
+      scale: 3,
+      fontScale: 1,
+    });
+  });
+
+  it('shows translated section labels after the redesign', () => {
+    const { getByText } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="locked" />,
+    );
+
+    expect(getByText('Explanation')).toBeTruthy();
+    expect(getByText('Advice')).toBeTruthy();
+    expect(getByText('Probability')).toBeTruthy();
+    expect(getByText('Moderate')).toBeTruthy();
+    expect(getByText('General')).toBeTruthy();
+  });
+
+  it('maps category badges to the centralized icon catalog, including fallback and custom categories', () => {
+    const { getByTestId, rerender } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="locked" />,
+    );
+
+    expect(getByTestId('condition-card-category-icon-general')).toBeTruthy();
+
+    rerender(
+      <ConditionCard condition={postureCondition} premiumRenderState="locked" />,
+    );
+    expect(getByTestId('condition-card-category-icon-posture')).toBeTruthy();
+
+    rerender(
+      <ConditionCard
+        condition={unknownCategoryCondition}
+        premiumRenderState="locked"
+      />,
+    );
+    expect(getByTestId('condition-card-category-icon-unknown')).toBeTruthy();
+  });
+
+  it('does not render premium explanation or advice text for free users', () => {
+    const { getByTestId, queryByText, getByText } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="locked" />,
+    );
+
+    expect(getByTestId('condition-card-unlock-explanation')).toBeTruthy();
+    expect(getByTestId('condition-card-unlock-advice')).toBeTruthy();
+    expect(getByText('Premium adds the full explanation behind this signal.')).toBeTruthy();
+    expect(getByText('Premium unlocks the next-step guidance for this signal.')).toBeTruthy();
+    expect(queryByText('Premium explanation kept behind the lock.')).toBeNull();
+    expect(queryByText('Premium advice kept behind the lock.')).toBeNull();
+  });
+
+  it('navigates to premium upgrade when unlock is pressed for non-premium user', () => {
+    const { getByTestId } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="locked" />,
+    );
+
+    fireEvent.press(getByTestId('condition-card-unlock-explanation'));
+
+    expect(mockPush).toHaveBeenCalledWith('/premium-upgrade');
+  });
+
+  it('renders the localized premium explanation and advice for unlocked users', () => {
+    const { queryByText, getByText } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="unlocked" />,
+    );
+
+    expect(queryByText('Unlock')).toBeNull();
+    expect(getByText('Premium explanation kept behind the lock.')).toBeTruthy();
+    expect(getByText('Premium advice kept behind the lock.')).toBeTruthy();
+  });
+
+  it('renders a neutral loading state without upgrade cta', () => {
+    const { queryByText, getByText, queryByTestId } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="loading" />,
+    );
+
+    expect(queryByText('Unlock')).toBeNull();
+    expect(getByText('Explanation is syncing.')).toBeTruthy();
+    expect(getByText('Advice is syncing.')).toBeTruthy();
+    expect(queryByTestId('condition-card-unlock-explanation')).toBeNull();
+  });
+
+  it('uses controlled unknown placeholders instead of humanized internal keys', () => {
+    const { queryByText, getByText } = render(
+      <ConditionCard condition={unknownCondition} premiumRenderState="unlocked" />,
+    );
+
+    expect(queryByText('Unlock')).toBeNull();
+    expect(getByText('Unknown finding')).toBeTruthy();
+    expect(getByText('Details unavailable.')).toBeTruthy();
+    expect(getByText('Advice unavailable.')).toBeTruthy();
+  });
+
+  it('stacks the probability card cleanly in compact mode', () => {
+    useWindowDimensionsSpy.mockReturnValue({
+      width: 320,
+      height: 640,
+      scale: 2,
+      fontScale: 1,
     });
 
-    it('navigates to premium upgrade when unlock is pressed (non-premium user)', () => {
-        const { getByText, getAllByText } = render(
-            <ConditionCard condition={mockCondition} isPremium={false} />
-        );
+    const { getByTestId } = render(
+      <ConditionCard condition={lockedCondition} premiumRenderState="unlocked" />,
+    );
 
-        // Find the unlock buttons/text
-        const unlockButtons = getAllByText('condition_card.unlock');
-        expect(unlockButtons.length).toBeGreaterThan(0);
+    const probabilityCardStyle = StyleSheet.flatten(
+      getByTestId('condition-card-probability-card').props.style,
+    );
+    const probabilityValueStyle = StyleSheet.flatten(
+      getByTestId('condition-card-probability-value').props.style,
+    );
 
-        // Press the first one
-        fireEvent.press(unlockButtons[0]);
-
-        // Verify navigation to NEW premium page
-        expect(mockPush).toHaveBeenCalledWith('/premium-upgrade');
-    });
-
-    it('does NOT show unlock button when user is premium', () => {
-        const { queryByText } = render(
-            <ConditionCard condition={mockCondition} isPremium={true} />
-        );
-
-        expect(queryByText('condition_card.unlock')).toBeNull();
-    });
+    expect(getByTestId('condition-card-probability-label').props.numberOfLines).toBe(2);
+    expect(probabilityCardStyle.alignSelf).toBe('flex-start');
+    expect(probabilityCardStyle.borderRadius).toBe(16);
+    expect(probabilityValueStyle.fontSize).toBe(24);
+  });
 });

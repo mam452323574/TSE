@@ -1,19 +1,18 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
-import { getCorsHeaders, handleCorsPreflightRequest } from '../_shared/cors.ts';
+import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 
 interface PushNotification {
   to: string;
+  sound?: string;
   title: string;
   body: string;
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return handleCorsPreflightRequest(req);
   }
-
-  const corsHeaders = getCorsHeaders(req);
 
   try {
     const supabase = createClient(
@@ -25,33 +24,29 @@ Deno.serve(async (req: Request) => {
     const action = url.searchParams.get('action');
 
     if (action === 'check-inactive-users') {
-      return await checkInactiveUsers(supabase);
-    } else if (action === 'check-achievements') {
-      return await checkAchievements(supabase);
-    } else if (action === 'send-custom') {
-      const { userId, title, body, data } = await req.json();
-      return await sendCustomNotification(supabase, userId, title, body, data);
+      return await checkInactiveUsers(req, supabase);
     }
 
-    return new Response(
-      JSON.stringify({ error: 'Invalid action' }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    if (action === 'check-achievements') {
+      return await checkAchievements(req, supabase);
+    }
+
+    if (action === 'send-custom') {
+      const { userId, title, body, data } = await req.json();
+      return await sendCustomNotification(req, supabase, userId, title, body, data);
+    }
+
+    return jsonResponse(req, { error: 'Invalid action' }, { status: 400 });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+    return jsonResponse(
+      req,
+      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
     );
   }
 });
 
-async function checkInactiveUsers(supabase: any) {
+async function checkInactiveUsers(req: Request, supabase: any) {
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
@@ -61,13 +56,17 @@ async function checkInactiveUsers(supabase: any) {
     .not('push_token', 'is', null)
     .or(`last_scan_date.is.null,last_scan_date.lt.${threeDaysAgo.toISOString()}`);
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  const notificationsSent = [];
+  const notificationsSent: string[] = [];
 
   for (const user of inactiveUsers || []) {
     const settings = user.notification_settings || {};
-    if (settings.reminders === false) continue;
+    if (settings.reminders === false) {
+      continue;
+    }
 
     const { data: recentLog } = await supabase
       .from('notification_logs')
@@ -77,10 +76,12 @@ async function checkInactiveUsers(supabase: any) {
       .gte('sent_at', threeDaysAgo.toISOString())
       .maybeSingle();
 
-    if (recentLog) continue;
+    if (recentLog) {
+      continue;
+    }
 
     const title = 'Health Scan';
-    const body = 'Il est temps de faire le point sur votre santé ! Faites un nouveau scan.';
+    const body = 'Il est temps de faire le point sur votre sante. Faites un nouveau scan.';
 
     await sendPushNotification(user.push_token, title, body, {
       type: 'reminder',
@@ -96,39 +97,38 @@ async function checkInactiveUsers(supabase: any) {
     notificationsSent.push(user.id);
   }
 
-  return new Response(
-    JSON.stringify({
-      success: true,
-      notificationsSent: notificationsSent.length,
-    }),
-    {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    }
-  );
+  return jsonResponse(req, {
+    success: true,
+    notificationsSent: notificationsSent.length,
+  });
 }
 
-async function checkAchievements(supabase: any) {
+async function checkAchievements(req: Request, supabase: any) {
   const { data: users, error } = await supabase
     .from('user_profiles')
     .select('id, push_token, account_created_at, notification_settings')
     .not('push_token', 'is', null);
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  const notificationsSent = [];
+  const notificationsSent: string[] = [];
   const now = Date.now();
 
   const achievements = [
-    { type: 'one_week', days: 7, message: 'Félicitations ! Une semaine de suivi santé !' },
-    { type: 'one_month', days: 30, message: 'Félicitations ! 🎉 Cela fait un mois que vous prenez soin de vous avec Health Scan.' },
-    { type: 'three_months', days: 90, message: 'Bravo ! 3 mois de suivi santé !' },
-    { type: 'six_months', days: 180, message: 'Incroyable ! 6 mois de suivi de votre santé. Continuez comme ça !' },
-    { type: 'one_year', days: 365, message: 'Extraordinaire ! Un an avec Health Scan ! 🏆' },
+    { type: 'one_week', days: 7, message: 'Felicitations. Une semaine de suivi sante.' },
+    { type: 'one_month', days: 30, message: 'Felicitations. Cela fait un mois que vous prenez soin de vous avec Health Scan.' },
+    { type: 'three_months', days: 90, message: 'Bravo. 3 mois de suivi sante.' },
+    { type: 'six_months', days: 180, message: 'Incroyable. 6 mois de suivi de votre sante. Continuez comme ca.' },
+    { type: 'one_year', days: 365, message: 'Extraordinaire. Un an avec Health Scan.' },
   ];
 
   for (const user of users || []) {
     const settings = user.notification_settings || {};
-    if (settings.achievements === false) continue;
+    if (settings.achievements === false) {
+      continue;
+    }
 
     const accountAge = user.account_created_at
       ? now - new Date(user.account_created_at).getTime()
@@ -136,7 +136,10 @@ async function checkAchievements(supabase: any) {
     const accountAgeDays = accountAge / (24 * 60 * 60 * 1000);
 
     for (const achievement of achievements) {
-      if (accountAgeDays >= achievement.days && accountAgeDays < achievement.days + 1) {
+      if (
+        accountAgeDays >= achievement.days &&
+        accountAgeDays < achievement.days + 1
+      ) {
         const { data: existing } = await supabase
           .from('user_achievements')
           .select('id')
@@ -150,7 +153,7 @@ async function checkAchievements(supabase: any) {
             achievement_type: achievement.type,
           });
 
-          const title = 'Nouveau Jalon !';
+          const title = 'Nouveau jalon';
           const body = achievement.message;
 
           await sendPushNotification(user.push_token, title, body, {
@@ -171,23 +174,19 @@ async function checkAchievements(supabase: any) {
     }
   }
 
-  return new Response(
-    JSON.stringify({
-      success: true,
-      notificationsSent: notificationsSent.length,
-    }),
-    {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    }
-  );
+  return jsonResponse(req, {
+    success: true,
+    notificationsSent: notificationsSent.length,
+  });
 }
 
 async function sendCustomNotification(
+  req: Request,
   supabase: any,
   userId: string,
   title: string,
   body: string,
-  data?: any
+  data?: Record<string, unknown>
 ) {
   const { data: user } = await supabase
     .from('user_profiles')
@@ -208,21 +207,16 @@ async function sendCustomNotification(
     body,
   });
 
-  return new Response(
-    JSON.stringify({ success: true }),
-    {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    }
-  );
+  return jsonResponse(req, { success: true });
 }
 
 async function sendPushNotification(
   pushToken: string,
   title: string,
   body: string,
-  data?: any
+  data?: Record<string, unknown>
 ) {
-  const message = {
+  const message: PushNotification = {
     to: pushToken,
     sound: 'default',
     title,
@@ -233,9 +227,9 @@ async function sendPushNotification(
   const response = await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
+      Accept: 'application/json; charset=utf-8',
+      'Accept-Encoding': 'gzip, deflate',
+      'Content-Type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify(message),
   });

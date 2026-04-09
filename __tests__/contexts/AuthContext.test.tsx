@@ -2,6 +2,7 @@ jest.unmock('@/contexts/AuthContext');
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react-native';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { SCAN_ELIGIBILITY_QUERY_SCOPE } from '@/utils/scanEligibilityQuery';
 
 // Mock supabase
 const mockSignInWithPassword = jest.fn();
@@ -12,6 +13,9 @@ const mockGetSession = jest.fn();
 const mockGetUser = jest.fn();
 const mockOnAuthStateChange = jest.fn();
 const mockFrom = jest.fn();
+const mockLoadPurchasesModule = jest.fn();
+const mockQueryClientClear = jest.fn();
+const mockQueryClientInvalidate = jest.fn();
 
 jest.mock('@/services/supabase', () => ({
   supabase: {
@@ -29,6 +33,17 @@ jest.mock('@/services/supabase', () => ({
       setSession: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
     },
     from: (table: string) => mockFrom(table),
+  },
+}));
+
+jest.mock('@/services/purchasesRuntime', () => ({
+  loadPurchasesModule: () => mockLoadPurchasesModule(),
+}));
+
+jest.mock('@/app/_layout', () => ({
+  queryClient: {
+    clear: mockQueryClientClear,
+    invalidateQueries: (...args: any[]) => mockQueryClientInvalidate(...args),
   },
 }));
 
@@ -65,10 +80,29 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('AuthContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSignInWithPassword.mockReset();
+    mockSignUp.mockReset();
+    mockSignOut.mockReset();
+    mockSignInWithOAuth.mockReset();
+    mockGetSession.mockReset();
+    mockGetUser.mockReset();
+    mockOnAuthStateChange.mockReset();
+    mockFrom.mockReset();
+    mockLoadPurchasesModule.mockReset();
+    mockQueryClientClear.mockReset();
+    mockQueryClientInvalidate.mockReset();
+    mockFetch.mockReset();
+
     mockGetSession.mockResolvedValue({ data: { session: null } });
     mockOnAuthStateChange.mockImplementation(() => ({
       data: { subscription: { unsubscribe: jest.fn() } },
     }));
+    mockLoadPurchasesModule.mockResolvedValue(null);
+    mockQueryClientInvalidate.mockResolvedValue(undefined);
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({}),
+    });
   });
 
   describe('useAuth hook', () => {
@@ -94,6 +128,93 @@ describe('AuthContext', () => {
       expect(result.current.session).toBeNull();
       expect(result.current.userProfile).toBeNull();
     });
+
+    it('finishes bootstrap when RevenueCat is unavailable', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      mockGetSession.mockResolvedValue({
+        data: {
+          session: {
+            user: mockUser,
+            access_token: 'session-token',
+          },
+        },
+      });
+      mockFrom.mockImplementation((table: string) => {
+        if (table === 'user_profiles') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                maybeSingle: jest.fn().mockResolvedValue({
+                  data: {
+                    id: 'user-123',
+                    email: 'test@example.com',
+                    username: 'malo',
+                    account_tier: 'free',
+                    email_verified: true,
+                  },
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
+
+        return {};
+      });
+      mockLoadPurchasesModule.mockRejectedValueOnce(new Error('module unavailable'));
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.user?.id).toBe('user-123');
+      expect(result.current.userProfile?.username).toBe('malo');
+    });
+
+    it('normalizes an invalid stored coach persona during profile hydration', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      mockGetSession.mockResolvedValue({
+        data: {
+          session: {
+            user: mockUser,
+            access_token: 'session-token',
+          },
+        },
+      });
+      mockFrom.mockImplementation((table: string) => {
+        if (table === 'user_profiles') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                maybeSingle: jest.fn().mockResolvedValue({
+                  data: {
+                    id: 'user-123',
+                    email: 'test@example.com',
+                    username: 'malo',
+                    account_tier: 'free',
+                    email_verified: true,
+                    coach_persona_key: 'not_real',
+                  },
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
+
+        return {};
+      });
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.userProfile?.coach_persona_key).toBe('gentle_supportive');
+    });
   });
 
   describe('signIn', () => {
@@ -106,6 +227,18 @@ describe('AuthContext', () => {
 
       // Mock trusted device check
       mockFrom.mockImplementation((table: string) => {
+        if (table === 'user_profiles') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: { account_tier: 'free' },
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
         if (table === 'trusted_devices') {
           return {
             select: jest.fn().mockReturnValue({
@@ -150,6 +283,18 @@ describe('AuthContext', () => {
 
       // Mock untrusted device
       mockFrom.mockImplementation((table: string) => {
+        if (table === 'user_profiles') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: { account_tier: 'free' },
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
         if (table === 'trusted_devices') {
           return {
             select: jest.fn().mockReturnValue({
@@ -280,7 +425,7 @@ describe('AuthContext', () => {
         select: jest.fn().mockReturnValue({
           eq: jest.fn().mockReturnValue({
             maybeSingle: jest.fn().mockResolvedValue({
-              data: { username: 'existinguser' },
+              data: { id: 'different-user', username: 'existinguser' },
               error: null,
             }),
           }),
@@ -314,6 +459,306 @@ describe('AuthContext', () => {
       });
 
       expect(isAvailable!).toBe(false);
+    });
+  });
+
+  describe('updateCoachPersona', () => {
+    it('persists the selected premium persona for eligible users', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      let profileReadCount = 0;
+      const updateMock = jest.fn().mockReturnValue({
+        eq: jest.fn().mockResolvedValue({ error: null }),
+      });
+
+      mockGetSession.mockResolvedValue({
+        data: {
+          session: {
+            user: mockUser,
+            access_token: 'session-token',
+          },
+        },
+      });
+      mockFrom.mockImplementation((table: string) => {
+        if (table !== 'user_profiles') {
+          return {};
+        }
+
+        return {
+          select: jest.fn((columns?: string) => {
+            if (columns === '*') {
+              return {
+                eq: jest.fn().mockReturnValue({
+                  maybeSingle: jest.fn().mockImplementation(() =>
+                    Promise.resolve({
+                      data:
+                        profileReadCount++ === 0
+                          ? {
+                              id: 'user-123',
+                              email: 'test@example.com',
+                              account_tier: 'premium',
+                              email_verified: true,
+                              coach_persona_key: 'gentle_supportive',
+                            }
+                          : {
+                              id: 'user-123',
+                              email: 'test@example.com',
+                              account_tier: 'premium',
+                              email_verified: true,
+                              coach_persona_key: 'analytical_precise',
+                            },
+                      error: null,
+                    }),
+                  ),
+                }),
+              };
+            }
+
+            if (columns === 'id') {
+              return {
+                eq: jest.fn().mockReturnValue({
+                  maybeSingle: jest.fn().mockResolvedValue({
+                    data: { id: 'user-123' },
+                    error: null,
+                  }),
+                }),
+              };
+            }
+
+            return {
+              eq: jest.fn().mockReturnValue({
+                maybeSingle: jest.fn().mockResolvedValue({
+                  data: null,
+                  error: null,
+                }),
+              }),
+            };
+          }),
+          update: updateMock,
+        };
+      });
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await act(async () => {
+        await result.current.updateCoachPersona('analytical_precise');
+      });
+
+      expect(updateMock).toHaveBeenCalledWith({
+        coach_persona_key: 'analytical_precise',
+      });
+      await waitFor(() => {
+        expect(result.current.userProfile?.coach_persona_key).toBe('analytical_precise');
+      });
+    });
+
+    it('rejects premium personas for free users before writing profile state', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      const updateMock = jest.fn();
+
+      mockGetSession.mockResolvedValue({
+        data: {
+          session: {
+            user: mockUser,
+            access_token: 'session-token',
+          },
+        },
+      });
+      mockFrom.mockImplementation((table: string) => {
+        if (table !== 'user_profiles') {
+          return {};
+        }
+
+        return {
+          select: jest.fn().mockReturnValue({
+            eq: jest.fn().mockReturnValue({
+              maybeSingle: jest.fn().mockResolvedValue({
+                data: {
+                  id: 'user-123',
+                  email: 'test@example.com',
+                  account_tier: 'free',
+                  email_verified: true,
+                  coach_persona_key: 'gentle_supportive',
+                },
+                error: null,
+              }),
+            }),
+          }),
+          update: updateMock,
+        };
+      });
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await expect(
+        act(async () => {
+          await result.current.updateCoachPersona('strict_tough');
+        }),
+      ).rejects.toThrow('Coach persona requires premium');
+
+      expect(updateMock).not.toHaveBeenCalled();
+    });
+
+    it('logs a dedicated schema-cache error when PostgREST cannot find coach_persona_key', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      const schemaError = {
+        code: 'PGRST204',
+        message:
+          "Could not find the 'coach_persona_key' column of 'user_profiles' in the schema cache",
+      };
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      mockGetSession.mockResolvedValue({
+        data: {
+          session: {
+            user: mockUser,
+            access_token: 'session-token',
+          },
+        },
+      });
+      mockFrom.mockImplementation((table: string) => {
+        if (table !== 'user_profiles') {
+          return {};
+        }
+
+        return {
+          select: jest.fn((columns?: string) => {
+            if (columns === '*') {
+              return {
+                eq: jest.fn().mockReturnValue({
+                  maybeSingle: jest.fn().mockResolvedValue({
+                    data: {
+                      id: 'user-123',
+                      email: 'test@example.com',
+                      account_tier: 'premium',
+                      email_verified: true,
+                      coach_persona_key: 'gentle_supportive',
+                    },
+                    error: null,
+                  }),
+                }),
+              };
+            }
+
+            if (columns === 'id') {
+              return {
+                eq: jest.fn().mockReturnValue({
+                  maybeSingle: jest.fn().mockResolvedValue({
+                    data: { id: 'user-123' },
+                    error: null,
+                  }),
+                }),
+              };
+            }
+
+            return {
+              eq: jest.fn().mockReturnValue({
+                maybeSingle: jest.fn().mockResolvedValue({
+                  data: null,
+                  error: null,
+                }),
+              }),
+            };
+          }),
+          update: jest.fn().mockReturnValue({
+            eq: jest.fn().mockResolvedValue({ error: schemaError }),
+          }),
+        };
+      });
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await expect(
+        act(async () => {
+          await result.current.updateCoachPersona('analytical_precise');
+        }),
+      ).rejects.toMatchObject({
+        message: expect.stringContaining(
+          'Coach persona is unavailable because "user_profiles.coach_persona_key" is missing',
+        ),
+        code: 'coach_persona_schema_mismatch',
+        status: 503,
+      });
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[ProfileUpdate] user_profiles schema cache mismatch',
+          expect.objectContaining({
+            code: 'PGRST204',
+            operation: 'update',
+            attempted_fields: 'coach_persona_key',
+            attempted_field_count: 1,
+            missing_profile_column: 'coach_persona_key',
+          }),
+        );
+      });
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe('refreshUserProfile', () => {
+    it('invalidates scan eligibility queries after refreshing entitlement state', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      let profileReadCount = 0;
+
+      mockGetSession.mockResolvedValue({
+        data: {
+          session: {
+            user: mockUser,
+            access_token: 'session-token',
+          },
+        },
+      });
+      mockFrom.mockImplementation((table: string) => {
+        if (table !== 'user_profiles') {
+          return {};
+        }
+
+        return {
+          select: jest.fn().mockReturnValue({
+            eq: jest.fn().mockReturnValue({
+              maybeSingle: jest.fn().mockImplementation(() =>
+                Promise.resolve({
+                  data: {
+                    id: 'user-123',
+                    email: 'test@example.com',
+                    account_tier: profileReadCount++ === 0 ? 'free' : 'premium',
+                    email_verified: true,
+                  },
+                  error: null,
+                }),
+              ),
+            }),
+          }),
+        };
+      });
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await act(async () => {
+        await result.current.refreshUserProfile();
+      });
+
+      expect(result.current.userProfile?.account_tier).toBe('premium');
+      expect(mockQueryClientInvalidate).toHaveBeenCalledWith({
+        queryKey: SCAN_ELIGIBILITY_QUERY_SCOPE('user-123'),
+      });
     });
   });
 

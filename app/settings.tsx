@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator, Platform, Modal } from 'react-native';
-import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'expo-router';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform, Modal } from 'react-native';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter, useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { Crown, ChevronRight, Shield, LogOut, Bell, ChevronLeft, AlertTriangle, Settings, Globe, Check } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { AvatarPicker } from '@/components/AvatarPicker';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
@@ -13,17 +15,69 @@ import { ModalHandle } from '@/components/ModalHandle';
 import { navigationService } from '@/services/navigation';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS } from '@/constants/theme';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { LOCALE_OPTIONS } from '@/i18n/config';
+import { useAllScanEligibility } from '@/hooks/queries';
+import { SCAN_TYPE_LABELS } from '@/constants/scan';
+import { ScanType } from '@/types';
+import {
+  getScanQuotaStatusLabelKey,
+  hasScanQuotaPayload,
+  resolveScanQuotaState,
+} from '@/utils/scanQuotaState';
+
+const SETTINGS_SCAN_TYPES: ScanType[] = ['health', 'body', 'nutrition', 'super'];
+const EMPTY_LOADING_BY_SCAN_TYPE = {
+  body: false,
+  health: false,
+  nutrition: false,
+  super: false,
+};
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { userProfile, signOut } = useAuth();
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const { userProfile, signOut, updateAvatarUrl } = useAuth();
+  const { colors, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(colors, isDark, insets), [colors, insets, isDark]);
   const { notificationCount } = useNotificationContext();
-  const { t, locale, changeLanguage } = useLanguage();
+  const { t, locale, changeLanguage, isChangingLanguage } = useLanguage();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isSavingAvatar, setIsSavingAvatar] = useState(false);
   const { showAlert, alertElement } = useCustomAlert();
+  const accountTier = userProfile?.account_tier ?? null;
+  const {
+    data: scanEligibility,
+    errors: scanEligibilityErrors = {},
+    loadingByScanType = EMPTY_LOADING_BY_SCAN_TYPE,
+    isAuthReady = true,
+    canQuery: canQueryEligibility = true,
+    refetchAll: refetchEligibility,
+  } = useAllScanEligibility();
+  const scanQuotaRows = useMemo(
+    () =>
+      SETTINGS_SCAN_TYPES.map((scanType) => ({
+        scanType,
+        state: resolveScanQuotaState({
+          scanType,
+          accountTier,
+          eligibility: scanEligibility?.[scanType],
+          error: scanEligibilityErrors[scanType],
+          loading: loadingByScanType[scanType],
+          isAuthReady,
+          canQuery: canQueryEligibility,
+        }),
+      })),
+    [accountTier, canQueryEligibility, isAuthReady, loadingByScanType, scanEligibility, scanEligibilityErrors]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isAuthReady && canQueryEligibility) {
+        void refetchEligibility();
+      }
+    }, [canQueryEligibility, isAuthReady, refetchEligibility])
+  );
 
   useEffect(() => {
     setIsSigningOut(false);
@@ -75,15 +129,16 @@ export default function SettingsScreen() {
     } catch (error) {
       console.error('[Settings] Sign out error:', error);
       setIsSigningOut(false);
-      if (Platform.OS === 'web') {
-        alert(t('settings.sign_out_error_msg'));
-      } else {
-        showAlert(
-          t('settings.sign_out_error_title'),
-          t('settings.sign_out_error_msg'),
-          [{ text: t('settings.ok') }]
-        );
-      }
+      const isFrench = locale === 'fr';
+      showAlert(
+        isFrench ? 'Deconnexion interrompue' : 'Sign out interrupted',
+        isFrench
+          ? "Un petit souci est survenu. Reessayez dans un instant, on garde tout en securite."
+          : 'A small issue happened. Please try again in a moment, your data is safe.',
+        [{ text: t('settings.ok') }],
+        undefined,
+        { variant: 'danger', emoji: '🛡️' }
+      );
     }
   };
 
@@ -92,29 +147,44 @@ export default function SettingsScreen() {
       return;
     }
 
-    console.log('[Settings] handleSignOut called, Platform:', Platform.OS);
-
-    if (Platform.OS === 'web') {
-      const confirmed = window.confirm(
-        t('settings.sign_out_confirm_msg')
-      );
-      if (confirmed) {
-        await performSignOut();
-      }
-    } else {
+    const isFrench = locale === 'fr';
+    if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      showAlert(
-        t('settings.sign_out_confirm_title'),
-        t('settings.sign_out_confirm_msg'),
-        [
-          { text: t('settings.cancel'), style: 'cancel' },
-          {
-            text: t('settings.sign_out_button'),
-            style: 'destructive',
-            onPress: performSignOut,
-          },
-        ]
-      );
+    }
+    showAlert(
+      isFrench ? 'Pret a vous deconnecter ?' : 'Ready to sign out?',
+      isFrench
+        ? 'Votre session sera fermee proprement, et vous pourrez revenir a tout moment.'
+        : 'Your session will close safely, and you can come back anytime.',
+      [
+        { text: t('settings.cancel'), style: 'cancel' },
+        {
+          text: t('settings.sign_out_button'),
+          style: 'destructive',
+          onPress: performSignOut,
+        },
+      ],
+      undefined,
+      {
+        variant: 'danger',
+        emoji: '👋',
+        dismissible: true,
+      }
+    );
+  };
+
+  const handleAvatarSelected = async (avatarReference: string) => {
+    try {
+      setIsSavingAvatar(true);
+      await updateAvatarUrl(avatarReference);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t('components.avatar.error_download');
+      showAlert(t('components.avatar.error_title'), message, [
+        { text: t('common.ok') },
+      ]);
+    } finally {
+      setIsSavingAvatar(false);
     }
   };
 
@@ -145,15 +215,15 @@ export default function SettingsScreen() {
       >
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
-            {userProfile.avatar_url ? (
-              <Image source={{ uri: userProfile.avatar_url }} style={styles.avatar} />
-            ) : (
-              <View style={styles.avatarPlaceholder}>
-                <Text style={styles.avatarText}>
-                  {userProfile.username?.charAt(0).toUpperCase() || 'U'}
-                </Text>
-              </View>
-            )}
+            <AvatarPicker
+              userId={userProfile.id}
+              currentAvatarUrl={userProfile.avatar_url}
+              onAvatarSelected={handleAvatarSelected}
+              size={100}
+            />
+            {isSavingAvatar ? (
+              <ActivityIndicator color={colors.primary} style={styles.avatarSavingIndicator} />
+            ) : null}
           </View>
           <Text style={styles.username}>{userProfile.username}</Text>
           <Text style={styles.email}>{userProfile.email}</Text>
@@ -163,6 +233,37 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>{t('settings.section_subscription')}</Text>
           <View style={styles.subscriptionCard}>
             <AccountBadge tier={userProfile.account_tier} size="large" />
+            <View style={styles.quotaSummary} testID="settings-quota-summary">
+              <Text style={styles.quotaSummaryTitle}>{t('home.items_available')}</Text>
+              {scanQuotaRows.map(({ scanType, state }) => {
+                const hasPayload = hasScanQuotaPayload(state);
+                const stateLabelKey = getScanQuotaStatusLabelKey(state);
+
+                return (
+                  <View
+                    key={scanType}
+                    style={styles.quotaRow}
+                    testID={`settings-quota-row-${scanType}`}
+                  >
+                    <Text style={styles.quotaLabel}>{t(SCAN_TYPE_LABELS[scanType])}</Text>
+                    <Text
+                      style={[
+                        styles.quotaValue,
+                        hasPayload
+                          ? styles.quotaValueReady
+                          : state.status === 'locked'
+                            ? styles.quotaValueLocked
+                            : styles.quotaValueMuted,
+                      ]}
+                    >
+                      {hasPayload
+                        ? `${state.remaining}/${state.limit}`
+                        : t(stateLabelKey ?? 'scan_limit.missing_payload')}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
             {userProfile.account_tier === 'free' && (
               <TouchableOpacity
                 style={styles.upgradeCard}
@@ -191,7 +292,9 @@ export default function SettingsScreen() {
               <Globe color={colors.primaryText} size={20} />
               <View>
                 <Text style={styles.menuItemText}>{t('settings.language')}</Text>
-                <Text style={styles.menuItemSubtext}>{t(`languages.${locale}`)}</Text>
+                <Text style={styles.menuItemSubtext}>
+                  {LOCALE_OPTIONS.find((item) => item.code === locale)?.label ?? locale.toUpperCase()}
+                </Text>
               </View>
             </View>
             <ChevronRight color={colors.gray} size={20} />
@@ -286,6 +389,7 @@ export default function SettingsScreen() {
         visible={showLanguageModal}
         transparent={true}
         animationType="fade"
+        statusBarTranslucent={Platform.OS === 'android'}
         onRequestClose={() => setShowLanguageModal(false)}
       >
         <TouchableOpacity
@@ -294,20 +398,35 @@ export default function SettingsScreen() {
           onPress={() => setShowLanguageModal(false)}
         >
           <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+            <View style={styles.modalIconRow}>
+              <View style={styles.modalIconBadge}>
+                <Globe color={colors.primary} size={24} />
+              </View>
+              <Text style={styles.modalEmoji}>🌐</Text>
+            </View>
             <Text style={styles.modalTitle}>{t('settings.select_language_title')}</Text>
-            {(['fr', 'en', 'de', 'it', 'es', 'pt'] as const).map((lang) => (
+            {LOCALE_OPTIONS.map((language) => (
               <TouchableOpacity
-                key={lang}
-                style={[styles.languageOption, locale === lang && styles.languageOptionSelected]}
+                key={language.code}
+                style={[
+                  styles.languageOption,
+                  locale === language.code && styles.languageOptionSelected,
+                ]}
                 onPress={() => {
-                  changeLanguage(lang);
+                  void changeLanguage(language.code);
                   setShowLanguageModal(false);
                 }}
+                disabled={isChangingLanguage}
               >
-                <Text style={[styles.languageText, locale === lang && styles.languageTextSelected]}>
-                  {t(`languages.${lang}`)}
+                <Text
+                  style={[
+                    styles.languageText,
+                    locale === language.code && styles.languageTextSelected,
+                  ]}
+                >
+                  {language.label}
                 </Text>
-                {locale === lang && <Check size={20} color={colors.primary} />}
+                {locale === language.code && <Check size={20} color={colors.primary} />}
               </TouchableOpacity>
             ))}
             <TouchableOpacity
@@ -324,7 +443,7 @@ export default function SettingsScreen() {
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean, insets: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -333,7 +452,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: SPACING.xxxl,
+    paddingTop: insets.top + SPACING.sm,
     paddingBottom: SPACING.md,
     paddingHorizontal: SPACING.page,
     backgroundColor: colors.cardBackground,
@@ -356,34 +475,20 @@ const createStyles = (colors: any) => StyleSheet.create({
     flex: 1,
   },
   scrollContentContainer: {
-    paddingBottom: SPACING.xxxl + SPACING.xl,
+    paddingBottom: SPACING.xxxl + SPACING.xl + insets.bottom,
   },
   header: {
     alignItems: 'center',
-    paddingTop: SPACING.xxxl,
+    paddingTop: SPACING.xxl,
     paddingBottom: SPACING.xl,
     backgroundColor: colors.cardBackground,
   },
   avatarContainer: {
     marginBottom: SPACING.md,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  avatarPlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
     alignItems: 'center',
   },
-  avatarText: {
-    fontSize: SIZES.xxxl,
-    fontWeight: FONT_WEIGHTS.bold,
-    color: colors.white,
+  avatarSavingIndicator: {
+    marginTop: SPACING.sm,
   },
   username: {
     fontSize: SIZES.xl,
@@ -411,6 +516,48 @@ const createStyles = (colors: any) => StyleSheet.create({
     padding: SPACING.lg,
     alignItems: 'center',
     gap: SPACING.md,
+  },
+  quotaSummary: {
+    width: '100%',
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    gap: SPACING.xs,
+  },
+  quotaSummaryTitle: {
+    fontSize: SIZES.text12,
+    fontWeight: FONT_WEIGHTS.semiBold,
+    color: colors.gray,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: SPACING.xs,
+  },
+  quotaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: SPACING.md,
+  },
+  quotaLabel: {
+    fontSize: SIZES.text14,
+    color: colors.primaryText,
+    flex: 1,
+  },
+  quotaValue: {
+    fontSize: SIZES.text14,
+    fontWeight: FONT_WEIGHTS.semiBold,
+    textAlign: 'right',
+  },
+  quotaValueReady: {
+    color: colors.primary,
+  },
+  quotaValueMuted: {
+    color: colors.gray,
+  },
+  quotaValueLocked: {
+    color: colors.gold,
   },
   upgradeCard: {
     flexDirection: 'row',
@@ -546,25 +693,47 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: isDark ? 'rgba(3,8,16,0.7)' : 'rgba(10,16,32,0.42)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: SPACING.lg,
+    paddingTop: insets.top + SPACING.lg,
+    paddingBottom: insets.bottom + SPACING.lg,
+    paddingHorizontal: SPACING.lg,
   },
   modalContent: {
     backgroundColor: colors.cardBackground,
-    borderRadius: BORDER_RADIUS.xl,
+    borderRadius: 28,
     padding: SPACING.xl,
     width: '100%',
     maxWidth: 400,
-    shadowColor: '#000',
+    borderWidth: 1,
+    borderColor: 'rgba(153, 166, 193, 0.22)',
+    shadowColor: '#0D1428',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 14,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 10,
+  },
+  modalIconRow: {
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  modalIconBadge: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: 'rgba(0,122,255,0.14)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0,122,255,0.26)',
+  },
+  modalEmoji: {
+    marginTop: SPACING.xs,
+    fontSize: 18,
   },
   modalTitle: {
     fontSize: SIZES.text18,
@@ -579,11 +748,14 @@ const createStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
+    borderRadius: 16,
     marginBottom: SPACING.xs,
+    borderWidth: 1,
+    borderColor: 'rgba(153, 166, 193, 0.18)',
   },
   languageOptionSelected: {
-    backgroundColor: colors.background,
+    backgroundColor: 'rgba(0,122,255,0.12)',
+    borderColor: 'rgba(0,122,255,0.34)',
   },
   languageText: {
     fontSize: SIZES.text16,
@@ -596,7 +768,9 @@ const createStyles = (colors: any) => StyleSheet.create({
   closeButton: {
     marginTop: SPACING.lg,
     alignItems: 'center',
-    padding: SPACING.md,
+    paddingVertical: SPACING.md,
+    borderRadius: 14,
+    backgroundColor: 'rgba(153, 166, 193, 0.14)',
   },
   closeButtonText: {
     fontSize: SIZES.text16,

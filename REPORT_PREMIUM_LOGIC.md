@@ -1,40 +1,31 @@
-# Rapport de Mise en Place : Expiration des Abonnements Premium
+# Premium Logic Reference
 
-J'ai implémenté une solution robuste pour gérer l'expiration des abonnements sans nécessiter de licence développeur ni de webhooks pour le moment.
+## Source Of Truth
 
-## Ce qui a été fait
+- Store billing state is authoritative for whether a subscription is active.
+- RevenueCat is the canonical entitlement integration used by both client and backend.
+- Backend `user_profiles` subscription fields are derived state used for gating and product UX.
 
-### 1. Base de Données
-J'ai créé une nouvelle migration (`20260209180000_add_subscription_expiration.sql`) qui ajoute les champs suivants à la table `user_profiles` :
-- `subscription_status` : pour suivre l'état (active, expired, etc.).
-- `subscription_expiry_date` : la date de fin de l'abonnement.
-- `subscription_platform` : la plateforme d'origine (ios, android, etc.).
+## Active Paths
 
-### 2. Edge Function `upgrade-to-premium`
-J'ai mis à jour cette fonction pour :
-- Calculer une date d'expiration lors de l'achat (par défaut +1 mois pour les tests, ou la date réelle si fournie par le store).
-- Enregistrer cette date dans le profil utilisateur lors de la validation de l'achat.
+- Client purchase and restore: `react-native-purchases`
+- Primary backend sync: `supabase/functions/revenuecat-webhook`
+- Authenticated fallback/manual repair: `supabase/functions/sync-subscription-status`
 
-### 3. Edge Function `sync-subscription-status` (Nouvelle)
-J'ai créé cette fonction pour gérer la synchronisation serveur :
-- Elle vérifie si l'abonnement est expiré par rapport à la date actuelle.
-- Si expiré, elle met à jour le statut en base de données (`account_tier` -> `free`, `subscription_status` -> `expired`).
+## Deprecated Paths
 
-### 4. Vérification Client (`AuthContext.tsx`)
-J'ai modifié le contexte d'authentification pour :
-- Vérifier la date d'expiration à chaque chargement du profil utilisateur.
-- Si la date est passée, l'application repasse **immédiatement** l'utilisateur en mode "Gratuit" localement (mise à jour optimiste).
-- Elle appelle ensuite discrètement `sync-subscription-status` pour mettre à jour la base de données.
+- `supabase/functions/upgrade-to-premium` is a legacy `410` compatibility shim only.
+- Direct client-side purchase verification and client webhook flows are not active.
+- `react-native-iap` is no longer part of the supported subscription path.
 
-## Comment Tester
+## Gating Rules
 
-1.  **Appliquer la migration** : Exécutez la nouvelle migration sur votre base Supabase.
-2.  **Déployer les fonctions** : Déployez `upgrade-to-premium` et `sync-subscription-status`.
-3.  **Achat Test** : Faites un achat dans l'app. Vous devriez passer Premium.
-4.  **Test d'Expiration** :
-    - Allez dans votre base de données Supabase -> Table `user_profiles`.
-    - Trouvez votre utilisateur et changez `subscription_expiry_date` à une date passée (e.g. hier).
-    - Rechargez l'application (ou relancez-la).
-    - Vous devrez constater que vous êtes repassé en mode "Gratuit" automatiquement.
+- Premium UI should trust backend profile state for gating decisions.
+- Backend sync logic must never upgrade or downgrade based on client claims alone.
+- Admin accounts keep admin tier even when RevenueCat sync updates subscription fields.
 
-Cette solution est autonome et fonctionne parfaitement pour le développement et la production initiale sans infrastructure complexe.
+## Operational Failure Signals
+
+- Check `revenuecat_webhook_events.processing_state` and `last_error` for webhook failures.
+- Check client Aptabase failure events for purchase, restore, and entitlement-sync issues.
+- Use request IDs and webhook event IDs for correlation instead of raw provider payloads.

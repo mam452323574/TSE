@@ -11,9 +11,17 @@ interface NextScanTimerProps {
   onTimerComplete?: () => void;
   textColor?: string;
   iconColor?: string;
+  mode?: 'default' | 'scannerCompact';
 }
 
-export function NextScanTimer({ nextAvailableDate, scanLabel, onTimerComplete, textColor, iconColor }: NextScanTimerProps) {
+export function NextScanTimer({
+  nextAvailableDate,
+  scanLabel,
+  onTimerComplete,
+  textColor,
+  iconColor,
+  mode = 'default',
+}: NextScanTimerProps) {
   const { colors } = useTheme();
   const { t } = useLanguage();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -75,20 +83,40 @@ export function NextScanTimer({ nextAvailableDate, scanLabel, onTimerComplete, t
 
   if (isAvailable) {
     return (
-      <View style={styles.container}>
-        <Clock color={colors.success} size={12} strokeWidth={2.5} />
-        <Text style={[styles.text, styles.availableText]}>
+      <View style={[styles.container, mode === 'scannerCompact' && styles.scannerCompactContainer]}>
+        {mode !== 'scannerCompact' && <Clock color={colors.success} size={12} strokeWidth={2.5} />}
+      <Text
+        style={[
+          styles.text,
+          styles.availableText,
+          mode === 'scannerCompact' && styles.scannerCompactText,
+        ]}
+        numberOfLines={1}
+        >
           {t('common.available')}
         </Text>
       </View>
     );
   }
 
+  const timerText = mode === 'scannerCompact'
+    ? `${scanLabel ? `${scanLabel} ` : ''}${timeRemaining}`
+    : `${scanLabel ? `${scanLabel} ` : ''}${t('common.in')} ${timeRemaining}`;
+
   return (
-    <View style={styles.container}>
-      <Clock color={iconColor || "rgba(255, 255, 255, 0.6)"} size={12} strokeWidth={2.5} />
-      <Text style={[styles.text, textColor ? { color: textColor } : undefined]}>
-        {scanLabel ? `${scanLabel} ` : ''}{t('common.in')} {timeRemaining}
+    <View style={[styles.container, mode === 'scannerCompact' && styles.scannerCompactContainer]}>
+      {mode !== 'scannerCompact' && (
+        <Clock color={iconColor || 'rgba(255, 255, 255, 0.6)'} size={12} strokeWidth={2.5} />
+      )}
+      <Text
+        style={[
+          styles.text,
+          textColor ? { color: textColor } : undefined,
+          mode === 'scannerCompact' && styles.scannerCompactText,
+        ]}
+        numberOfLines={1}
+      >
+        {timerText}
       </Text>
     </View>
   );
@@ -99,6 +127,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'stretch',
+    width: '100%',
+    maxWidth: '100%',
+    minWidth: 0,
     paddingVertical: SPACING.xs,
     paddingHorizontal: SPACING.sm,
     gap: 4,
@@ -109,6 +141,23 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.6)',
     fontWeight: FONT_WEIGHTS.medium,
     fontStyle: 'italic',
+    flexShrink: 1,
+    minWidth: 0,
+    textAlign: 'center',
+  },
+  scannerCompactContainer: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    marginTop: 0,
+    minHeight: 9,
+    width: '100%',
+  },
+  scannerCompactText: {
+    fontSize: 8,
+    lineHeight: 9,
+    fontStyle: 'normal',
+    textAlign: 'center',
+    width: '100%',
   },
   availableText: {
     color: colors.success,

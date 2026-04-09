@@ -1,7 +1,15 @@
-import { useState, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, useWindowDimensions } from 'react-native';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  RefreshControl,
+  useWindowDimensions,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LineChart, BarChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
 import { Crown, Activity, Utensils, Sparkles, Heart } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,12 +19,16 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { AnalyticsPeriod } from '@/types';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorMessage } from '@/components/ErrorMessage';
-import { COLORS, SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS, SHADOWS } from '@/constants/theme';
+import { SIZES, SPACING, BORDER_RADIUS, FONT_WEIGHTS, SHADOWS } from '@/constants/theme';
 import { ContextualPaywall } from '@/components/ContextualPaywall';
+import {
+  ANALYTICS_LIKE_LINE_CHART_PROPS,
+  createAnalyticsLikeLineChartConfig,
+} from '@/utils/chartStyles';
 import { paywallSession } from '@/utils/paywallSession';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { hasPremiumAccessFromProfile } from '@/utils/subscription';
 
-// Périodes disponibles avec leurs labels et restriction premium
 const PERIODS: { value: AnalyticsPeriod; labelKey: string; premium: boolean }[] = [
   { value: '7days', labelKey: 'analytics.periods.days_7', premium: false },
   { value: '30days', labelKey: 'analytics.periods.days_30', premium: false },
@@ -24,99 +36,239 @@ const PERIODS: { value: AnalyticsPeriod; labelKey: string; premium: boolean }[] 
   { value: '1year', labelKey: 'analytics.periods.year_1', premium: true },
 ];
 
-// Fonction d'agregation generique pour grouper les donnees en buckets
+type AggregatedChartPoint = {
+  date: string;
+  value: number;
+};
+
+type DenseMonthEntry = {
+  isMonthChange: boolean;
+  monthKey: string;
+  monthLabel: string;
+};
+
+const CHART_X_LABEL_FONT_SIZE = 12;
+const CHART_X_LABEL_ESTIMATED_CHAR_WIDTH = 7;
+const CHART_X_LABEL_GAP = 12;
+const DENSE_LABEL_BUFFER = 10;
+const DENSE_LABEL_MIN_PADDING = 28;
+const DENSE_LABEL_MAX_PADDING = 72;
+const DENSE_LABEL_STANDARD_ROTATION = 45;
+const DENSE_LABEL_COMPACT_ROTATION = 60;
+const EMPTY_ANALYTICS_HISTORY: never[] = [];
+
+const clamp = (value: number, min: number, max: number): number => {
+  return Math.min(max, Math.max(min, value));
+};
+
 const aggregateData = <T extends { date: string }>(
   data: T[],
   bucketSize: number,
   valueExtractor: (item: T) => number
-): { date: string; value: number }[] => {
+): AggregatedChartPoint[] => {
   if (bucketSize <= 1) {
-    return data.map(item => ({
+    return data.map((item) => ({
       date: item.date,
       value: valueExtractor(item),
     }));
   }
 
-  const result: { date: string; value: number }[] = [];
+  const result: AggregatedChartPoint[] = [];
 
   for (let i = 0; i < data.length; i += bucketSize) {
     const bucket = data.slice(i, i + bucketSize);
     if (bucket.length === 0) continue;
 
-    const avgValue = bucket.reduce((sum, item) => sum + valueExtractor(item), 0) / bucket.length;
+    const averageValue = bucket.reduce((sum, item) => sum + valueExtractor(item), 0) / bucket.length;
     const startDate = bucket[0].date;
     const endDate = bucket[bucket.length - 1].date;
 
     result.push({
       date: bucket.length > 1 ? `${startDate}|${endDate}` : startDate,
-      value: Math.round(avgValue),
+      value: Math.round(averageValue),
     });
   }
 
   return result;
 };
 
-// Taille des buckets selon la periode selectionnee
 const getBucketSize = (selectedPeriod: AnalyticsPeriod): number => {
   switch (selectedPeriod) {
-    case '7days': return 1;    // Pas d'agregation - 1 jour par point
-    case '30days': return 3;   // Moyenne sur 3 jours - ~10 points
-    case '3months': return 7;  // Moyenne sur 7 jours - ~13 points
-    case '1year': return 30;   // Moyenne sur 30 jours - ~12 points
-    default: return 1;
+    case '7days':
+      return 1;
+    case '30days':
+      return 3;
+    case '3months':
+      return 7;
+    case '1year':
+      return 30;
+    default:
+      return 1;
   }
 };
 
-// Nombre max de labels affichés sur l'axe X pour éviter le chevauchement
 const getMaxLabels = (selectedPeriod: AnalyticsPeriod): number => {
   switch (selectedPeriod) {
-    case '7days': return 7;
-    case '30days': return 8;
-    case '3months': return 7;
-    case '1year': return 6;
-    default: return 7;
+    case '7days':
+      return 7;
+    case '30days':
+      return 8;
+    case '3months':
+      return 7;
+    case '1year':
+      return 6;
+    default:
+      return 7;
   }
 };
 
-// Sanitiser une valeur pour le chart : NaN/null/undefined → 0, clamp [0, 100]
-const sanitizeScore = (v: number | null | undefined): number => {
-  if (v === null || v === undefined || isNaN(v)) return 0;
-  return Math.max(0, Math.min(100, Math.round(v)));
+const sanitizeScore = (value: number | null | undefined): number => {
+  if (value === null || value === undefined || Number.isNaN(value)) return 0;
+  return Math.max(0, Math.min(100, Math.round(value)));
 };
 
-// Format JJ/MM ou MM/DD selon la locale
+const parseLocalDate = (dateStr: string): Date => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const getBucketEndDate = (dateStr: string): Date => {
+  const endDateStr = dateStr.includes('|') ? dateStr.split('|')[1] : dateStr;
+  return parseLocalDate(endDateStr);
+};
+
 const formatDayMonth = (day: number, month: number, locale: string): string => {
   return locale === 'en' ? `${month}/${day}` : `${day}/${month}`;
 };
 
-// Formater un label de date (simple ou plage) — évite les doublons, adapté à la locale
-const formatDateLabel = (dateStr: string, period: AnalyticsPeriod, t: any, locale: string): string => {
-  if (dateStr.includes('|')) {
-    const [, end] = dateStr.split('|');
-    const endDate = new Date(end);
-    if (period === '1year') {
-      return t(`months_short.${endDate.getMonth()}`);
-    }
-    if (period === '3months') {
-      return `${endDate.getDate()} ${t(`months_short.${endDate.getMonth()}`).slice(0, 3)}`;
-    }
-    return formatDayMonth(endDate.getDate(), endDate.getMonth() + 1, locale);
-  }
-  const date = new Date(dateStr);
-  if (period === '1year') {
-    return t(`months_short.${date.getMonth()}`);
-  }
-  if (period === '3months') {
-    return `${date.getDate()} ${t(`months_short.${date.getMonth()}`).slice(0, 3)}`;
-  }
+const formatDateLabel = (dateStr: string, locale: string): string => {
+  const date = getBucketEndDate(dateStr);
   return formatDayMonth(date.getDate(), date.getMonth() + 1, locale);
 };
 
-// Filtrer les labels pour n'en afficher que maxLabels (les autres deviennent "")
 const sparseLabels = (labels: string[], maxLabels: number): string[] => {
   if (labels.length <= maxLabels) return labels;
+
   const step = Math.ceil(labels.length / maxLabels);
-  return labels.map((label, i) => (i % step === 0 || i === labels.length - 1) ? label : '');
+  return labels.map((label, index) => (index % step === 0 || index === labels.length - 1 ? label : ''));
+};
+
+const capitalizeMonthLabel = (label: string, locale: string): string => {
+  if (!label) return '';
+  return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);
+};
+
+const getFullMonthLabel = (date: Date, locale: string): string => {
+  return capitalizeMonthLabel(
+    date.toLocaleDateString(locale, { month: 'long' }),
+    locale
+  );
+};
+
+const buildDenseMonthEntries = (
+  aggregated: AggregatedChartPoint[],
+  locale: string
+): DenseMonthEntry[] => {
+  let previousMonthKey: string | null = null;
+
+  return aggregated.map((item) => {
+    const endDate = getBucketEndDate(item.date);
+    const monthKey = `${endDate.getFullYear()}-${endDate.getMonth()}`;
+    const monthLabel = getFullMonthLabel(endDate, locale);
+    const isMonthChange = monthKey !== previousMonthKey;
+
+    previousMonthKey = monthKey;
+
+    return {
+      isMonthChange,
+      monthKey,
+      monthLabel,
+    };
+  });
+};
+
+const buildDenseMonthLabels = (
+  entries: DenseMonthEntry[],
+  showEveryOtherMonth: boolean
+): string[] => {
+  let visibleMonthIndex = 0;
+
+  return entries.map((entry) => {
+    if (!entry.isMonthChange) return '';
+
+    const shouldShow = !showEveryOtherMonth || visibleMonthIndex % 2 === 0;
+    visibleMonthIndex += 1;
+
+    return shouldShow ? entry.monthLabel : '';
+  });
+};
+
+const getLongestLabel = (labels: string[]): string => {
+  return labels.reduce((longest, label) => (label.length > longest.length ? label : longest), '');
+};
+
+const estimateLabelWidth = (label: string): number => {
+  if (!label) return 0;
+
+  return Math.max(
+    CHART_X_LABEL_FONT_SIZE * 2,
+    Math.ceil(label.length * CHART_X_LABEL_ESTIMATED_CHAR_WIDTH)
+  );
+};
+
+const getProjectedLabelWidth = (labelWidth: number, rotation: number): number => {
+  const angleInRadians = (rotation * Math.PI) / 180;
+  return labelWidth * Math.cos(angleInRadians) + CHART_X_LABEL_FONT_SIZE * Math.sin(angleInRadians);
+};
+
+const shouldUseAlternateDenseMonths = (
+  chartWidth: number,
+  visibleMonthCount: number,
+  labelWidth: number
+): boolean => {
+  if (visibleMonthCount <= 2 || labelWidth <= 0) return false;
+
+  const widthPerVisibleMonth = chartWidth / visibleMonthCount;
+  return widthPerVisibleMonth < getProjectedLabelWidth(labelWidth, DENSE_LABEL_COMPACT_ROTATION) + CHART_X_LABEL_GAP;
+};
+
+const getDenseXAxisLayout = (
+  chartWidth: number,
+  visibleMonthCount: number,
+  labelWidth: number
+) => {
+  if (visibleMonthCount <= 1 || labelWidth <= 0) {
+    return {
+      labelRotation: 0,
+      xLabelsOffset: 0,
+      chartBottomPadding: 0,
+    };
+  }
+
+  const widthPerVisibleMonth = chartWidth / visibleMonthCount;
+  const labelRotation =
+    widthPerVisibleMonth >= getProjectedLabelWidth(labelWidth, DENSE_LABEL_STANDARD_ROTATION) + CHART_X_LABEL_GAP
+      ? DENSE_LABEL_STANDARD_ROTATION
+      : DENSE_LABEL_COMPACT_ROTATION;
+
+  const xLabelsOffset = labelRotation === DENSE_LABEL_STANDARD_ROTATION ? -6 : -10;
+  const rotationInRadians = (labelRotation * Math.PI) / 180;
+  const chartBottomPadding = clamp(
+    Math.ceil(
+      labelWidth * Math.sin(rotationInRadians) +
+      DENSE_LABEL_BUFFER +
+      CHART_X_LABEL_FONT_SIZE / 2 +
+      xLabelsOffset
+    ),
+    DENSE_LABEL_MIN_PADDING,
+    DENSE_LABEL_MAX_PADDING
+  );
+
+  return {
+    labelRotation,
+    xLabelsOffset,
+    chartBottomPadding,
+  };
 };
 
 export default function AnalyticsScreen() {
@@ -126,19 +278,16 @@ export default function AnalyticsScreen() {
   const { t, locale } = useLanguage();
   const { width: screenWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [period, setPeriod] = useState<AnalyticsPeriod>('7days');
   const [paywallVisible, setPaywallVisible] = useState(false);
+  const [measuredDenseLabelWidth, setMeasuredDenseLabelWidth] = useState(0);
   const { showAlert, alertElement } = useCustomAlert();
-  const isPremium = userProfile?.account_tier === 'premium' || userProfile?.account_tier === 'admin';
+  const isPremium = hasPremiumAccessFromProfile(userProfile);
 
-  // React Query hook - se met à jour automatiquement quand period change
-  const { data, isLoading, error, refetch, isRefetching } = useAnalytics(period);
+  const { data, isLoading, error, refetch } = useAnalytics(period);
 
   const [isManualRefresh, setIsManualRefresh] = useState(false);
-  // isRefreshingSilently handles background updates without visual loaders
-  const isRefreshingSilently = isRefetching && !isManualRefresh;
 
   const onRefresh = useCallback(async () => {
     setIsManualRefresh(true);
@@ -152,77 +301,143 @@ export default function AnalyticsScreen() {
         setPaywallVisible(true);
         paywallSession.markPaywallShown();
       } else {
+        const premiumTitle = locale === 'fr' ? 'Historique Premium' : 'Premium history';
+        const premiumMessage = locale === 'fr'
+          ? 'Les analyses avancees sont reservees aux membres Premium. Passez Premium pour debloquer votre historique complet.'
+          : 'Advanced analytics are reserved for Premium members. Upgrade to unlock your full history.';
+
         showAlert(
-          t('analytics.premium_feature'),
-          t('analytics.premium_feature_msg'),
+          premiumTitle,
+          premiumMessage,
           [
             { text: t('common.later'), style: 'cancel' },
             {
               text: t('premium.upgrade_premium'),
               onPress: () => router.push('/premium-upgrade'),
             },
-          ]
+          ],
+          undefined,
+          { variant: 'premium', emoji: '\u2728' }
         );
       }
       return;
     }
+
     setPeriod(selectedPeriod);
   };
 
-  // Données vides par défaut pour affichage passif (même en cas d'erreur)
-  const healthScoreHistory = data?.healthScoreHistory || [];
-  const calorieHistory = data?.calorieHistory || [];
-  const bodyCompositionHistory = data?.bodyCompositionHistory || [];
+  const healthScoreHistory = data?.healthScoreHistory ?? EMPTY_ANALYTICS_HISTORY;
+  const bodyScoreHistory = data?.bodyScoreHistory ?? EMPTY_ANALYTICS_HISTORY;
+  const nutritionHistory = data?.nutritionHistory ?? EMPTY_ANALYTICS_HISTORY;
+  const superScanHistory = data?.superScanHistory ?? EMPTY_ANALYTICS_HISTORY;
 
-  // Nouvelles données depuis scan_metrics
-  const bodyScoreHistory = data?.bodyScoreHistory || [];
+  const hasData =
+    healthScoreHistory.length > 0 ||
+    bodyScoreHistory.length > 0 ||
+    nutritionHistory.length > 0 ||
+    superScanHistory.length > 0;
 
-  const nutritionHistory = data?.nutritionHistory || [];
-  const superScanHistory = data?.superScanHistory || [];
-
-  const hasData = healthScoreHistory.length > 0 || bodyScoreHistory.length > 0 || nutritionHistory.length > 0 || superScanHistory.length > 0;
-
-  // Chart config iOS-style
-  const chartConfig = useMemo(() => ({
+  const chartConfig = useMemo(() => createAnalyticsLikeLineChartConfig({
     backgroundColor: colors.cardBackground,
-    backgroundGradientFrom: colors.cardBackground,
-    backgroundGradientTo: colors.cardBackground,
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(10, 132, 255, ${opacity})`,
-    labelColor: () => colors.gray,
-    style: {
-      borderRadius: BORDER_RADIUS.lg,
-    },
-    propsForBackgroundLines: {
-      strokeDasharray: '6',
-      stroke: colors.gray,
-      strokeOpacity: 0.1,
-      strokeWidth: 1,
-    },
-    propsForDots: {
-      r: '4',
-      strokeWidth: '2',
-      stroke: colors.cardBackground,
-    },
+    lineColor: '#0A84FF',
+    labelColor: colors.gray,
     fillShadowGradientFrom: colors.primary,
     fillShadowGradientTo: colors.cardBackground,
     fillShadowGradientOpacity: 0.2,
+    backgroundLineColor: colors.gray,
+    dotStrokeColor: colors.cardBackground,
+    borderRadius: BORDER_RADIUS.lg,
   }), [colors]);
 
-  // Nombre max de labels et taille des buckets
   const bucketSize = getBucketSize(period);
   const maxLabels = getMaxLabels(period);
+  const isDensePeriod = period === '3months' || period === '1year';
+  const chartWidth = Math.max(screenWidth - SPACING.page * 2 - SPACING.lg * 2, 0);
 
-  // Rotation des labels pour les vues denses
-  const labelRotation = (period === '3months' || period === '1year') ? 45 : 0;
+  const aggregatedHistory = useMemo(() => {
+    return {
+      healthAgg: aggregateData(healthScoreHistory, bucketSize, (item) => item.value),
+      bodyAgg: aggregateData(bodyScoreHistory, bucketSize, (item) => item.bodyScore),
+      nutritionAgg: aggregateData(nutritionHistory, bucketSize, (item) => item.nutritionScore),
+      superAgg: aggregateData(superScanHistory, bucketSize, (item) => item.globalRiskScore),
+    };
+  }, [healthScoreHistory, bodyScoreHistory, nutritionHistory, superScanHistory, bucketSize]);
 
-  // Helper pour construire les datasets d'un graphique (avec sanitization anti-crash)
+  const denseMonthEntrySets = useMemo(() => {
+    if (!isDensePeriod) return [] as DenseMonthEntry[][];
+
+    return [
+      aggregatedHistory.healthAgg,
+      aggregatedHistory.bodyAgg,
+      aggregatedHistory.nutritionAgg,
+      aggregatedHistory.superAgg,
+    ]
+      .filter((aggregated) => aggregated.length > 0)
+      .map((aggregated) => buildDenseMonthEntries(aggregated, locale));
+  }, [aggregatedHistory, isDensePeriod, locale]);
+
+  const denseMonthCounts = useMemo(() => {
+    return denseMonthEntrySets.map((entries) => entries.filter((entry) => entry.isMonthChange).length);
+  }, [denseMonthEntrySets]);
+
+  const maxDenseMonthCount = denseMonthCounts.length > 0 ? Math.max(...denseMonthCounts) : 0;
+
+  const baseDenseLabels = useMemo(() => {
+    return denseMonthEntrySets.flatMap((entries) => {
+      return entries
+        .filter((entry) => entry.isMonthChange)
+        .map((entry) => entry.monthLabel);
+    });
+  }, [denseMonthEntrySets]);
+
+  const baseLongestDenseLabel = useMemo(() => getLongestLabel(baseDenseLabels), [baseDenseLabels]);
+  const baseDenseLabelWidth = Math.max(measuredDenseLabelWidth, estimateLabelWidth(baseLongestDenseLabel));
+
+  const showEveryOtherDenseMonth = isDensePeriod
+    ? shouldUseAlternateDenseMonths(chartWidth, maxDenseMonthCount, baseDenseLabelWidth)
+    : false;
+
+  const visibleDenseLabelSets = useMemo(() => {
+    return denseMonthEntrySets.map((entries) => buildDenseMonthLabels(entries, showEveryOtherDenseMonth));
+  }, [denseMonthEntrySets, showEveryOtherDenseMonth]);
+
+  const visibleDenseMonthCounts = useMemo(() => {
+    return visibleDenseLabelSets.map((labels) => labels.filter(Boolean).length);
+  }, [visibleDenseLabelSets]);
+
+  const maxVisibleDenseMonthCount = visibleDenseMonthCounts.length > 0 ? Math.max(...visibleDenseMonthCounts) : 0;
+
+  const visibleDenseLabels = useMemo(() => {
+    return visibleDenseLabelSets.flatMap((labels) => labels.filter(Boolean));
+  }, [visibleDenseLabelSets]);
+
+  const denseMeasurementLabel = useMemo(() => {
+    return getLongestLabel(visibleDenseLabels);
+  }, [visibleDenseLabels]);
+
+  useEffect(() => {
+    setMeasuredDenseLabelWidth(0);
+  }, [denseMeasurementLabel]);
+
+  const denseLabelWidth = measuredDenseLabelWidth || estimateLabelWidth(denseMeasurementLabel);
+  const denseXAxisLayout = isDensePeriod
+    ? getDenseXAxisLayout(chartWidth, maxVisibleDenseMonthCount, denseLabelWidth)
+    : { labelRotation: 0, xLabelsOffset: 0, chartBottomPadding: 0 };
+
+  const chartStyle = denseXAxisLayout.chartBottomPadding > 0
+    ? StyleSheet.flatten([styles.chart, { paddingBottom: denseXAxisLayout.chartBottomPadding }])
+    : styles.chart;
+
   const buildChartData = useCallback(
-    (aggregated: { date: string; value: number }[], colorRgba: string) => {
+    (aggregated: AggregatedChartPoint[], colorRgba: string) => {
       if (aggregated.length === 0) return null;
-      const rawLabels = aggregated.map((item) => formatDateLabel(item.date, period, t, locale));
+
+      const rawLabels = isDensePeriod
+        ? buildDenseMonthLabels(buildDenseMonthEntries(aggregated, locale), showEveryOtherDenseMonth)
+        : aggregated.map((item) => formatDateLabel(item.date, locale));
+
       return {
-        labels: sparseLabels(rawLabels, maxLabels),
+        labels: isDensePeriod ? rawLabels : sparseLabels(rawLabels, maxLabels),
         datasets: [
           {
             data: aggregated.map((item) => sanitizeScore(item.value)),
@@ -234,26 +449,17 @@ export default function AnalyticsScreen() {
         ],
       };
     },
-    [period, t, locale, maxLabels]
+    [isDensePeriod, locale, maxLabels, showEveryOtherDenseMonth]
   );
 
-  // Agréger et préparer les données des graphiques (mémoïsé)
   const { healthScoreData, physicalEvolutionData, nutritionScoreData, superScanData } = useMemo(() => {
-    const healthAgg = aggregateData(healthScoreHistory, bucketSize, (item) => item.value);
-    const bodyAgg = aggregateData(bodyScoreHistory, bucketSize, (item) => item.bodyScore);
-    const nutritionAgg = aggregateData(nutritionHistory, bucketSize, (item) => item.nutritionScore);
-    const superAgg = aggregateData(superScanHistory, bucketSize, (item) => item.globalRiskScore);
-
     return {
-      healthScoreData: buildChartData(healthAgg, 'rgba(50, 173, 230, OPACITY)'),
-      physicalEvolutionData: buildChartData(bodyAgg, 'rgba(0, 122, 255, OPACITY)'),
-      nutritionScoreData: buildChartData(nutritionAgg, 'rgba(52, 199, 89, OPACITY)'),
-      superScanData: buildChartData(superAgg, 'rgba(175, 82, 222, OPACITY)'),
+      healthScoreData: buildChartData(aggregatedHistory.healthAgg, 'rgba(50, 173, 230, OPACITY)'),
+      physicalEvolutionData: buildChartData(aggregatedHistory.bodyAgg, 'rgba(0, 122, 255, OPACITY)'),
+      nutritionScoreData: buildChartData(aggregatedHistory.nutritionAgg, 'rgba(52, 199, 89, OPACITY)'),
+      superScanData: buildChartData(aggregatedHistory.superAgg, 'rgba(175, 82, 222, OPACITY)'),
     };
-  }, [healthScoreHistory, bodyScoreHistory, nutritionHistory, superScanHistory, bucketSize, buildChartData]);
-
-  // Largeur du graphique réactive
-  const chartWidth = screenWidth - SPACING.page * 2 - SPACING.lg * 2;
+  }, [aggregatedHistory, buildChartData]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -262,6 +468,22 @@ export default function AnalyticsScreen() {
   return (
     <View style={styles.container}>
       {alertElement}
+      {isDensePeriod && denseMeasurementLabel ? (
+        <View pointerEvents="none" style={styles.labelMeasurementContainer}>
+          <Text
+            style={styles.labelMeasurementText}
+            onLayout={(event) => {
+              const nextWidth = Math.ceil(event.nativeEvent.layout.width);
+              if (nextWidth > 0 && nextWidth !== measuredDenseLabelWidth) {
+                setMeasuredDenseLabelWidth(nextWidth);
+              }
+            }}
+          >
+            {denseMeasurementLabel}
+          </Text>
+        </View>
+      ) : null}
+
       <View style={[styles.header, { paddingTop: insets.top + SPACING.md }]}>
         <Text style={styles.headerTitle}>{t('analytics.title')}</Text>
         <Text style={styles.headerSubtitle}>{t('analytics.subtitle')}</Text>
@@ -276,45 +498,44 @@ export default function AnalyticsScreen() {
           <RefreshControl refreshing={isManualRefresh} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
-
-        {/* Sélecteur de période iOS-style */}
-        <View style={styles.periodSelectorContainer} >
+        <View style={styles.periodSelectorContainer}>
           <View style={styles.periodSelector}>
-            {PERIODS.map((p) => (
+            {PERIODS.map((periodOption) => (
               <TouchableOpacity
-                key={p.value}
+                key={periodOption.value}
                 style={[
                   styles.periodButton,
-                  period === p.value && styles.periodButtonActive,
+                  period === periodOption.value && styles.periodButtonActive,
                 ]}
-                onPress={() => handlePeriodSelect(p.value, p.premium)}
+                onPress={() => handlePeriodSelect(periodOption.value, periodOption.premium)}
                 activeOpacity={0.7}
                 accessibilityRole="button"
-                accessibilityLabel={t(p.labelKey)}
-                accessibilityState={{ selected: period === p.value }}
-                accessibilityHint={p.premium && !isPremium ? t('analytics.premium_feature') : undefined}
+                accessibilityLabel={t(periodOption.labelKey)}
+                accessibilityState={{ selected: period === periodOption.value }}
+                accessibilityHint={periodOption.premium && !isPremium ? t('analytics.premium_feature') : undefined}
               >
-                {p.premium && !isPremium && (
+                {periodOption.premium && !isPremium && (
                   <Crown
-                    color={period === p.value ? colors.white : colors.gold}
+                    color={period === periodOption.value ? colors.white : colors.gold}
                     size={12}
-                    fill={period === p.value ? colors.white : colors.gold}
+                    fill={period === periodOption.value ? colors.white : colors.gold}
                     style={styles.crownIcon}
                   />
                 )}
-                <Text style={[
-                  styles.periodButtonText,
-                  period === p.value && styles.periodButtonTextActive,
-                  p.premium && !isPremium && styles.periodButtonTextPremium,
-                ]}>
-                  {t(p.labelKey)}
+                <Text
+                  style={[
+                    styles.periodButtonText,
+                    period === periodOption.value && styles.periodButtonTextActive,
+                    periodOption.premium && !isPremium && styles.periodButtonTextPremium,
+                  ]}
+                >
+                  {t(periodOption.labelKey)}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
-        </View >
+        </View>
 
-        {/* Message d'erreur inline avec bouton Réessayer */}
         {error && (
           <View style={styles.errorContainer}>
             <ErrorMessage
@@ -325,23 +546,21 @@ export default function AnalyticsScreen() {
           </View>
         )}
 
-        {/* Message si aucune donnée */}
-        {
-          !hasData && !error && (
-            <View style={styles.emptyStateCard}>
-              <Text style={styles.emptyStateText}>
-                {t('analytics.empty_state')}
-              </Text>
-            </View>
-          )
-        }
+        {!hasData && !error && (
+          <View style={styles.emptyStateCard}>
+            <Text style={styles.emptyStateText}>{t('analytics.empty_state')}</Text>
+          </View>
+        )}
 
-        {/* Score Santé */}
-        <View style={styles.chartCard} accessible={true} accessibilityLabel={
-          healthScoreData
-            ? `${t('analytics.health_score')}: ${healthScoreData.datasets[0].data.slice(-1)[0]}/100`
-            : `${t('analytics.health_score')}: ${t('analytics.empty_state')}`
-        }>
+        <View
+          style={styles.chartCard}
+          accessible={true}
+          accessibilityLabel={
+            healthScoreData
+              ? `${t('analytics.health_score')}: ${healthScoreData.datasets[0].data.slice(-1)[0]}/100`
+              : `${t('analytics.health_score')}: ${t('analytics.empty_state')}`
+          }
+        >
           <View style={styles.chartHeaderWithIcon}>
             <Heart color="#32ADE6" size={20} />
             <Text style={styles.chartTitle}>{t('analytics.health_score')}</Text>
@@ -357,15 +576,11 @@ export default function AnalyticsScreen() {
                 fillShadowGradientFrom: '#32ADE6',
                 fillShadowGradientTo: colors.cardBackground,
               }}
-              bezier
-              style={styles.chart}
-              withInnerLines={true}
-              withOuterLines={false}
-              withVerticalLines={false}
-              withHorizontalLines={true}
+              {...ANALYTICS_LIKE_LINE_CHART_PROPS}
+              style={chartStyle}
               yAxisInterval={10}
-              fromZero={true}
-              verticalLabelRotation={labelRotation}
+              verticalLabelRotation={denseXAxisLayout.labelRotation}
+              xLabelsOffset={denseXAxisLayout.xLabelsOffset}
             />
           ) : (
             <View style={styles.emptyChartContainer}>
@@ -374,12 +589,15 @@ export default function AnalyticsScreen() {
           )}
         </View>
 
-        {/* Graphique A: Évolution Physique */}
-        <View style={styles.chartCard} accessible={true} accessibilityLabel={
-          physicalEvolutionData
-            ? `${t('analytics.physical_evolution')}: ${physicalEvolutionData.datasets[0].data.slice(-1)[0]}/100`
-            : `${t('analytics.physical_evolution')}: ${t('analytics.empty_state')}`
-        }>
+        <View
+          style={styles.chartCard}
+          accessible={true}
+          accessibilityLabel={
+            physicalEvolutionData
+              ? `${t('analytics.physical_evolution')}: ${physicalEvolutionData.datasets[0].data.slice(-1)[0]}/100`
+              : `${t('analytics.physical_evolution')}: ${t('analytics.empty_state')}`
+          }
+        >
           <View style={styles.chartHeaderWithIcon}>
             <Activity color="#007AFF" size={20} />
             <Text style={styles.chartTitle}>{t('analytics.physical_evolution')}</Text>
@@ -395,14 +613,10 @@ export default function AnalyticsScreen() {
                 fillShadowGradientFrom: '#007AFF',
                 fillShadowGradientTo: colors.cardBackground,
               }}
-              bezier
-              style={styles.chart}
-              withInnerLines={true}
-              withOuterLines={false}
-              withVerticalLines={false}
-              withHorizontalLines={true}
-              fromZero={true}
-              verticalLabelRotation={labelRotation}
+              {...ANALYTICS_LIKE_LINE_CHART_PROPS}
+              style={chartStyle}
+              verticalLabelRotation={denseXAxisLayout.labelRotation}
+              xLabelsOffset={denseXAxisLayout.xLabelsOffset}
             />
           ) : (
             <View style={styles.emptyChartContainer}>
@@ -411,14 +625,15 @@ export default function AnalyticsScreen() {
           )}
         </View>
 
-
-
-        {/* Graphique C: Score Nutrition */}
-        <View style={styles.chartCard} accessible={true} accessibilityLabel={
-          nutritionScoreData
-            ? `${t('analytics.nutrition_score')}: ${nutritionScoreData.datasets[0].data.slice(-1)[0]}/100`
-            : `${t('analytics.nutrition_score')}: ${t('analytics.empty_state')}`
-        }>
+        <View
+          style={styles.chartCard}
+          accessible={true}
+          accessibilityLabel={
+            nutritionScoreData
+              ? `${t('analytics.nutrition_score')}: ${nutritionScoreData.datasets[0].data.slice(-1)[0]}/100`
+              : `${t('analytics.nutrition_score')}: ${t('analytics.empty_state')}`
+          }
+        >
           <View style={styles.chartHeaderWithIcon}>
             <Utensils color="#34C759" size={20} />
             <Text style={styles.chartTitle}>{t('analytics.nutrition_score')}</Text>
@@ -434,14 +649,10 @@ export default function AnalyticsScreen() {
                 fillShadowGradientFrom: '#34C759',
                 fillShadowGradientTo: colors.cardBackground,
               }}
-              bezier
-              style={styles.chart}
-              withInnerLines={true}
-              withOuterLines={false}
-              withVerticalLines={false}
-              withHorizontalLines={true}
-              fromZero={true}
-              verticalLabelRotation={labelRotation}
+              {...ANALYTICS_LIKE_LINE_CHART_PROPS}
+              style={chartStyle}
+              verticalLabelRotation={denseXAxisLayout.labelRotation}
+              xLabelsOffset={denseXAxisLayout.xLabelsOffset}
             />
           ) : (
             <View style={styles.emptyChartContainer}>
@@ -450,12 +661,15 @@ export default function AnalyticsScreen() {
           )}
         </View>
 
-        {/* Graphique D: Super Scan Score */}
-        <View style={styles.chartCard} accessible={true} accessibilityLabel={
-          superScanData
-            ? `${t('analytics.super_scan_score')}: ${superScanData.datasets[0].data.slice(-1)[0]}/100`
-            : `${t('analytics.super_scan_score')}: ${t('analytics.empty_state')}`
-        }>
+        <View
+          style={styles.chartCard}
+          accessible={true}
+          accessibilityLabel={
+            superScanData
+              ? `${t('analytics.super_scan_score')}: ${superScanData.datasets[0].data.slice(-1)[0]}/100`
+              : `${t('analytics.super_scan_score')}: ${t('analytics.empty_state')}`
+          }
+        >
           <View style={styles.chartHeaderWithIcon}>
             <Sparkles color="#AF52DE" size={20} />
             <Text style={styles.chartTitle}>{t('analytics.super_scan_score')}</Text>
@@ -471,14 +685,10 @@ export default function AnalyticsScreen() {
                 fillShadowGradientFrom: '#AF52DE',
                 fillShadowGradientTo: colors.cardBackground,
               }}
-              bezier
-              style={styles.chart}
-              withInnerLines={true}
-              withOuterLines={false}
-              withVerticalLines={false}
-              withHorizontalLines={true}
-              fromZero={true}
-              verticalLabelRotation={labelRotation}
+              {...ANALYTICS_LIKE_LINE_CHART_PROPS}
+              style={chartStyle}
+              verticalLabelRotation={denseXAxisLayout.labelRotation}
+              xLabelsOffset={denseXAxisLayout.xLabelsOffset}
             />
           ) : (
             <View style={styles.emptyChartContainer}>
@@ -487,14 +697,14 @@ export default function AnalyticsScreen() {
           )}
         </View>
 
-        <View style={styles.footer} />
-      </ScrollView >
+        <View style={[styles.footer, { height: insets.bottom + SPACING.xl }]} />
+      </ScrollView>
 
       <ContextualPaywall
         visible={paywallVisible}
         onClose={() => setPaywallVisible(false)}
-        title="Suivez votre progression santé"
-        description="Accédez à vos graphiques sur 7j, 30j, 3 mois et 1 an"
+        title={'Suivez votre progression sant\u00e9'}
+        description={'Acc\u00e9dez \u00e0 vos graphiques sur 7j, 30j, 3 mois et 1 an'}
         primaryButtonText="Voir les offres"
       />
     </View>
@@ -594,36 +804,15 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginLeft: -SPACING.md,
     borderRadius: BORDER_RADIUS.md,
   },
-  legendContainer: {
-    flexDirection: 'row',
-    gap: SPACING.lg,
-    marginBottom: SPACING.md,
+  labelMeasurementContainer: {
+    position: 'absolute',
+    left: -9999,
+    top: -9999,
+    opacity: 0,
   },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
-  },
-  legendDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  legendText: {
+  labelMeasurementText: {
     fontSize: SIZES.text12,
-    color: colors.gray,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: SPACING.xl,
-    backgroundColor: colors.background,
-  },
-  emptyText: {
-    fontSize: SIZES.text16,
-    color: colors.gray,
-    textAlign: 'center',
+    fontWeight: FONT_WEIGHTS.medium,
   },
   emptyStateCard: {
     marginHorizontal: SPACING.page,
@@ -659,4 +848,3 @@ const createStyles = (colors: any) => StyleSheet.create({
     textAlign: 'center',
   },
 });
-

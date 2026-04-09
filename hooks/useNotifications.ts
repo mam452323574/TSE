@@ -1,37 +1,92 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Platform } from 'react-native';
-import * as Notifications from 'expo-notifications';
+import type {
+  Notification,
+  NotificationResponse,
+  Subscription,
+} from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
+
 import { supabase } from '@/services/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  getRuntimeCapabilities,
+  logRuntimeDecisionOnce,
+} from '@/utils/runtimeCapabilities';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+const runtimeCapabilities = getRuntimeCapabilities();
 
-// Identifiants pour gerer les notifications planifiees
+function createNotificationsBridge() {
+  if (runtimeCapabilities.canUseLocalNotifications) {
+    try {
+      return require('expo-notifications');
+    } catch (error) {
+      console.warn(
+        '[useNotifications] Erreur de chargement de expo-notifications:',
+        error
+      );
+    }
+  }
+
+  logRuntimeDecisionOnce('Notifications fallback enabled', {
+    reason:
+      runtimeCapabilities.platform === 'web'
+        ? 'web-runtime'
+        : 'expo-go-android',
+  }, `notifications-fallback:${runtimeCapabilities.platform}`);
+
+  return {
+    setNotificationHandler: () => {},
+    addNotificationReceivedListener: () => ({ remove: () => {} }),
+    addNotificationResponseReceivedListener: () => ({ remove: () => {} }),
+    scheduleNotificationAsync: async () => 'mock-id',
+    cancelScheduledNotificationAsync: async () => {},
+    cancelAllScheduledNotificationsAsync: async () => {},
+    getPermissionsAsync: async () => ({ status: 'denied' }),
+    requestPermissionsAsync: async () => ({ status: 'denied' }),
+    getExpoPushTokenAsync: async () => ({ data: null }),
+    setNotificationChannelAsync: async () => {},
+    SchedulableTriggerInputTypes: {
+      TIME_INTERVAL: 'time_interval',
+      DAILY: 'daily',
+      DATE: 'date',
+    },
+    AndroidImportance: {
+      MAX: 4,
+    },
+  };
+}
+
+const Notifications: any = createNotificationsBridge();
+
+if (Notifications.setNotificationHandler) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
+
 const NOTIFICATION_IDS = {
   DAILY_REMINDER: 'daily-reminder',
   SUPER_SCAN_RESET: 'super-scan-reset',
   MOTIVATION: 'motivation',
-  SCAN_READY: 'scan-ready-', // Sera suffixé par le type de scan
+  SCAN_READY: 'scan-ready-',
 };
 
 export function useNotifications() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
-  const [notification, setNotification] = useState<Notifications.Notification | null>(null);
-  const notificationListener = useRef<Notifications.Subscription | null>(null);
-  const responseListener = useRef<Notifications.Subscription | null>(null);
+  const [notification, setNotification] = useState<Notification | null>(null);
+  const notificationListener = useRef<Subscription | null>(null);
+  const responseListener = useRef<Subscription | null>(null);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -39,30 +94,53 @@ export function useNotifications() {
 
     isMountedRef.current = true;
 
-    registerForPushNotificationsAsync().then(async (token) => {
-      if (!isMountedRef.current) return;
-      if (token) {
+    if (!runtimeCapabilities.canRegisterForPushNotifications) {
+      if (runtimeCapabilities.isExpoGo) {
+        logRuntimeDecisionOnce(
+          'Expo Go limitations',
+          {
+            localNotificationsEnabled: runtimeCapabilities.canUseLocalNotifications,
+            pushTokenRegistrationEnabled:
+              runtimeCapabilities.canRegisterForPushNotifications,
+            nativePurchasesEnabled: runtimeCapabilities.canUseNativePurchases,
+            recommendation: 'use-development-build',
+          },
+          'expo-go-limitations',
+        );
+      }
+    } else {
+      registerForPushNotificationsAsync().then(async (token) => {
+        if (!isMountedRef.current || !token) return;
+
         setExpoPushToken(token);
         await savePushTokenToDatabase(token);
-      }
-    });
+      });
+    }
 
-    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      if (isMountedRef.current) {
-        setNotification(notification);
-      }
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(
+        (receivedNotification: Notification) => {
+          if (isMountedRef.current) {
+            setNotification(receivedNotification);
+          }
+        }
+      );
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      const data = response.notification.request.content.data;
-      handleNotificationResponse(data);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(
+        (response: NotificationResponse) => {
+          const data = response.notification.request.content.data;
+          handleNotificationResponse(data);
+        }
+      );
 
     return () => {
       isMountedRef.current = false;
+
       if (notificationListener.current) {
         notificationListener.current.remove();
       }
+
       if (responseListener.current) {
         responseListener.current.remove();
       }
@@ -82,10 +160,13 @@ export function useNotifications() {
     }
   };
 
-  const handleNotificationResponse = (_data: any) => {
-  };
+  const handleNotificationResponse = (_data: any) => {};
 
-  const scheduleLocalNotification = async (title: string, body: string, data?: any) => {
+  const scheduleLocalNotification = async (
+    title: string,
+    body: string,
+    data?: any
+  ) => {
     await Notifications.scheduleNotificationAsync({
       content: {
         title,
@@ -93,16 +174,20 @@ export function useNotifications() {
         data,
         sound: true,
       },
-      trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 1 },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 1,
+      },
     });
   };
 
-  // Rappel quotidien (tous les jours a 10h)
   const scheduleDailyReminder = useCallback(async () => {
     if (Platform.OS === 'web') return;
 
     try {
-      await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_IDS.DAILY_REMINDER);
+      await Notifications.cancelScheduledNotificationAsync(
+        NOTIFICATION_IDS.DAILY_REMINDER
+      );
 
       const index = Math.floor(Math.random() * 6) + 1;
       const title = t(`notifications.daily_reminders.${index}.title`);
@@ -122,18 +207,21 @@ export function useNotifications() {
           minute: 0,
         },
       });
-      console.log('[Notifications] Rappel quotidien planifie pour 10h');
     } catch (error) {
-      console.error('[Notifications] Erreur planification rappel quotidien:', error);
+      console.error(
+        '[Notifications] Erreur planification rappel quotidien:',
+        error
+      );
     }
   }, [t]);
 
-  // Reset Super Scan (planifie pour le lendemain a 8h)
   const scheduleSuperScanReset = useCallback(async () => {
     if (Platform.OS === 'web') return;
 
     try {
-      await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_IDS.SUPER_SCAN_RESET);
+      await Notifications.cancelScheduledNotificationAsync(
+        NOTIFICATION_IDS.SUPER_SCAN_RESET
+      );
 
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -158,54 +246,66 @@ export function useNotifications() {
       });
       console.log('[Notifications] Reset Super Scan planifie pour demain 8h');
     } catch (error) {
-      console.error('[Notifications] Erreur planification Super Scan reset:', error);
+      console.error(
+        '[Notifications] Erreur planification Super Scan reset:',
+        error
+      );
     }
   }, [t]);
 
-  // Alerte Scan prêt (planifié à une date précise)
-  const scheduleScanReadyNotification = useCallback(async (scanType: import('@/types').ScanType, nextDateMs: number) => {
-    if (Platform.OS === 'web') return;
+  const scheduleScanReadyNotification = useCallback(
+    async (scanType: import('@/types').ScanType, nextDateMs: number) => {
+      if (Platform.OS === 'web') return;
 
-    const notificationId = `${NOTIFICATION_IDS.SCAN_READY}${scanType}`;
-    try {
-      await Notifications.cancelScheduledNotificationAsync(notificationId);
+      const notificationId = `${NOTIFICATION_IDS.SCAN_READY}${scanType}`;
 
-      const futureDate = new Date(nextDateMs);
-      if (futureDate.getTime() <= Date.now()) return;
+      try {
+        await Notifications.cancelScheduledNotificationAsync(notificationId);
 
-      const title = t(`notifications.scan_${scanType}_title`);
-      const body = t(`notifications.scan_${scanType}_body`);
+        const futureDate = new Date(nextDateMs);
+        if (futureDate.getTime() <= Date.now()) return;
 
-      await Notifications.scheduleNotificationAsync({
-        identifier: notificationId,
-        content: {
-          title,
-          body,
-          data: { type: 'scan_ready', scanType },
-          sound: true,
-        },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.DATE,
-          date: futureDate,
-        },
-      });
-      console.log(`[Notifications] Scan Ready planifié pour ${scanType} à ${futureDate.toLocaleString()}`);
-    } catch (error) {
-      console.error(`[Notifications] Erreur planification Scan Ready (${scanType}):`, error);
-    }
-  }, [t]);
+        const title = t(`notifications.scan_${scanType}_title`);
+        const body = t(`notifications.scan_${scanType}_body`);
 
-  // Notification de motivation (planifiee dans 2-5 jours)
+        await Notifications.scheduleNotificationAsync({
+          identifier: notificationId,
+          content: {
+            title,
+            body,
+            data: { type: 'scan_ready', scanType },
+            sound: true,
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: futureDate,
+          },
+        });
+        console.log(
+          `[Notifications] Scan Ready planifie pour ${scanType} a ${futureDate.toLocaleString()}`
+        );
+      } catch (error) {
+        console.error(
+          `[Notifications] Erreur planification Scan Ready (${scanType}):`,
+          error
+        );
+      }
+    },
+    [t]
+  );
+
   const scheduleMotivationalNotification = useCallback(async () => {
     if (Platform.OS === 'web') return;
 
     try {
-      await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_IDS.MOTIVATION);
+      await Notifications.cancelScheduledNotificationAsync(
+        NOTIFICATION_IDS.MOTIVATION
+      );
 
-      const daysLater = 2 + Math.floor(Math.random() * 4); // 2 a 5 jours
+      const daysLater = 2 + Math.floor(Math.random() * 4);
       const futureDate = new Date();
       futureDate.setDate(futureDate.getDate() + daysLater);
-      futureDate.setHours(14, 0, 0, 0); // 14h
+      futureDate.setHours(14, 0, 0, 0);
 
       const index = Math.floor(Math.random() * 6) + 1;
       const title = t(`notifications.motivational.${index}.title`);
@@ -224,17 +324,17 @@ export function useNotifications() {
           date: futureDate,
         },
       });
-      console.log(`[Notifications] Motivation planifiee dans ${daysLater} jours a 14h`);
     } catch (error) {
       console.error('[Notifications] Erreur planification motivation:', error);
     }
   }, [t]);
 
-  // Annuler toutes les notifications planifiees
   const cancelAllScheduledNotifications = useCallback(async () => {
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
-      console.log('[Notifications] Toutes les notifications planifiees annulees');
+      console.log(
+        '[Notifications] Toutes les notifications planifiees annulees'
+      );
     } catch (error) {
       console.error('[Notifications] Erreur annulation notifications:', error);
     }
@@ -254,19 +354,15 @@ export function useNotifications() {
 
 async function registerForPushNotificationsAsync() {
   let token;
+  const runtime = getRuntimeCapabilities();
 
-  if (Platform.OS === 'web') {
-    return null;
-  }
-
-  // Désactiver pour Expo Go (évite les warnings inutiles)
-  if (Constants.appOwnership === 'expo') {
-    console.log('[useNotifications] Expo Go détecté : Notifications push désactivées via EAS.');
+  if (runtime.platform === 'web' || !runtime.canRegisterForPushNotifications) {
     return null;
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== 'granted') {
@@ -279,22 +375,26 @@ async function registerForPushNotificationsAsync() {
     }
 
     try {
-      // Récupérer le projectId depuis la configuration EAS
       const projectId = Constants.expoConfig?.extra?.eas?.projectId;
 
       if (!projectId || projectId === 'YOUR_EAS_PROJECT_ID') {
-        console.warn('[useNotifications] projectId EAS non configuré. Exécutez "npx eas-cli project:init" ou configurez-le manuellement dans app.json');
+        console.warn(
+          '[useNotifications] projectId EAS non configure. Executez "npx eas-cli project:init" ou configurez-le manuellement dans app.json'
+        );
         return null;
       }
 
       token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
     } catch (error) {
-      console.warn('[useNotifications] Échec de récupération du push token:', error);
+      console.warn(
+        '[useNotifications] Echec de recuperation du push token:',
+        error
+      );
       return null;
     }
   }
 
-  if (Platform.OS === 'android') {
+  if (runtime.platform === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,

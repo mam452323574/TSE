@@ -114,7 +114,12 @@ describe('useNotifications', () => {
 
     unmount();
 
-    expect(Notifications.removeNotificationSubscription).toHaveBeenCalled();
+    expect(
+      Notifications.addNotificationReceivedListener.mock.results[0].value.remove
+    ).toHaveBeenCalled();
+    expect(
+      Notifications.addNotificationResponseReceivedListener.mock.results[0].value.remove
+    ).toHaveBeenCalled();
   });
 
   it('scheduleLocalNotification calls Notifications.scheduleNotificationAsync', async () => {

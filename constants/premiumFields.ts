@@ -5,7 +5,7 @@
 
 export const PREMIUM_LOCKED_FIELDS: Record<'body' | 'face' | 'nutrition', string[]> = {
     body: ['body_fat_percentage', 'posture_score', 'body_symmetry'],
-    face: ['skin_quality_score', 'glow_index', 'collagen_level'],
+    face: ['skin_quality_score', 'energy_score', 'collagen_level'],
     nutrition: ['glycemic_index_label', 'main_vitamins'],
 };
 

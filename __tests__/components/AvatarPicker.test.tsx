@@ -1,36 +1,43 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react-native';
-import { Alert } from 'react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
+import {
+  InteractionManager,
+  Linking,
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system/legacy';
+
 import { AvatarPicker } from '@/components/AvatarPicker';
 
-// Mock dependencies
-jest.mock('lucide-react-native', () => ({
-  Camera: 'Camera',
-  Upload: 'Upload',
-  User: 'User',
+const mockShowAlert = jest.fn();
+const mockUpload = jest.fn();
+
+jest.mock('@/hooks/useCustomAlert', () => ({
+  useCustomAlert: () => ({
+    showAlert: (...args: unknown[]) => mockShowAlert(...args),
+    alertElement: null,
+  }),
 }));
 
-jest.mock('expo-image-picker', () => ({
-  requestCameraPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
-  requestMediaLibraryPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
-  launchImageLibraryAsync: jest.fn().mockResolvedValue({ canceled: true }),
-  launchCameraAsync: jest.fn().mockResolvedValue({ canceled: true }),
-  MediaTypeOptions: { Images: 'Images' },
+jest.mock('@/hooks/useResolvedAvatarUrl', () => ({
+  useResolvedAvatarUrl: (value: string | null | undefined) => value ?? null,
 }));
 
 jest.mock('@/services/supabase', () => ({
   supabase: {
     storage: {
       from: jest.fn(() => ({
-        upload: jest.fn().mockResolvedValue({ error: null }),
-        getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/avatar.jpg' } }),
+        upload: (...args: unknown[]) => mockUpload(...args),
       })),
     },
   },
 }));
 
-// Mock Alert
-jest.spyOn(Alert, 'alert');
+type AlertButton = {
+  text: string;
+  onPress?: () => void;
+  style?: 'default' | 'cancel' | 'destructive';
+};
 
 describe('AvatarPicker', () => {
   const mockOnAvatarSelected = jest.fn();
@@ -39,51 +46,373 @@ describe('AvatarPicker', () => {
     onAvatarSelected: mockOnAvatarSelected,
   };
 
+  let runAfterInteractionsSpy: jest.SpyInstance;
+  let openSettingsSpy: jest.SpyInstance;
+
+  const getPickerButtons = () =>
+    (mockShowAlert.mock.calls[0]?.[2] ?? []) as AlertButton[];
+
+  const getButton = (buttons: AlertButton[], label: string) =>
+    buttons.find((button) => button.text === label);
+
+  const flushScheduledPickerAction = async () => {
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+      await Promise.resolve();
+    });
+  };
+
   beforeEach(() => {
-    mockOnAvatarSelected.mockClear();
-    (Alert.alert as jest.Mock).mockClear();
+    jest.useFakeTimers();
+    jest.clearAllMocks();
+
+    runAfterInteractionsSpy = jest
+      .spyOn(InteractionManager, 'runAfterInteractions')
+      .mockImplementation((task: any) => {
+        task?.();
+        return { cancel: jest.fn() } as any;
+      });
+
+    openSettingsSpy = jest
+      .spyOn(Linking, 'openSettings')
+      .mockResolvedValue();
+
+    (ImagePicker.getMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'granted',
+      granted: true,
+      canAskAgain: true,
+      accessPrivileges: 'all',
+    });
+    (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'granted',
+      granted: true,
+      canAskAgain: true,
+      accessPrivileges: 'all',
+    });
+    (ImagePicker.getCameraPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'granted',
+      granted: true,
+      canAskAgain: true,
+    });
+    (ImagePicker.requestCameraPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'granted',
+      granted: true,
+      canAskAgain: true,
+    });
+    (ImagePicker.launchImageLibraryAsync as jest.Mock).mockResolvedValue({
+      canceled: false,
+      assets: [{ uri: 'file:///avatar.jpg' }],
+    });
+    (ImagePicker.launchCameraAsync as jest.Mock).mockResolvedValue({
+      canceled: false,
+      assets: [{ uri: 'file:///camera-avatar.jpg' }],
+    });
+    (FileSystem.getInfoAsync as jest.Mock).mockResolvedValue({
+      exists: true,
+      size: 1024,
+    });
+    (FileSystem.readAsStringAsync as jest.Mock).mockResolvedValue('/9j/4AAQSkZJRgABAQAAAQABAAD/');
+    mockUpload.mockResolvedValue({ data: { path: 'test-user-123/avatar.jpg' }, error: null });
+
+    global.fetch = jest.fn().mockResolvedValue({
+      blob: async () => ({
+        size: 1024,
+        arrayBuffer: async () => new ArrayBuffer(8),
+      }),
+    }) as jest.Mock;
   });
 
-  it('renders without crashing', () => {
-    const { toJSON } = render(<AvatarPicker {...defaultProps} />);
-    
-    expect(toJSON()).toBeTruthy();
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+    runAfterInteractionsSpy.mockRestore();
+    openSettingsSpy.mockRestore();
   });
 
-  it('displays hint text', () => {
-    render(<AvatarPicker {...defaultProps} />);
-    
-    expect(screen.getByText('Appuyez pour modifier')).toBeTruthy();
+  it('renders the shared fallback avatar when no image exists', () => {
+    const screen = render(<AvatarPicker {...defaultProps} />);
+
+    expect(screen.getByTestId('avatar-picker-image-fallback')).toBeTruthy();
   });
 
-  it('renders with custom avatar URL', () => {
-    const { toJSON } = render(
-      <AvatarPicker
-        {...defaultProps}
-        currentAvatarUrl="https://example.com/custom-avatar.jpg"
-      />
+  it('opens the shared avatar options with gallery and camera actions', () => {
+    const screen = render(<AvatarPicker {...defaultProps} />);
+
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+
+    expect(mockShowAlert).toHaveBeenCalledWith(
+      'Photo de profil',
+      'Choisissez une source',
+      expect.any(Array),
     );
-    
-    expect(toJSON()).toBeTruthy();
+
+    const buttons = getPickerButtons();
+    expect(getButton(buttons, 'Prendre une photo')).toBeTruthy();
+    expect(getButton(buttons, 'Choisir de la galerie')).toBeTruthy();
   });
 
-  it('renders with custom size', () => {
-    const { toJSON } = render(
-      <AvatarPicker
-        {...defaultProps}
-        size={200}
-      />
+  it('uploads a normalized avatar path after choosing from gallery', async () => {
+    const fetchSpy = jest.fn();
+    global.fetch = fetchSpy as jest.Mock;
+    const screen = render(<AvatarPicker {...defaultProps} />);
+
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalled();
+      expect(mockOnAvatarSelected).toHaveBeenCalledWith('test-user-123/avatar.jpg');
+    });
+    expect(FileSystem.readAsStringAsync).toHaveBeenCalledWith(
+      'manipulated-image-uri',
+      expect.objectContaining({ encoding: 'base64' }),
     );
-    
-    expect(toJSON()).toBeTruthy();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it('shows options alert when pressed', () => {
-    render(<AvatarPicker {...defaultProps} />);
-    
-    const touchable = screen.getByText('Appuyez pour modifier').parent?.parent;
-    if (touchable) {
-      fireEvent.press(touchable);
-    }
+  it('uploads a normalized avatar path after taking a photo', async () => {
+    const screen = render(<AvatarPicker {...defaultProps} />);
+
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Prendre une photo')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(ImagePicker.launchCameraAsync).toHaveBeenCalled();
+      expect(mockOnAvatarSelected).toHaveBeenCalledWith('test-user-123/avatar.jpg');
+    });
+  });
+
+  it('does nothing when the gallery picker is canceled', async () => {
+    (ImagePicker.launchImageLibraryAsync as jest.Mock).mockResolvedValue({
+      canceled: true,
+      assets: [],
+    });
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalled();
+    });
+    expect(mockOnAvatarSelected).not.toHaveBeenCalled();
+    expect(mockShowAlert).not.toHaveBeenCalled();
+  });
+
+  it('shows a size error when the normalized avatar exceeds the upload limit', async () => {
+    (FileSystem.getInfoAsync as jest.Mock).mockResolvedValue({
+      exists: true,
+      size: 6 * 1024 * 1024,
+    });
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Erreur',
+        'Image trop volumineuse (max 5MB)',
+      );
+    });
+    expect(mockOnAvatarSelected).not.toHaveBeenCalled();
+    expect(mockUpload).not.toHaveBeenCalled();
+  });
+
+  it('surfaces storage upload failures after preparing the avatar', async () => {
+    mockUpload.mockResolvedValue({
+      data: null,
+      error: new Error('Upload failed'),
+    });
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Erreur',
+        'Upload failed',
+      );
+    });
+    expect(mockOnAvatarSelected).not.toHaveBeenCalled();
+  });
+
+  it('shows a visible alert when gallery permission is denied', async () => {
+    (ImagePicker.getMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'denied',
+      granted: false,
+      canAskAgain: true,
+      accessPrivileges: 'none',
+    });
+    (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'denied',
+      granted: false,
+      canAskAgain: true,
+      accessPrivileges: 'none',
+    });
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Permissions requises',
+        'Acces a la galerie requis',
+        [{ text: 'OK' }],
+      );
+    });
+    expect(ImagePicker.launchImageLibraryAsync).not.toHaveBeenCalled();
+  });
+
+  it('offers a native settings shortcut when gallery permission is permanently denied', async () => {
+    (ImagePicker.getMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'denied',
+      granted: false,
+      canAskAgain: false,
+      accessPrivileges: 'none',
+    });
+    (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'denied',
+      granted: false,
+      canAskAgain: false,
+      accessPrivileges: 'none',
+    });
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    const permissionButtons = (mockShowAlert.mock.calls[0]?.[2] ?? []) as AlertButton[];
+    expect(getButton(permissionButtons, 'Ouvrir les parametres')).toBeTruthy();
+
+    await act(async () => {
+      getButton(permissionButtons, 'Ouvrir les parametres')?.onPress?.();
+    });
+
+    expect(openSettingsSpy).toHaveBeenCalled();
+  });
+
+  it('shows a visible alert when camera permission is denied', async () => {
+    (ImagePicker.getCameraPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'denied',
+      granted: false,
+      canAskAgain: true,
+    });
+    (ImagePicker.requestCameraPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: 'denied',
+      granted: false,
+      canAskAgain: true,
+    });
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Prendre une photo')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Permissions requises',
+        'Acces a la camera requis',
+        [{ text: 'OK' }],
+      );
+    });
+    expect(ImagePicker.launchCameraAsync).not.toHaveBeenCalled();
+  });
+
+  it('surfaces gallery launcher failures instead of swallowing taps', async () => {
+    (ImagePicker.launchImageLibraryAsync as jest.Mock).mockRejectedValue(
+      new Error('Picker exploded'),
+    );
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Choisir de la galerie')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Erreur',
+        'Impossible d\'ouvrir le selecteur de photo pour le moment.',
+        [{ text: 'OK' }],
+      );
+    });
+  });
+
+  it('surfaces camera availability failures instead of swallowing taps', async () => {
+    (ImagePicker.launchCameraAsync as jest.Mock).mockRejectedValue(
+      new Error('Camera unavailable on this device'),
+    );
+
+    const screen = render(<AvatarPicker {...defaultProps} />);
+    fireEvent.press(screen.getByTestId('avatar-picker-trigger'));
+    const buttons = getPickerButtons();
+    mockShowAlert.mockClear();
+
+    await act(async () => {
+      getButton(buttons, 'Prendre une photo')?.onPress?.();
+    });
+    await flushScheduledPickerAction();
+
+    await waitFor(() => {
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Erreur',
+        'La camera n\'est pas disponible sur cet appareil.',
+        [{ text: 'OK' }],
+      );
+    });
   });
 });

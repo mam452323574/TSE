@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface BadgeState {
   analytics: boolean;
+  social: boolean;
   recipes: boolean;
   exercises: boolean;
 }
@@ -23,6 +24,7 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [badges, setBadges] = useState<BadgeState>({
     analytics: false,
+    social: false,
     recipes: false,
     exercises: false,
   });
@@ -70,6 +72,7 @@ export function BadgeProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(stored);
         setBadges(prev => ({
           analytics: parsed.badges?.analytics ?? prev.analytics,
+          social: parsed.badges?.social ?? prev.social,
           recipes: parsed.badges?.recipes ?? prev.recipes,
           exercises: parsed.badges?.exercises ?? prev.exercises,
         }));

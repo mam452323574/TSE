@@ -33,6 +33,7 @@ jest.mock('expo-router', () => ({
 const mockCheckUsernameAvailability = jest.fn();
 const mockUpdateUserProfile = jest.fn();
 const mockCompleteSignUp = jest.fn();
+const mockMarkPostSignupOnboardingPending = jest.fn();
 
 jest.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
@@ -79,11 +80,17 @@ jest.mock('@/services/supabase', () => ({
   },
 }));
 
+jest.mock('@/utils/postSignupOnboarding', () => ({
+  markPostSignupOnboardingPending: (...args: any[]) =>
+    mockMarkPostSignupOnboardingPending(...args),
+}));
+
 describe('UsernameSetupScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCheckUsernameAvailability.mockResolvedValue(true);
     mockCompleteSignUp.mockResolvedValue(undefined);
+    mockMarkPostSignupOnboardingPending.mockResolvedValue(undefined);
     jest.useFakeTimers();
   });
 
@@ -174,7 +181,8 @@ describe('UsernameSetupScreen', () => {
 
     await waitFor(() => {
       expect(mockCompleteSignUp).toHaveBeenCalled();
-      expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
+      expect(mockMarkPostSignupOnboardingPending).toHaveBeenCalledWith('user-123');
+      expect(mockReplace).toHaveBeenCalledWith('/post-signup-onboarding');
     });
   });
 });

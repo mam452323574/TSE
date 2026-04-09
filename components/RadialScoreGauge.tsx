@@ -1,124 +1,188 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { Animated, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { useTheme } from '@/contexts/ThemeContext';
-import { SIZES, SPACING, FONT_WEIGHTS, SHADOWS, BORDER_RADIUS } from '@/constants/theme';
+import { FONT_WEIGHTS, withAlpha } from '@/constants/theme';
+import {
+  RESULT_TEXT_PROPS,
+  getResultLayoutState,
+  getResultSurfaceChrome,
+} from '@/utils/resultLayout';
 
 interface RadialScoreGaugeProps {
-    score: number;
-    maxScore?: number;
-    label: string;
-    color: string;
-    size?: number;
+  score: number;
+  maxScore?: number;
+  label: string;
+  color: string;
+  size?: number;
+  labelMaxLines?: number;
 }
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export const RadialScoreGauge: React.FC<RadialScoreGaugeProps> = ({
-    score,
-    maxScore = 100,
-    label,
-    color,
-    size = 160,
+  score,
+  maxScore = 100,
+  label,
+  color,
+  size,
+  labelMaxLines = 2,
 }) => {
-    const { colors } = useTheme();
-    const animatedValue = useRef(new Animated.Value(0)).current;
+  const { colors, isDark } = useTheme();
+  const { width } = useWindowDimensions();
+  const layout = useMemo(() => getResultLayoutState(width), [width]);
+  const styles = useMemo(() => createStyles(layout), [layout]);
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
-    const strokeWidth = 12;
-    const radius = (size - strokeWidth) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const percentage = Math.min(score / maxScore, 1);
+  const gaugeSize = size ?? layout.scoreGaugeSize;
+  const strokeWidth = layout.isCompact ? 11 : 12;
+  const radius = (gaugeSize - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const percentage = Math.min(Math.max(score / maxScore, 0), 1);
 
-    useEffect(() => {
-        Animated.timing(animatedValue, {
-            toValue: percentage,
-            duration: 1200,
-            useNativeDriver: false,
-        }).start();
-    }, [percentage]);
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: percentage,
+      duration: 1200,
+      useNativeDriver: false,
+    }).start();
+  }, [animatedValue, percentage]);
 
-    const strokeDashoffset = animatedValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [circumference, circumference * (1 - percentage)],
-    });
+  const strokeDashoffset = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [circumference, circumference * (1 - percentage)],
+  });
 
-    return (
-        <View style={[styles.container, { backgroundColor: colors.cardBackground }, SHADOWS.card]}>
-            <Text style={[styles.label, { color: colors.gray }]}>{label}</Text>
+  return (
+    <View
+      testID="radial-score-gauge"
+      style={[
+        styles.container,
+        getResultSurfaceChrome({
+          colors,
+          isDark,
+          kind: 'standard',
+        }),
+      ]}
+    >
+      <View style={styles.labelWrap}>
+        <Text
+          {...RESULT_TEXT_PROPS}
+          testID="radial-score-label"
+          adjustsFontSizeToFit
+          minimumFontScale={0.84}
+          numberOfLines={labelMaxLines}
+          style={[styles.label, { color: colors.gray }]}
+        >
+          {label}
+        </Text>
+      </View>
 
-            <View style={styles.gaugeContainer}>
-                <Svg width={size} height={size} style={styles.svg}>
-                    {/* Background circle */}
-                    <Circle
-                        cx={size / 2}
-                        cy={size / 2}
-                        r={radius}
-                        stroke={colors.lightGray}
-                        strokeWidth={strokeWidth}
-                        fill="transparent"
-                    />
-                    {/* Progress circle */}
-                    <AnimatedCircle
-                        cx={size / 2}
-                        cy={size / 2}
-                        r={radius}
-                        stroke={color}
-                        strokeWidth={strokeWidth}
-                        fill="transparent"
-                        strokeLinecap="round"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        rotation="-90"
-                        origin={`${size / 2}, ${size / 2}`}
-                    />
-                </Svg>
+      <View style={styles.gaugeContainer}>
+        <Svg width={gaugeSize} height={gaugeSize} style={styles.svg}>
+          <Circle
+            cx={gaugeSize / 2}
+            cy={gaugeSize / 2}
+            r={radius}
+            stroke={colors.lightGray}
+            strokeWidth={strokeWidth}
+            fill="transparent"
+          />
+          <AnimatedCircle
+            cx={gaugeSize / 2}
+            cy={gaugeSize / 2}
+            r={radius}
+            stroke={color}
+            strokeWidth={strokeWidth}
+            fill="transparent"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            rotation="-90"
+            origin={`${gaugeSize / 2}, ${gaugeSize / 2}`}
+          />
+        </Svg>
 
-                {/* Score text in center */}
-                <View style={styles.scoreContainer}>
-                    <Text style={[styles.scoreValue, { color }]}>{score}</Text>
-                    <Text style={[styles.scoreMax, { color: colors.gray }]}>/{maxScore}</Text>
-                </View>
-            </View>
+        <View style={styles.scoreContainer}>
+          <Text
+            {...RESULT_TEXT_PROPS}
+            testID="radial-score-value"
+            adjustsFontSizeToFit
+            minimumFontScale={0.82}
+            numberOfLines={1}
+            style={[styles.scoreValue, { color }]}
+          >
+            {score}
+          </Text>
+          <Text
+            {...RESULT_TEXT_PROPS}
+            testID="radial-score-max"
+            adjustsFontSizeToFit
+            minimumFontScale={0.82}
+            numberOfLines={1}
+            style={[styles.scoreMax, { color: colors.gray }]}
+          >
+            /{maxScore}
+          </Text>
         </View>
-    );
+      </View>
+    </View>
+  );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (layout: ReturnType<typeof getResultLayoutState>) =>
+  StyleSheet.create({
     container: {
-        borderRadius: BORDER_RADIUS.xl,
-        padding: SPACING.lg,
-        alignItems: 'center',
+      borderRadius: layout.standardRadius,
+      borderWidth: 1,
+      paddingHorizontal: layout.blockPadding,
+      paddingVertical: layout.blockPadding,
+      alignItems: 'center',
+    },
+    labelWrap: {
+      width: '100%',
+      minHeight: layout.isCompact ? 42 : 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: layout.sectionGap,
     },
     label: {
-        fontSize: SIZES.md,
-        fontWeight: FONT_WEIGHTS.medium,
-        marginBottom: SPACING.md,
-        textAlign: 'center',
+      fontSize: layout.bodyTextFontSize,
+      lineHeight: layout.bodyTextLineHeight,
+      fontWeight: FONT_WEIGHTS.medium,
+      textAlign: 'center',
+      includeFontPadding: false,
     },
     gaugeContainer: {
-        position: 'relative',
-        alignItems: 'center',
-        justifyContent: 'center',
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     svg: {
-        transform: [{ rotate: '0deg' }],
+      transform: [{ rotate: '0deg' }],
     },
     scoreContainer: {
-        position: 'absolute',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        alignSelf: 'center',
+      position: 'absolute',
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      maxWidth: '82%',
+      minWidth: 0,
     },
     scoreValue: {
-        fontSize: 48,
-        fontWeight: FONT_WEIGHTS.bold,
+      fontSize: layout.gaugeValueFontSize,
+      lineHeight: layout.gaugeValueLineHeight,
+      fontWeight: FONT_WEIGHTS.bold,
+      includeFontPadding: false,
     },
     scoreMax: {
-        fontSize: SIZES.lg,
-        fontWeight: FONT_WEIGHTS.medium,
-        marginTop: 16,
+      marginLeft: 4,
+      fontSize: layout.gaugeMaxFontSize,
+      lineHeight: layout.gaugeMaxLineHeight,
+      fontWeight: FONT_WEIGHTS.medium,
+      includeFontPadding: false,
     },
-});
+  });
 
 export default RadialScoreGauge;

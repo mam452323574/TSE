@@ -1,17 +1,25 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react-native';
-import { Alert } from 'react-native';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react-native';
 import ScanPreviewScreen from '@/screens/ScanPreviewScreen';
+import { ApiError } from '@/services/api';
 
 // Mock expo-router
 const mockPush = jest.fn();
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
 const mockUseLocalSearchParams = jest.fn();
 
 jest.mock('expo-router', () => ({
   useRouter: () => ({
     push: mockPush,
     back: mockBack,
+    replace: mockReplace,
   }),
   useLocalSearchParams: () => mockUseLocalSearchParams(),
 }));
@@ -30,7 +38,9 @@ jest.mock('lucide-react-native', () => ({
 jest.mock('expo-blur', () => {
   const { View } = require('react-native');
   return {
-    BlurView: ({ children, style }: any) => <View style={style}>{children}</View>,
+    BlurView: ({ children, style }: any) => (
+      <View style={style}>{children}</View>
+    ),
   };
 });
 
@@ -49,26 +59,66 @@ jest.mock('@/services/api', () => {
   // Create a mock ApiError class inside the factory to avoid hoisting issues
   class MockApiError extends Error {
     type: string;
-    constructor(message: string, type: string) {
+    code?: string;
+    status?: number;
+    requestId?: string;
+    context?: Record<string, unknown>;
+    constructor(
+      message: string,
+      type: string,
+      _originalError?: unknown,
+      context?: Record<string, unknown>,
+      code?: string,
+      status?: number,
+      requestId?: string,
+    ) {
       super(message);
       this.name = 'ApiError';
       this.type = type;
+      this.context = context;
+      this.code = code;
+      this.status = status;
+      this.requestId = requestId;
     }
   }
 
   return {
     ApiService: {
-      createScanWithAnalysis: (...args: any[]) => mockCreateScanWithAnalysis(...args),
+      createScanWithAnalysis: (...args: any[]) =>
+        mockCreateScanWithAnalysis(...args),
     },
     ApiError: MockApiError,
   };
 });
+
+jest.mock('@/utils/observability', () => ({
+  logOperationalError: jest.fn(),
+}));
 
 // Mock BadgeContext
 const mockSetBadge = jest.fn();
 jest.mock('@/contexts/BadgeContext', () => ({
   useBadges: () => ({
     setBadge: mockSetBadge,
+  }),
+}));
+
+const mockIncrementScanCount = jest.fn();
+jest.mock('@/contexts/GamificationContext', () => ({
+  useGamification: () => ({
+    incrementScanCount: mockIncrementScanCount,
+    setScanCount: jest.fn(),
+    resetInMemoryStateOnUserChange: jest.fn(),
+    scanCount: 0,
+    isHydrated: true,
+  }),
+}));
+
+const mockShowAlert = jest.fn();
+jest.mock('@/hooks/useCustomAlert', () => ({
+  useCustomAlert: () => ({
+    showAlert: mockShowAlert,
+    alertElement: null,
   }),
 }));
 
@@ -88,25 +138,26 @@ jest.mock('@/components/Button', () => ({
   Button: ({ title, onPress, disabled }: any) => {
     const { TouchableOpacity, Text } = require('react-native');
     return (
-      <TouchableOpacity onPress={onPress} disabled={disabled} testID="confirm-button">
+      <TouchableOpacity
+        onPress={onPress}
+        disabled={disabled}
+        testID="confirm-button"
+      >
         <Text>{title}</Text>
       </TouchableOpacity>
     );
   },
 }));
 
-// Mock Alert
-const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation((title, message, buttons) => {
-  // Simulate pressing OK button for success alerts
-  if (buttons && buttons[0] && buttons[0].onPress && title === 'Succes') {
-    setTimeout(() => buttons[0].onPress?.(), 10);
-  }
-});
-
 describe('ScanPreviewScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    mockShowAlert.mockClear();
+    mockIncrementScanCount.mockResolvedValue(1);
+    mockPush.mockClear();
+    mockBack.mockClear();
+    mockReplace.mockClear();
     mockUseLocalSearchParams.mockReturnValue({
       imageUri: 'file:///test-image.jpg',
       scanType: 'health',
@@ -160,7 +211,9 @@ describe('ScanPreviewScreen', () => {
 
   describe('confirm action', () => {
     it('shows loading state when confirming', async () => {
-      mockCreateScanWithAnalysis.mockImplementation(() => new Promise(() => { })); // Never resolves
+      mockCreateScanWithAnalysis.mockImplementation(
+        () => new Promise(() => {}),
+      ); // Never resolves
 
       render(<ScanPreviewScreen />);
 
@@ -174,7 +227,14 @@ describe('ScanPreviewScreen', () => {
     it('prevents double-click submission', async () => {
       // Mock a slow API call
       mockCreateScanWithAnalysis.mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve({ scan: { id: 'scan-123' }, analysisSucceeded: true }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({ scan: { id: 'scan-123' }, analysisSucceeded: true }),
+              1000,
+            ),
+          ),
       );
 
       render(<ScanPreviewScreen />);
@@ -195,7 +255,10 @@ describe('ScanPreviewScreen', () => {
     });
 
     it('calls createScanWithAnalysis with correct params', async () => {
-      mockCreateScanWithAnalysis.mockResolvedValue({ scan: { id: 'scan-123' }, analysisSucceeded: true });
+      mockCreateScanWithAnalysis.mockResolvedValue({
+        scan: { id: 'scan-123' },
+        analysisSucceeded: true,
+      });
 
       render(<ScanPreviewScreen />);
 
@@ -205,15 +268,18 @@ describe('ScanPreviewScreen', () => {
         expect(mockCreateScanWithAnalysis).toHaveBeenCalledWith(
           'file:///test-image.jpg',
           'health',
-          'fr'
+          'fr',
         );
       });
     });
 
     it('sets badge after successful scan', async () => {
       mockCreateScanWithAnalysis.mockResolvedValue({
-        scan: { id: 'scan-123', analysis_result: { scan_type: 'face', face_score: 85 } },
-        analysisSucceeded: true
+        scan: {
+          id: 'scan-123',
+          analysis_result: { scan_type: 'face', face_score: 85 },
+        },
+        analysisSucceeded: true,
       });
 
       render(<ScanPreviewScreen />);
@@ -228,14 +294,25 @@ describe('ScanPreviewScreen', () => {
 
       await waitFor(() => {
         expect(mockSetBadge).toHaveBeenCalledWith('analytics');
+        expect(mockIncrementScanCount).toHaveBeenCalledTimes(1);
       });
     });
 
     it('shows error alert when analysis fails', async () => {
+      const providerError = new ApiError(
+        'Scan analysis provider is not configured',
+        'PROVIDER',
+        undefined,
+        { stage: 'analysis' },
+      );
+      providerError.code = 'scan_webhook_not_configured';
+      providerError.status = 503;
+      providerError.requestId = 'req-webhook-missing';
+
       mockCreateScanWithAnalysis.mockResolvedValue({
         scan: { id: 'scan-123' },
         analysisSucceeded: false,
-        analysisError: null
+        analysisError: providerError,
       });
 
       render(<ScanPreviewScreen />);
@@ -254,18 +331,22 @@ describe('ScanPreviewScreen', () => {
       });
 
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalledWith(
-          'Erreur d\'analyse',
-          expect.any(String),
-          expect.any(Array)
+        expect(mockShowAlert).toHaveBeenCalledWith(
+          "Service d'analyse indisponible",
+          "Le fournisseur d'analyse est indisponible ou mal configuré pour ce scan.",
+          expect.any(Array),
         );
       });
+      expect(mockIncrementScanCount).not.toHaveBeenCalled();
     });
 
     it('keeps loading state during success animation', async () => {
       mockCreateScanWithAnalysis.mockResolvedValue({
-        scan: { id: 'scan-123', analysis_result: { scan_type: 'face', face_score: 85 } },
-        analysisSucceeded: true
+        scan: {
+          id: 'scan-123',
+          analysis_result: { scan_type: 'face', face_score: 85 },
+        },
+        analysisSucceeded: true,
       });
 
       render(<ScanPreviewScreen />);
@@ -300,16 +381,12 @@ describe('ScanPreviewScreen', () => {
     });
 
     it('navigates to scan result after successful scan', async () => {
-      const mockReplace = jest.fn();
-      (require('expo-router').useRouter as jest.Mock) = jest.fn(() => ({
-        push: mockPush,
-        back: mockBack,
-        replace: mockReplace,
-      }));
-
       mockCreateScanWithAnalysis.mockResolvedValue({
-        scan: { id: 'scan-123', analysis_result: { scan_type: 'face', face_score: 85 } },
-        analysisSucceeded: true
+        scan: {
+          id: 'scan-123',
+          analysis_result: { scan_type: 'face', face_score: 85 },
+        },
+        analysisSucceeded: true,
       });
 
       render(<ScanPreviewScreen />);
@@ -323,26 +400,85 @@ describe('ScanPreviewScreen', () => {
         expect(mockCreateScanWithAnalysis).toHaveBeenCalled();
       });
 
-      // Advance timers to trigger navigation
+      // Advance timers in two steps so the post-success navigation timeout
+      // is scheduled after the minimum loading and completion delay.
+      await act(async () => {
+        jest.advanceTimersByTime(5500);
+      });
+
+      await waitFor(() => {
+        expect(mockSetBadge).toHaveBeenCalledWith('analytics');
+      });
+
       await act(async () => {
         jest.advanceTimersByTime(1500);
       });
 
-      // The component uses router.replace, not push
-      // This test just verifies the flow completes without error
+      await waitFor(() => {
+        expect(mockReplace).toHaveBeenCalledWith({
+          pathname: '/scan-result',
+          params: {
+            analysisData: JSON.stringify({ scan_type: 'face', face_score: 85 }),
+            imageUri: 'file:///test-image.jpg',
+            scanId: 'scan-123',
+          },
+        });
+      });
     });
   });
 
   describe('error handling', () => {
-    it('shows error alert when scan creation fails', async () => {
-      mockCreateScanWithAnalysis.mockRejectedValue(new Error('Upload failed'));
+    it('shows a timeout-specific alert when analysis times out', async () => {
+      mockCreateScanWithAnalysis.mockRejectedValue(
+        new ApiError('Request timed out', 'TIMEOUT'),
+      );
 
       render(<ScanPreviewScreen />);
 
       fireEvent.press(screen.getByText('Confirmer'));
 
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalledWith('Erreur', 'Upload failed', expect.any(Array));
+        expect(mockShowAlert).toHaveBeenCalledWith(
+          'Analyse trop longue',
+          "L'analyse prend trop de temps. Réessayez dans un instant.",
+          expect.any(Array),
+        );
+      });
+    });
+
+    it('shows a session-specific alert when the auth session is expired', async () => {
+      mockCreateScanWithAnalysis.mockRejectedValue(
+        new ApiError('api_errors.unauthorized', 'AUTH'),
+      );
+
+      render(<ScanPreviewScreen />);
+
+      fireEvent.press(screen.getByText('Confirmer'));
+
+      await waitFor(() => {
+        expect(mockShowAlert).toHaveBeenCalledWith(
+          'Session expirée',
+          'Votre session a expiré. Reconnectez-vous puis réessayez.',
+          expect.any(Array),
+        );
+      });
+    });
+
+    it('shows an upload-specific alert when scan image upload/storage fails', async () => {
+      mockCreateScanWithAnalysis.mockRejectedValue(
+        new ApiError('scan image missing', 'UPLOAD'),
+      );
+
+      render(<ScanPreviewScreen />);
+
+      fireEvent.press(screen.getByText('Confirmer'));
+
+      await waitFor(() => {
+        expect(mockShowAlert).toHaveBeenCalledWith(
+          'Envoi impossible',
+          "L'image du scan n'a pas pu être envoyée ou retrouvée côté stockage.",
+          expect.any(Array),
+        );
       });
     });
 
@@ -354,7 +490,11 @@ describe('ScanPreviewScreen', () => {
       fireEvent.press(screen.getByText('Confirmer'));
 
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalledWith('Erreur', expect.any(String), expect.any(Array));
+        expect(mockShowAlert).toHaveBeenCalledWith(
+          'Erreur',
+          'Erreur',
+          expect.any(Array),
+        );
       });
     });
 
@@ -366,7 +506,7 @@ describe('ScanPreviewScreen', () => {
       fireEvent.press(screen.getByText('Confirmer'));
 
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalled();
+        expect(mockShowAlert).toHaveBeenCalled();
       });
 
       // Button should be back to normal state

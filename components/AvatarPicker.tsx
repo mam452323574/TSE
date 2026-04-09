@@ -1,21 +1,40 @@
-import { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  InteractionManager,
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera, Upload, User } from 'lucide-react-native';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as FileSystem from 'expo-file-system/legacy';
+import { decode as decodeBase64 } from 'base64-arraybuffer';
+import { Camera } from 'lucide-react-native';
 import { supabase } from '@/services/supabase';
+import { ProfileAvatar } from '@/components/ProfileAvatar';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SIZES, SPACING, BORDER_RADIUS } from '@/constants/theme';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { buildCanonicalAvatarPath, clearAvatarUrlCache } from '@/services/avatar';
 
 interface AvatarPickerProps {
   userId: string;
   currentAvatarUrl?: string | null;
-  onAvatarSelected: (url: string) => void;
+  onAvatarSelected: (avatarReference: string) => void;
   size?: number;
 }
 
-const DEFAULT_AVATAR = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200';
+const PICKER_LAUNCH_DELAY_MS = 60;
+const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
+
+function hasMediaLibraryAccess(permission: ImagePicker.MediaLibraryPermissionResponse) {
+  return permission.granted || permission.accessPrivileges === 'limited';
+}
 
 export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size = 120 }: AvatarPickerProps) {
   const [uploading, setUploading] = useState(false);
@@ -25,55 +44,186 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
   const { showAlert, alertElement } = useCustomAlert();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
-  const displayAvatar = localUri || currentAvatarUrl || DEFAULT_AVATAR;
-
-  const requestPermissions = async () => {
-    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    return cameraStatus === 'granted' && libraryStatus === 'granted';
+  const openDeviceSettings = async () => {
+    try {
+      await Linking.openSettings();
+    } catch (error) {
+      console.error('Error opening device settings:', error);
+    }
   };
 
-  const compressImage = async (uri: string): Promise<string> => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
+  const showPermissionAlert = (
+    message: string,
+    canAskAgain: boolean | undefined,
+  ) => {
+    const shouldShowSettings = Platform.OS !== 'web' && canAskAgain === false;
 
-    if (blob.size > 5 * 1024 * 1024) {
+    showAlert(
+      t('components.avatar.perm_title'),
+      message,
+      shouldShowSettings
+        ? [
+            {
+              text: t('components.avatar.open_settings'),
+              onPress: () => {
+                void openDeviceSettings();
+              },
+            },
+            {
+              text: t('common.cancel'),
+              style: 'cancel',
+            },
+          ]
+        : [{ text: t('common.ok') }],
+    );
+  };
+
+  const showPickerError = (error: unknown, isCamera: boolean) => {
+    console.error(
+      isCamera
+        ? 'Error launching avatar camera picker:'
+        : 'Error launching avatar gallery picker:',
+      error,
+    );
+
+    const message =
+      error instanceof Error &&
+      isCamera &&
+      /(camera|simulator|available|device)/i.test(error.message)
+        ? t('components.avatar.error_camera_unavailable')
+        : t('components.avatar.error_picker_launch');
+
+    showAlert(t('components.avatar.error_title'), message, [
+      { text: t('common.ok') },
+    ]);
+  };
+
+  const runPickerAction = (action: () => Promise<void>) => {
+    if (Platform.OS === 'web') {
+      void action();
+      return;
+    }
+
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        void action();
+      }, PICKER_LAUNCH_DELAY_MS);
+    });
+  };
+
+  const ensureMediaLibraryPermission = async () => {
+    if (Platform.OS === 'web') {
+      return { granted: true, canAskAgain: true };
+    }
+
+    const currentPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
+    if (hasMediaLibraryAccess(currentPermission)) {
+      return {
+        granted: true,
+        canAskAgain: currentPermission.canAskAgain,
+      };
+    }
+
+    const requestedPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    return {
+      granted: hasMediaLibraryAccess(requestedPermission),
+      canAskAgain: requestedPermission.canAskAgain,
+    };
+  };
+
+  const ensureCameraPermission = async () => {
+    if (Platform.OS === 'web') {
+      return { granted: true, canAskAgain: true };
+    }
+
+    const currentPermission = await ImagePicker.getCameraPermissionsAsync();
+    if (currentPermission.granted) {
+      return {
+        granted: true,
+        canAskAgain: currentPermission.canAskAgain,
+      };
+    }
+
+    const requestedPermission = await ImagePicker.requestCameraPermissionsAsync();
+    return {
+      granted: requestedPermission.granted,
+      canAskAgain: requestedPermission.canAskAgain,
+    };
+  };
+
+  const prepareAvatar = async (uri: string) => {
+    const manipulatedImage = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width: 512, height: 512 } }],
+      {
+        compress: 0.82,
+        format: ImageManipulator.SaveFormat.JPEG,
+      },
+    );
+
+    if (Platform.OS === 'web') {
+      const response = await fetch(manipulatedImage.uri);
+      const blob = await response.blob();
+
+      if (blob.size > MAX_AVATAR_SIZE_BYTES) {
+        throw new Error(t('components.avatar.error_size'));
+      }
+
+      return {
+        uri: manipulatedImage.uri,
+        arrayBuffer: await blob.arrayBuffer(),
+      };
+    }
+
+    const fileInfo = await FileSystem.getInfoAsync(manipulatedImage.uri);
+
+    if (!fileInfo.exists) {
+      throw new Error(t('components.avatar.error_download'));
+    }
+
+    if (
+      typeof fileInfo.size === 'number' &&
+      fileInfo.size > MAX_AVATAR_SIZE_BYTES
+    ) {
       throw new Error(t('components.avatar.error_size'));
     }
 
-    return uri;
+    const base64Payload = await FileSystem.readAsStringAsync(
+      manipulatedImage.uri,
+      {
+        encoding: FileSystem.EncodingType.Base64,
+      },
+    );
+
+    if (!base64Payload) {
+      throw new Error(t('components.avatar.error_download'));
+    }
+
+    return {
+      uri: manipulatedImage.uri,
+      arrayBuffer: decodeBase64(base64Payload),
+    };
   };
 
   const uploadAvatar = async (uri: string) => {
     try {
       setUploading(true);
 
-      const compressedUri = await compressImage(uri);
-
-      const response = await fetch(compressedUri);
-      const blob = await response.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-
-      const fileExt = uri.split('.').pop()?.toLowerCase() || 'jpg';
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${userId}/${fileName}`;
+      const preparedAvatar = await prepareAvatar(uri);
+      const filePath = buildCanonicalAvatarPath(userId, 'jpg');
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, arrayBuffer, {
-          contentType: blob.type || 'image/jpeg',
-          upsert: false,
+        .upload(filePath, preparedAvatar.arrayBuffer, {
+          contentType: 'image/jpeg',
+          upsert: true,
         });
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      setLocalUri(publicUrl);
-      onAvatarSelected(publicUrl);
+      clearAvatarUrlCache(filePath);
+      setLocalUri(preparedAvatar.uri);
+      onAvatarSelected(filePath);
     } catch (error) {
       console.error('Error uploading avatar:', error);
       showAlert(t('components.avatar.error_title'), error instanceof Error ? error.message : t('components.avatar.error_download'));
@@ -83,39 +233,55 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
   };
 
   const pickImageFromLibrary = async () => {
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) {
-      showAlert(t('components.avatar.perm_title'), t('components.avatar.perm_gallery'));
-      return;
-    }
+    try {
+      const permission = await ensureMediaLibraryPermission();
+      if (!permission.granted) {
+        showPermissionAlert(
+          t('components.avatar.perm_gallery'),
+          permission.canAskAgain,
+        );
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
 
-    if (!result.canceled && result.assets[0]) {
-      await uploadAvatar(result.assets[0].uri);
+      const selectedAsset = result.canceled ? null : result.assets?.[0];
+      if (selectedAsset?.uri) {
+        await uploadAvatar(selectedAsset.uri);
+      }
+    } catch (error) {
+      showPickerError(error, false);
     }
   };
 
   const takePhoto = async () => {
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) {
-      showAlert(t('components.avatar.perm_title'), t('components.avatar.perm_camera'));
-      return;
-    }
+    try {
+      const permission = await ensureCameraPermission();
+      if (!permission.granted) {
+        showPermissionAlert(
+          t('components.avatar.perm_camera'),
+          permission.canAskAgain,
+        );
+        return;
+      }
 
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
 
-    if (!result.canceled && result.assets[0]) {
-      await uploadAvatar(result.assets[0].uri);
+      const capturedAsset = result.canceled ? null : result.assets?.[0];
+      if (capturedAsset?.uri) {
+        await uploadAvatar(capturedAsset.uri);
+      }
+    } catch (error) {
+      showPickerError(error, true);
     }
   };
 
@@ -126,11 +292,11 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
       [
         {
           text: t('components.avatar.take_photo'),
-          onPress: takePhoto,
+          onPress: () => runPickerAction(takePhoto),
         },
         {
           text: t('components.avatar.choose_gallery'),
-          onPress: pickImageFromLibrary,
+          onPress: () => runPickerAction(pickImageFromLibrary),
         },
         {
           text: t('common.cancel'),
@@ -147,10 +313,14 @@ export function AvatarPicker({ userId, currentAvatarUrl, onAvatarSelected, size 
         style={[styles.avatarContainer, { width: size, height: size }]}
         onPress={showOptions}
         disabled={uploading}
+        testID="avatar-picker-trigger"
       >
-        <Image
-          source={{ uri: displayAvatar }}
-          style={[styles.avatar, { width: size, height: size }]}
+        <ProfileAvatar
+          avatarUrl={localUri || currentAvatarUrl}
+          username={t('common.unknown_user')}
+          size={size}
+          style={styles.avatar}
+          testID="avatar-picker-image"
         />
         {uploading && (
           <View style={styles.loadingOverlay}>

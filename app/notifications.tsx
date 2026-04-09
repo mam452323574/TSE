@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ChevronLeft, CheckCheck } from 'lucide-react-native';
 import { useQueryClient } from '@tanstack/react-query';
@@ -20,7 +21,8 @@ export default function NotificationsScreen() {
   const { user } = useAuth();
   const { colors } = useTheme();
   const { t } = useLanguage();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
   const { markNotificationAsRead, notificationCount: unreadCount } = useNotificationContext();
   const [filter, setFilter] = useState<FilterType>('all');
   const [markingAllAsRead, setMarkingAllAsRead] = useState(false);
@@ -176,7 +178,7 @@ export default function NotificationsScreen() {
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, insets: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -185,7 +187,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: SPACING.xxxl,
+    paddingTop: insets.top + SPACING.sm,
     paddingBottom: SPACING.md,
     paddingHorizontal: SPACING.page,
     backgroundColor: colors.cardBackground,
@@ -240,6 +242,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   listContent: {
     padding: SPACING.page,
+    paddingBottom: insets.bottom + SPACING.xl,
   },
   loadingContainer: {
     flex: 1,

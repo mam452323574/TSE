@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Heart, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
@@ -10,6 +10,8 @@ import { OAuthButton } from '@/components/OAuthButton';
 import { COLORS, SIZES, SPACING, BORDER_RADIUS } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { useStartupDiagnostics } from '@/contexts/StartupDiagnosticsContext';
+import { AppScreen } from '@/components/AppScreen';
 
 // TODO: Activer quand les API OAuth seront configurées
 const SHOW_OAUTH_BUTTONS = false;
@@ -19,6 +21,7 @@ export default function LoginScreen() {
   const { signIn, signInWithOAuth, sendVerificationEmail } = useAuth();
   const { colors } = useTheme();
   const { t } = useLanguage();
+  const { markStartup, settleStartup } = useStartupDiagnostics();
 
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
@@ -28,6 +31,11 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<'google' | 'apple' | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    markStartup('login-rendered');
+    settleStartup('login-rendered');
+  }, [markStartup, settleStartup]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -77,116 +85,111 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <AppScreen scroll keyboard style={styles.container} topInset={false}>
       <View style={styles.languageContainer}>
         <LanguageSelector />
       </View>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Heart color={colors.primary} size={48} fill={colors.primary} />
-            <Text style={styles.title}>{t('auth.login_title')}</Text>
-            <Text style={styles.subtitle}>{t('auth.login_subtitle')}</Text>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Heart color={colors.primary} size={48} fill={colors.primary} />
+          <Text style={styles.title}>{t('auth.login_title')}</Text>
+          <Text style={styles.subtitle}>{t('auth.login_subtitle')}</Text>
+        </View>
+
+        {SHOW_OAUTH_BUTTONS && (
+          <>
+            <View style={styles.oauthSection}>
+              <OAuthButton
+                provider="google"
+                onPress={() => handleOAuthLogin('google')}
+                loading={oauthLoading === 'google'}
+                disabled={oauthLoading !== null || loading}
+              />
+              <View style={{ height: SPACING.md }} />
+              <OAuthButton
+                provider="apple"
+                onPress={() => handleOAuthLogin('apple')}
+                loading={oauthLoading === 'apple'}
+                disabled={oauthLoading !== null || loading}
+              />
+            </View>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>{t('auth.or_divider')}</Text>
+              <View style={styles.dividerLine} />
+            </View>
+          </>
+        )}
+
+        <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t('auth.email_label')}</Text>
+            <View style={styles.inputWithIcon}>
+              <Mail color={colors.gray} size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.inputWithPadding}
+                placeholder={t('auth.email_placeholder')}
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                autoComplete="email"
+                placeholderTextColor={colors.gray}
+              />
+            </View>
           </View>
 
-          {SHOW_OAUTH_BUTTONS && (
-            <>
-              <View style={styles.oauthSection}>
-                <OAuthButton
-                  provider="google"
-                  onPress={() => handleOAuthLogin('google')}
-                  loading={oauthLoading === 'google'}
-                  disabled={oauthLoading !== null || loading}
-                />
-                <View style={{ height: SPACING.md }} />
-                <OAuthButton
-                  provider="apple"
-                  onPress={() => handleOAuthLogin('apple')}
-                  loading={oauthLoading === 'apple'}
-                  disabled={oauthLoading !== null || loading}
-                />
-              </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t('common.password')}</Text>
+            <View style={styles.inputWithIcon}>
+              <Lock color={colors.gray} size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.inputWithPadding}
+                placeholder={t('auth.password_placeholder')}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoComplete="password"
+                placeholderTextColor={colors.gray}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIcon}
+              >
+                {showPassword ? (
+                  <EyeOff color={colors.gray} size={20} />
+                ) : (
+                  <Eye color={colors.gray} size={20} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
 
-              <View style={styles.divider}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>{t('auth.or_divider')}</Text>
-                <View style={styles.dividerLine} />
-              </View>
-            </>
+          {error && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
           )}
 
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('auth.email_label')}</Text>
-              <View style={styles.inputWithIcon}>
-                <Mail color={colors.gray} size={20} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.inputWithPadding}
-                  placeholder={t('auth.email_placeholder')}
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  autoComplete="email"
-                  placeholderTextColor={colors.gray}
-                />
-              </View>
-            </View>
+          <Button
+            title={t('auth.login_btn')}
+            onPress={handleLogin}
+            loading={loading}
+          />
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('common.password')}</Text>
-              <View style={styles.inputWithIcon}>
-                <Lock color={colors.gray} size={20} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.inputWithPadding}
-                  placeholder={t('auth.password_placeholder')}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  autoComplete="password"
-                  placeholderTextColor={colors.gray}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
-                  {showPassword ? (
-                    <EyeOff color={colors.gray} size={20} />
-                  ) : (
-                    <Eye color={colors.gray} size={20} />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {error && (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{error}</Text>
-              </View>
-            )}
-
-            <Button
-              title={t('auth.login_btn')}
-              onPress={handleLogin}
-              loading={loading}
-            />
-
-            <TouchableOpacity
-              style={styles.signupContainer}
-              onPress={() => router.push('/signup')}
-            >
-              <Text style={styles.signupText}>
-                {t('auth.no_account')}{' '}
-                <Text style={styles.signupLink}>{t('auth.signup_link')}</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.signupContainer}
+            onPress={() => router.push('/signup')}
+          >
+            <Text style={styles.signupText}>
+              {t('auth.no_account')}{' '}
+              <Text style={styles.signupLink}>{t('auth.signup_link')}</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </AppScreen>
   );
 }
 
@@ -205,11 +208,11 @@ const createStyles = (colors: any, insets: any) => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: SPACING.lg,
-    paddingTop: SPACING.xl,
+    paddingTop: insets.top + SPACING.xl,
   },
   languageContainer: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? insets.top + SPACING.sm : SPACING.xl,
+    top: insets.top + SPACING.sm,
     right: SPACING.lg,
     zIndex: 10,
   },

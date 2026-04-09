@@ -15,6 +15,20 @@ import {
   NOTIFICATIONS_QUERY_KEY,
   usePremiumFeatures,
   PREMIUM_FEATURES_QUERY_KEY,
+  usePremiumPotential,
+  PREMIUM_POTENTIAL_QUERY_KEY,
+  useFeatureFlags,
+  FEATURE_FLAGS_QUERY_KEY,
+  useSocialFeed,
+  SOCIAL_FEED_QUERY_KEY,
+  useSocialComments,
+  SOCIAL_COMMENTS_QUERY_KEY,
+  useSocialMutations,
+  useCoachEntries,
+  COACH_ENTRIES_QUERY_KEY,
+  useGrowthExperience,
+  GROWTH_EXPERIENCE_QUERY_KEY,
+  useCoachGeneration,
 } from '@/hooks/queries';
 
 describe('hooks/queries/index', () => {
@@ -91,5 +105,75 @@ describe('hooks/queries/index', () => {
   it('exports PREMIUM_FEATURES_QUERY_KEY', () => {
     expect(PREMIUM_FEATURES_QUERY_KEY).toBeDefined();
     expect(PREMIUM_FEATURES_QUERY_KEY).toEqual(['premiumFeatures']);
+  });
+
+  it('exports usePremiumPotential hook', () => {
+    expect(usePremiumPotential).toBeDefined();
+    expect(typeof usePremiumPotential).toBe('function');
+  });
+
+  it('exports PREMIUM_POTENTIAL_QUERY_KEY', () => {
+    expect(PREMIUM_POTENTIAL_QUERY_KEY).toBeDefined();
+    expect(typeof PREMIUM_POTENTIAL_QUERY_KEY).toBe('function');
+  });
+
+  it('exports useFeatureFlags hook', () => {
+    expect(useFeatureFlags).toBeDefined();
+    expect(typeof useFeatureFlags).toBe('function');
+  });
+
+  it('exports FEATURE_FLAGS_QUERY_KEY', () => {
+    expect(FEATURE_FLAGS_QUERY_KEY).toBeDefined();
+    expect(FEATURE_FLAGS_QUERY_KEY).toEqual(['appConfig', 'featureFlags']);
+  });
+
+  it('exports useSocialFeed hook', () => {
+    expect(useSocialFeed).toBeDefined();
+    expect(typeof useSocialFeed).toBe('function');
+  });
+
+  it('exports SOCIAL_FEED_QUERY_KEY', () => {
+    expect(SOCIAL_FEED_QUERY_KEY).toBeDefined();
+    expect(typeof SOCIAL_FEED_QUERY_KEY).toBe('function');
+  });
+
+  it('exports useSocialComments hook', () => {
+    expect(useSocialComments).toBeDefined();
+    expect(typeof useSocialComments).toBe('function');
+  });
+
+  it('exports useSocialMutations hook', () => {
+    expect(useSocialMutations).toBeDefined();
+    expect(typeof useSocialMutations).toBe('function');
+  });
+
+  it('exports SOCIAL_COMMENTS_QUERY_KEY', () => {
+    expect(SOCIAL_COMMENTS_QUERY_KEY).toBeDefined();
+    expect(typeof SOCIAL_COMMENTS_QUERY_KEY).toBe('function');
+  });
+
+  it('exports useCoachEntries hook', () => {
+    expect(useCoachEntries).toBeDefined();
+    expect(typeof useCoachEntries).toBe('function');
+  });
+
+  it('exports COACH_ENTRIES_QUERY_KEY', () => {
+    expect(COACH_ENTRIES_QUERY_KEY).toBeDefined();
+    expect(COACH_ENTRIES_QUERY_KEY).toEqual(['coachEntries']);
+  });
+
+  it('exports useGrowthExperience hook', () => {
+    expect(useGrowthExperience).toBeDefined();
+    expect(typeof useGrowthExperience).toBe('function');
+  });
+
+  it('exports GROWTH_EXPERIENCE_QUERY_KEY', () => {
+    expect(GROWTH_EXPERIENCE_QUERY_KEY).toBeDefined();
+    expect(typeof GROWTH_EXPERIENCE_QUERY_KEY).toBe('function');
+  });
+
+  it('exports useCoachGeneration hook', () => {
+    expect(useCoachGeneration).toBeDefined();
+    expect(typeof useCoachGeneration).toBe('function');
   });
 });
