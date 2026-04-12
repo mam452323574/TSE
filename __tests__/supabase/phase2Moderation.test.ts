@@ -50,40 +50,21 @@ describe('phase2 moderation helpers', () => {
     expect(
       resolveSocialPublishModerationResult({
         moderationEnabled: false,
-        webhookConfigured: false,
-        missingWebhookCode: 'unused',
-        missingWebhookMessage: 'unused',
       }),
     ).toEqual({
       moderation_state: 'approved',
       published: true,
-      shouldQueueWebhook: false,
     });
   });
 
-  it('keeps social publishing pending only when moderation is enabled and configured', () => {
+  it('keeps social publishing pending when moderation is enabled', () => {
     expect(
       resolveSocialPublishModerationResult({
         moderationEnabled: true,
-        webhookConfigured: true,
-        missingWebhookCode: 'unused',
-        missingWebhookMessage: 'unused',
       }),
     ).toEqual({
       moderation_state: 'pending',
       published: false,
-      shouldQueueWebhook: true,
     });
-  });
-
-  it('fails fast when moderation is enabled but the webhook env is missing', () => {
-    expect(() =>
-      resolveSocialPublishModerationResult({
-        moderationEnabled: true,
-        webhookConfigured: false,
-        missingWebhookCode: 'social_moderation_webhook_not_configured',
-        missingWebhookMessage: 'Social post moderation provider is not configured',
-      }),
-    ).toThrow('Social post moderation provider is not configured');
   });
 });

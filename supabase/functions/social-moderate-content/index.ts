@@ -7,7 +7,13 @@ import {
   createRequestId,
   logPhase2Error,
 } from '../_shared/phase2Observability.ts';
-import { resolveModerationStateForAction } from '../_shared/phase2Moderation.ts';
+import {
+  applySocialModerationDecisionToTarget,
+  createSocialModerationEvent,
+  resolveModerationStateForAction,
+  resolveSocialReportWorkflowStatusForDecision,
+  updateLinkedSocialReportsForModerationDecision,
+} from '../_shared/phase2Moderation.ts';
 import { PHASE2_SOCIAL_REQUEST_MAX_BYTES, readJsonBody } from '../_shared/phase2Utils.ts';
 import type {
   Phase2ModerationState,
@@ -18,12 +24,6 @@ function requirePostMethod(req: Request) {
   if (req.method !== 'POST') {
     throw new Phase2HttpError(405, 'method_not_allowed', 'Method not allowed');
   }
-}
-
-function buildTargetScope(query: any, targetType: 'post' | 'comment', targetId: string) {
-  return targetType === 'post'
-    ? query.eq('target_post_id', targetId)
-    : query.eq('target_comment_id', targetId);
 }
 
 Deno.serve(async (req: Request) => {
@@ -81,106 +81,66 @@ Deno.serve(async (req: Request) => {
         requestBody.action === 'approve' || requestBody.action === 'restore'
           ? null
           : requestBody.reason_code ?? null;
-
-      const { data: updatedTarget, error: updateTargetError } = await supabase
-        .from(targetTable)
-        .update({
-          moderation_state: nextState,
-          moderation_reason: nextReason,
-          moderation_provider: 'admin',
-          moderation_summary_json: {
+      const updatedTarget = await applySocialModerationDecisionToTarget(
+        supabase,
+        {
+          targetType: requestBody.target_type,
+          targetId,
+          nextState: nextState ?? previousState,
+          reasonCode: nextReason,
+          provider: 'admin',
+          summary: {
             moderated_by: user.id,
             moderation_action: requestBody.action,
             moderation_note: requestBody.note ?? null,
             moderated_at: new Date().toISOString(),
+            source: 'social_moderate_content',
           },
-        })
-        .eq('id', targetId)
-        .select('id, moderation_state')
-        .single();
+        },
+      );
 
-      if (updateTargetError || !updatedTarget) {
-        throw new Phase2HttpError(
-          500,
-          'moderation_target_update_failed',
-          'Failed to update the moderation target',
-        );
-      }
-
-      appliedState =
-        typeof updatedTarget.moderation_state === 'string'
-          ? (updatedTarget.moderation_state as Phase2ModerationState)
-          : nextState;
+      appliedState = updatedTarget.moderation_state;
     }
 
-    let reportUpdateQuery = supabase
-      .from('social_reports')
-      .update({
-        workflow_status:
-          requestBody.action === 'dismiss_reports' ? 'dismissed' : 'resolved',
-        moderation_state: nextState ?? previousState,
-        moderation_reason: requestBody.reason_code ?? null,
-        moderation_provider: 'admin',
-        reviewed_by: user.id,
-        reviewed_at: new Date().toISOString(),
-        resolution_action: requestBody.action,
-        resolution_note: requestBody.note ?? null,
-      })
-      .eq('target_type', requestBody.target_type);
-
-    reportUpdateQuery = buildTargetScope(
-      reportUpdateQuery,
-      requestBody.target_type,
-      targetId,
+    const linkedReportIds = await updateLinkedSocialReportsForModerationDecision(
+      supabase,
+      {
+        targetType: requestBody.target_type,
+        targetId,
+        workflowStatus: resolveSocialReportWorkflowStatusForDecision({
+          action: requestBody.action,
+          nextState: appliedState,
+        }),
+        moderationState: appliedState ?? previousState,
+        reasonCode: requestBody.reason_code ?? null,
+        provider: 'admin',
+        reviewedBy: user.id,
+        resolutionAction: requestBody.action,
+        resolutionNote: requestBody.note ?? null,
+        reportIds: requestBody.report_ids,
+      },
     );
 
-    if (requestBody.report_ids && requestBody.report_ids.length > 0) {
-      reportUpdateQuery = reportUpdateQuery.in('id', requestBody.report_ids);
-    }
-
-    const { data: updatedReports, error: updatedReportsError } = await reportUpdateQuery
-      .select('id');
-
-    if (updatedReportsError) {
-      throw new Phase2HttpError(
-        500,
-        'moderation_report_update_failed',
-        'Failed to update linked reports',
-      );
-    }
-
-    const linkedReportIds = (Array.isArray(updatedReports) ? updatedReports : [])
-      .map((report) => report.id)
-      .filter((reportId): reportId is string => typeof reportId === 'string' && reportId.length > 0);
-
-    const { data: moderationEvent, error: moderationEventError } = await supabase
-      .from('social_moderation_events')
-      .insert({
-        target_type: requestBody.target_type,
-        target_post_id: requestBody.target_type === 'post' ? targetId : null,
-        target_comment_id: requestBody.target_type === 'comment' ? targetId : null,
+    const moderationEventId = await createSocialModerationEvent(supabase, {
+      targetType: requestBody.target_type,
+      targetId,
+      actor: {
+        actor_type: 'admin',
         actor_id: user.id,
-        action: requestBody.action,
-        previous_moderation_state: previousState,
-        next_moderation_state: appliedState,
-        reason_code: requestBody.reason_code ?? null,
-        note: requestBody.note ?? null,
-        linked_report_ids: linkedReportIds,
-        metadata_json: {
-          target_author_id: existingTarget.author_id ?? null,
-          affected_reports: linkedReportIds.length,
-        },
-      })
-      .select('id')
-      .single();
-
-    if (moderationEventError || !moderationEvent) {
-      throw new Phase2HttpError(
-        500,
-        'moderation_audit_create_failed',
-        'Failed to create moderation audit event',
-      );
-    }
+        actor_label: null,
+      },
+      action: requestBody.action,
+      previousState,
+      nextState: appliedState,
+      reasonCode: requestBody.reason_code ?? null,
+      note: requestBody.note ?? null,
+      linkedReportIds,
+      metadata: {
+        target_author_id: existingTarget.author_id ?? null,
+        affected_reports: linkedReportIds.length,
+        target_table: targetTable,
+      },
+    });
 
     const responseBody: SocialModerateContentResponse = {
       success: true,
@@ -189,7 +149,7 @@ Deno.serve(async (req: Request) => {
       action: requestBody.action,
       moderation_state: appliedState,
       affected_reports: linkedReportIds.length,
-      event_id: moderationEvent.id,
+      event_id: moderationEventId,
     };
 
     return jsonResponse(req, responseBody);

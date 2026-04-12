@@ -36,15 +36,15 @@ $functions = @(
   'cleanup-orphan-user'
 )
 
-if (-not (Get-Command supabase -ErrorAction SilentlyContinue)) {
-  throw 'Supabase CLI not found in PATH. Install it and run "supabase login" first.'
+if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
+  throw 'npx not found in PATH. Install Node.js first.'
 }
 
 Write-Host 'Deploying verified active Supabase Edge Functions...'
 
 foreach ($functionName in $functions) {
   Write-Host "-> $functionName"
-  & supabase functions deploy $functionName --no-verify-jwt
+  & npx.cmd supabase functions deploy $functionName --no-verify-jwt
 
   if ($LASTEXITCODE -ne 0) {
     throw "Failed to deploy function: $functionName"

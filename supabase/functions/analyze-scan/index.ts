@@ -1,6 +1,5 @@
 import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 import { createServiceRoleClient, requireAuthenticatedUser } from '../_shared/phase2Auth.ts';
-import { requireWebhookUrl } from '../_shared/phase2Env.ts';
 import { Phase2HttpError, toPhase2ErrorPayload } from '../_shared/phase2Errors.ts';
 import {
   createRequestId,
@@ -8,6 +7,7 @@ import {
   summarizeWebhookResult,
 } from '../_shared/phase2Observability.ts';
 import { postWebhookJson } from '../_shared/phase2Webhook.ts';
+import { selectScanWebhookEndpoint } from '../_shared/scanWebhookPool.ts';
 import {
   isPendingScanRollback,
   rollbackScanCharge,
@@ -39,18 +39,6 @@ function readScanType(value: unknown): SupportedScanType {
   }
 
   throw new Phase2HttpError(400, 'invalid_scan_type', 'scan_type is invalid');
-}
-
-function resolveScanWebhookUrl(scanType: SupportedScanType) {
-  const defaultWebhookUrl = requireWebhookUrl('N8N_SCAN_ANALYZE_WEBHOOK_URL', {
-    code: 'scan_webhook_not_configured',
-    message: 'Scan analysis provider is not configured',
-  });
-  const superWebhookUrl =
-    Deno.env.get('N8N_SCAN_ANALYZE_SUPER_WEBHOOK_URL')?.trim() ||
-    defaultWebhookUrl;
-
-  return scanType === 'super' ? superWebhookUrl : defaultWebhookUrl;
 }
 
 Deno.serve(async (req: Request) => {
@@ -172,8 +160,13 @@ Deno.serve(async (req: Request) => {
     }
 
     const imageBase64 = arrayBufferToBase64(await scanImage.arrayBuffer());
+    const webhookEndpoint = await selectScanWebhookEndpoint({
+      scanId: scanRow.id,
+      scanType: requestedScanType,
+      userId: user.id,
+    });
     const webhookResult = await postWebhookJson(
-      resolveScanWebhookUrl(requestedScanType),
+      webhookEndpoint.url,
       {
         scanId: scanRow.id,
         userId: user.id,

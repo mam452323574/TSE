@@ -5,6 +5,7 @@ import type {
   SocialCreateCommentRequest,
   SocialCreatePostRequest,
   SocialModerateContentRequest,
+  SocialProcessModerationQueueRequest,
   SocialRecordImpressionsRequest,
   SocialReportContentRequest,
   SocialSetReactionRequest,
@@ -52,6 +53,7 @@ const ALLOWED_MODERATION_ACTIONS = new Set([
   'reject',
   'dismiss_reports',
 ]);
+const ALLOWED_MODERATION_QUEUE_CONTENT_TYPES = new Set(['all', 'post', 'comment']);
 
 function readRequiredTrimmedString(value: unknown, fieldName: string) {
   const parsedValue = readOptionalString(value);
@@ -523,6 +525,61 @@ export function parseSocialModerateContentRequest(
       maxLength: PHASE2_SOCIAL_MODERATION_NOTE_MAX_LENGTH,
     }),
     report_ids: reportIds && reportIds.length > 0 ? Array.from(new Set(reportIds)) : undefined,
+  };
+}
+
+const SOCIAL_PROCESS_MODERATION_QUEUE_ALLOWED_KEYS = [
+  'limit',
+  'content_type',
+  'stale_after_minutes',
+  'dry_run',
+] as const;
+
+export function parseSocialProcessModerationQueueRequest(
+  payload: unknown,
+): Required<SocialProcessModerationQueueRequest> {
+  if (!isRecord(payload)) {
+    throw new Phase2HttpError(400, 'invalid_payload', 'Request body must be an object');
+  }
+
+  assertNoUnknownKeys(payload, SOCIAL_PROCESS_MODERATION_QUEUE_ALLOWED_KEYS);
+
+  const limit = readOptionalNumber(payload.limit) ?? 20;
+  if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
+    throw new Phase2HttpError(
+      400,
+      'invalid_limit',
+      'limit must be an integer between 1 and 50',
+    );
+  }
+
+  const contentType = readOptionalString(payload.content_type) ?? 'all';
+  if (!ALLOWED_MODERATION_QUEUE_CONTENT_TYPES.has(contentType)) {
+    throw new Phase2HttpError(
+      400,
+      'invalid_content_type',
+      'content_type must be all, post, or comment',
+    );
+  }
+
+  const staleAfterMinutes = readOptionalNumber(payload.stale_after_minutes) ?? 15;
+  if (
+    !Number.isInteger(staleAfterMinutes) ||
+    staleAfterMinutes < 1 ||
+    staleAfterMinutes > 24 * 60
+  ) {
+    throw new Phase2HttpError(
+      400,
+      'invalid_stale_after_minutes',
+      'stale_after_minutes must be an integer between 1 and 1440',
+    );
+  }
+
+  return {
+    limit,
+    content_type: contentType as Required<SocialProcessModerationQueueRequest>['content_type'],
+    stale_after_minutes: staleAfterMinutes,
+    dry_run: readOptionalBoolean(payload.dry_run) ?? false,
   };
 }
 

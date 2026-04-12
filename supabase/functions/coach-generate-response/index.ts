@@ -1,6 +1,7 @@
 import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 import {
-  requireCoachGenerateWebhookUrl,
+  postCoachGenerateWebhook,
+  requireCoachGenerateWebhookEndpoints,
 } from '../_shared/coachProvider.ts';
 import { createServiceRoleClient, requireAuthenticatedUser } from '../_shared/phase2Auth.ts';
 import { loadPhase2FeatureFlags, requireFeatureEnabled } from '../_shared/phase2Config.ts';
@@ -17,7 +18,6 @@ import {
   summarizeProviderPayload,
   summarizeWebhookResult,
 } from '../_shared/phase2Observability.ts';
-import { postWebhookJson } from '../_shared/phase2Webhook.ts';
 import { buildNormalizedPayloadHash, isRecord, readJsonBody, readOptionalString } from '../_shared/phase2Utils.ts';
 import type { CoachGenerateResponse, Phase2CoachEntryStatus } from '../_shared/phase2Types.ts';
 import {
@@ -246,29 +246,57 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const webhookUrl = await requireCoachGenerateWebhookUrl(
+    const webhookEndpoints = await requireCoachGenerateWebhookEndpoints(
       supabase,
       pendingEntry.id,
     );
+    const webhookPayload = {
+      entry_id: pendingEntry.id,
+      user_id: user.id,
+      cache_key: cacheKey,
+      input_hash: inputHash,
+      persona_key: requestBody.persona_key,
+      locale: requestBody.locale ?? null,
+      persona: {
+        key: persona.key,
+        requires_premium: persona.requiresPremium,
+        tone_instructions: persona.toneInstructions,
+      },
+      payload: requestBody.payload,
+    };
+    let usedFallback = false;
 
-    let webhookResult: Awaited<ReturnType<typeof postWebhookJson>>;
+    let webhookResult: Awaited<
+      ReturnType<typeof postCoachGenerateWebhook>
+    >['webhookResult'];
 
     try {
-      webhookResult = await postWebhookJson(webhookUrl, {
-        entry_id: pendingEntry.id,
-        user_id: user.id,
-        cache_key: cacheKey,
-        input_hash: inputHash,
-        persona_key: requestBody.persona_key,
-        locale: requestBody.locale ?? null,
-        persona: {
-          key: persona.key,
-          requires_premium: persona.requiresPremium,
-          tone_instructions: persona.toneInstructions,
+      const webhookCall = await postCoachGenerateWebhook({
+        endpoints: webhookEndpoints,
+        payload: webhookPayload,
+        onFallback: ({ reason, primaryStatus }) => {
+          usedFallback = true;
+
+          console.warn(
+            '[coach-generate-response] Falling back to secondary coach webhook',
+            {
+              request_id: requestId,
+              entry_id: pendingEntry.id,
+              reason,
+              ...(primaryStatus === null
+                ? {}
+                : { primary_status: primaryStatus }),
+            },
+          );
         },
-        payload: requestBody.payload,
       });
-    } catch {
+      webhookResult = webhookCall.webhookResult;
+      usedFallback = webhookCall.usedFallback;
+    } catch (error) {
+      if (error instanceof Phase2HttpError) {
+        throw error;
+      }
+
       await supabase
         .from('coach_entries')
         .update({
@@ -276,6 +304,7 @@ Deno.serve(async (req: Request) => {
           error_code: 'coach_webhook_unreachable',
           response_payload_json: summarizeProviderPayload(null, {
             error_code: 'coach_webhook_unreachable',
+            fallback: usedFallback,
             source: 'coach_generation',
           }),
         })
@@ -295,6 +324,7 @@ Deno.serve(async (req: Request) => {
           status: 'error',
           error_code: `coach_webhook_${webhookResult.status}`,
           response_payload_json: summarizeWebhookResult(webhookResult, {
+            fallback: usedFallback,
             provider: 'n8n',
             source: 'coach_generation',
             error_code: `coach_webhook_${webhookResult.status}`,
@@ -326,6 +356,7 @@ Deno.serve(async (req: Request) => {
         cta_route: normalizedResponse.cta_route ?? null,
         source: normalizedResponse.source,
         response_payload_json: summarizeProviderPayload(webhookResult.payload, {
+          fallback: usedFallback,
           source: normalizedResponse.source,
           status: 'ready',
         }),

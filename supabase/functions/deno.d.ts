@@ -5,6 +5,10 @@ declare namespace Deno {
         set(key: string, value: string): void;
     };
     export function serve(handler: (req: Request) => Response | Promise<Response>): void;
+    export function test(
+        name: string,
+        fn: () => void | Promise<void>,
+    ): void;
 }
 
 // Mock for Google APIs

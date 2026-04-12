@@ -1,7 +1,11 @@
-import { Phase2HttpError } from './phase2Errors.ts';
-import type { Phase2ModerationState } from './phase2Types.ts';
+import { createPhase2DatabaseError } from './phase2Errors.ts';
 import type {
+  Phase2ModerationActor,
+  Phase2ModerationDecision,
+  Phase2ModerationState,
+  Phase2ModerationSubject,
   Phase2SocialModerationAction,
+  Phase2SocialReportTargetType,
   Phase2SocialReportWorkflowStatus,
 } from './phase2Types.ts';
 
@@ -98,31 +102,313 @@ export function shouldAutoHideForReports(
   return uniqueReportCount24h >= threshold;
 }
 
+export function buildInitialSocialModerationFields(
+  moderationState: Phase2ModerationState,
+  nowIso = new Date().toISOString(),
+) {
+  if (moderationState === 'pending') {
+    return {
+      moderation_queued_at: nowIso,
+      moderation_claimed_at: null,
+      moderation_completed_at: null,
+      moderation_attempt_count: 0,
+      moderation_last_error: null,
+    };
+  }
+
+  return {
+    moderation_queued_at: null,
+    moderation_claimed_at: null,
+    moderation_completed_at: nowIso,
+    moderation_attempt_count: 0,
+    moderation_last_error: null,
+  };
+}
+
+export interface Phase2ModerationProvider {
+  name: string;
+  reviewSubject(
+    subject: Phase2ModerationSubject,
+  ): Promise<Phase2ModerationDecision> | Phase2ModerationDecision;
+}
+
+export function createManualReviewModerationProvider(): Phase2ModerationProvider {
+  return {
+    name: 'manual_review',
+    reviewSubject(subject) {
+      const decisionAt = new Date().toISOString();
+
+      return {
+        action: 'flag',
+        next_state: 'flagged',
+        reason_code: 'manual_review_required',
+        provider: 'manual_review',
+        labels: subject.asset_path || subject.asset_url ? ['asset_present'] : ['text_only'],
+        confidence: null,
+        summary: {
+          source: 'social_process_moderation_queue',
+          result: 'manual_review_required',
+          moderation_state: 'flagged',
+          moderation_reason: 'manual_review_required',
+          moderation_provider: 'manual_review',
+          decision_at: decisionAt,
+          review_required: true,
+          asset_present: Boolean(subject.asset_path || subject.asset_url),
+          open_reports: subject.open_reports,
+          total_reports_24h: subject.total_reports_24h,
+          unique_reporters_24h: subject.unique_reporters_24h,
+        },
+      };
+    },
+  };
+}
+
+export function createSocialModerationProvider(): Phase2ModerationProvider {
+  return createManualReviewModerationProvider();
+}
+
+function getSocialModerationTargetTable(
+  targetType: Phase2SocialReportTargetType,
+) {
+  return targetType === 'post' ? 'social_posts' : 'social_comments';
+}
+
+function buildTargetScope(
+  query: any,
+  targetType: Phase2SocialReportTargetType,
+  targetId: string,
+) {
+  return targetType === 'post'
+    ? query.eq('target_post_id', targetId)
+    : query.eq('target_comment_id', targetId);
+}
+
+export function resolveSocialReportWorkflowStatusForDecision(options: {
+  action: Phase2SocialModerationAction;
+  nextState: Phase2ModerationState | null;
+  flaggedWorkflowStatus?: Extract<
+    Phase2SocialReportWorkflowStatus,
+    'reviewing' | 'resolved'
+  >;
+}): Phase2SocialReportWorkflowStatus {
+  if (options.action === 'dismiss_reports') {
+    return 'dismissed';
+  }
+
+  if (options.action === 'flag') {
+    return options.flaggedWorkflowStatus ?? 'resolved';
+  }
+
+  if (
+    options.nextState === 'approved' ||
+    options.nextState === 'rejected' ||
+    options.nextState === 'hidden' ||
+    options.nextState === 'removed'
+  ) {
+    return 'resolved';
+  }
+
+  return 'reviewing';
+}
+
+export async function applySocialModerationDecisionToTarget(
+  client: any,
+  options: {
+    targetType: Phase2SocialReportTargetType;
+    targetId: string;
+    nextState: Phase2ModerationState;
+    reasonCode?: string | null;
+    provider: string;
+    summary: Record<string, unknown>;
+  },
+) {
+  const targetTable = getSocialModerationTargetTable(options.targetType);
+  const { data, error } = await client
+    .from(targetTable)
+    .update({
+      moderation_state: options.nextState,
+      moderation_reason: options.reasonCode ?? null,
+      moderation_provider: options.provider,
+      moderation_summary_json: options.summary,
+      moderation_claimed_at: null,
+      moderation_completed_at: new Date().toISOString(),
+      moderation_last_error: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', options.targetId)
+    .select('id, moderation_state')
+    .single();
+
+  if (error || !data) {
+    throw createPhase2DatabaseError(error, {
+      contextLabel: 'Social moderation target update',
+      fallbackCode: 'moderation_target_update_failed',
+      fallbackMessage: 'Failed to update the moderation target',
+      relationName: targetTable,
+    });
+  }
+
+  return {
+    id: data.id,
+    moderation_state: normalizeModerationState(
+      data.moderation_state,
+      options.nextState,
+    ),
+  };
+}
+
+export async function markSocialModerationProcessingError(
+  client: any,
+  options: {
+    targetType: Phase2SocialReportTargetType;
+    targetId: string;
+    message: string;
+  },
+) {
+  const targetTable = getSocialModerationTargetTable(options.targetType);
+  const { error } = await client
+    .from(targetTable)
+    .update({
+      moderation_claimed_at: null,
+      moderation_last_error: options.message,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', options.targetId);
+
+  if (error) {
+    throw createPhase2DatabaseError(error, {
+      contextLabel: 'Social moderation error update',
+      fallbackCode: 'moderation_target_error_update_failed',
+      fallbackMessage: 'Failed to record the moderation processing error',
+      relationName: targetTable,
+    });
+  }
+}
+
+export async function updateLinkedSocialReportsForModerationDecision(
+  client: any,
+  options: {
+    targetType: Phase2SocialReportTargetType;
+    targetId: string;
+    workflowStatus: Phase2SocialReportWorkflowStatus;
+    moderationState: Phase2ModerationState;
+    reasonCode?: string | null;
+    provider: string;
+    reviewedBy?: string | null;
+    resolutionAction?: Phase2SocialModerationAction | null;
+    resolutionNote?: string | null;
+    reportIds?: string[];
+  },
+) {
+  const nowIso = new Date().toISOString();
+  let query = client
+    .from('social_reports')
+    .update({
+      workflow_status: options.workflowStatus,
+      moderation_state: options.moderationState,
+      moderation_reason: options.reasonCode ?? null,
+      moderation_provider: options.provider,
+      reviewed_by:
+        options.workflowStatus === 'resolved' || options.workflowStatus === 'dismissed'
+          ? options.reviewedBy ?? null
+          : null,
+      reviewed_at:
+        options.workflowStatus === 'resolved' || options.workflowStatus === 'dismissed'
+          ? nowIso
+          : null,
+      resolution_action:
+        options.workflowStatus === 'resolved' || options.workflowStatus === 'dismissed'
+          ? options.resolutionAction ?? null
+          : null,
+      resolution_note:
+        options.workflowStatus === 'resolved' || options.workflowStatus === 'dismissed'
+          ? options.resolutionNote ?? null
+          : null,
+    })
+    .eq('target_type', options.targetType)
+    .in('workflow_status', ['submitted', 'reviewing']);
+
+  query = buildTargetScope(query, options.targetType, options.targetId);
+
+  if (options.reportIds && options.reportIds.length > 0) {
+    query = query.in('id', options.reportIds);
+  }
+
+  const { data, error } = await query.select('id');
+
+  if (error) {
+    throw createPhase2DatabaseError(error, {
+      contextLabel: 'Social moderation report update',
+      fallbackCode: 'moderation_report_update_failed',
+      fallbackMessage: 'Failed to update linked reports',
+      relationName: 'social_reports',
+    });
+  }
+
+  return (Array.isArray(data) ? data : [])
+    .map((report) => report.id)
+    .filter((reportId): reportId is string => typeof reportId === 'string' && reportId.length > 0);
+}
+
+export async function createSocialModerationEvent(
+  client: any,
+  options: {
+    targetType: Phase2SocialReportTargetType;
+    targetId: string;
+    actor: Phase2ModerationActor;
+    action: Phase2SocialModerationAction;
+    previousState: Phase2ModerationState;
+    nextState: Phase2ModerationState | null;
+    reasonCode?: string | null;
+    note?: string | null;
+    linkedReportIds?: string[];
+    metadata?: Record<string, unknown>;
+  },
+) {
+  const { data, error } = await client
+    .from('social_moderation_events')
+    .insert({
+      target_type: options.targetType,
+      target_post_id: options.targetType === 'post' ? options.targetId : null,
+      target_comment_id: options.targetType === 'comment' ? options.targetId : null,
+      actor_id: options.actor.actor_id,
+      actor_type: options.actor.actor_type,
+      actor_label: options.actor.actor_label,
+      action: options.action,
+      previous_moderation_state: options.previousState,
+      next_moderation_state: options.nextState,
+      reason_code: options.reasonCode ?? null,
+      note: options.note ?? null,
+      linked_report_ids: options.linkedReportIds ?? [],
+      metadata_json: options.metadata ?? {},
+    })
+    .select('id')
+    .single();
+
+  if (error || !data) {
+    throw createPhase2DatabaseError(error, {
+      contextLabel: 'Social moderation audit event',
+      fallbackCode: 'moderation_audit_create_failed',
+      fallbackMessage: 'Failed to create moderation audit event',
+      relationName: 'social_moderation_events',
+    });
+  }
+
+  return data.id as string;
+}
+
 export function resolveSocialPublishModerationResult(options: {
   moderationEnabled: boolean;
-  webhookConfigured: boolean;
-  missingWebhookCode: string;
-  missingWebhookMessage: string;
 }) {
   if (!options.moderationEnabled) {
     return {
       moderation_state: 'approved' as Phase2ModerationState,
       published: true,
-      shouldQueueWebhook: false,
     };
-  }
-
-  if (!options.webhookConfigured) {
-    throw new Phase2HttpError(
-      503,
-      options.missingWebhookCode,
-      options.missingWebhookMessage,
-    );
   }
 
   return {
     moderation_state: 'pending' as Phase2ModerationState,
     published: false,
-    shouldQueueWebhook: true,
   };
 }

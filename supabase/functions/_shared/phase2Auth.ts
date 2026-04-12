@@ -1,6 +1,11 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
-import { getSupabaseServerConfig, requireServerEnv } from './phase2Env.ts';
+import {
+  getOptionalSocialModerationWorkerToken,
+  getSupabaseServerConfig,
+  requireServerEnv,
+} from './phase2Env.ts';
 import { Phase2HttpError } from './phase2Errors.ts';
+import type { Phase2ModerationActor } from './phase2Types.ts';
 
 export function createServiceRoleClient() {
   const { supabaseUrl, serviceRoleKey } = getSupabaseServerConfig();
@@ -20,7 +25,7 @@ export function getSupabaseUrlOrThrow() {
   });
 }
 
-export async function requireAuthenticatedUser(client: any, req: Request) {
+export function readAuthorizationBearerToken(req: Request) {
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
     throw new Phase2HttpError(401, 'missing_authorization', 'Missing authorization header');
@@ -30,6 +35,12 @@ export async function requireAuthenticatedUser(client: any, req: Request) {
   if (!token) {
     throw new Phase2HttpError(401, 'invalid_authorization', 'Invalid authorization header');
   }
+
+  return token;
+}
+
+export async function requireAuthenticatedUser(client: any, req: Request) {
+  const token = readAuthorizationBearerToken(req);
 
   const {
     data: { user },
@@ -41,6 +52,39 @@ export async function requireAuthenticatedUser(client: any, req: Request) {
   }
 
   return user;
+}
+
+export async function requireSocialModerationWorkerOrAdmin(
+  client: any,
+  req: Request,
+): Promise<Phase2ModerationActor> {
+  const token = readAuthorizationBearerToken(req);
+  const workerToken = getOptionalSocialModerationWorkerToken();
+
+  if (workerToken && token === workerToken) {
+    return {
+      actor_type: 'system',
+      actor_id: null,
+      actor_label: 'social-moderation-worker',
+    };
+  }
+
+  const {
+    data: { user },
+    error,
+  } = await client.auth.getUser(token);
+
+  if (error || !user) {
+    throw new Phase2HttpError(401, 'invalid_authentication', 'Invalid authentication');
+  }
+
+  await requireAdminUserProfile(client, user.id);
+
+  return {
+    actor_type: 'admin',
+    actor_id: user.id,
+    actor_label: null,
+  };
 }
 
 export async function requireAdminUserProfile(client: any, userId: string) {

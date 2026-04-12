@@ -5,6 +5,7 @@ import {
   applyOptimisticReactionToSocialPost,
   applyServerReactionStateToSocialPost,
   buildStableSocialSharePayloadSnapshot,
+  createSocialComment,
   createSocialPost,
   fetchSocialComments,
   fetchSocialFeed,
@@ -415,7 +416,7 @@ describe('social service', () => {
     ]);
   });
 
-  it('removes the uploaded social asset when publish fails because moderation env parity is missing', async () => {
+  it('keeps the uploaded social asset when the backend accepts the post into pending moderation', async () => {
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce({
         ok: true,
@@ -429,12 +430,28 @@ describe('social service', () => {
           }),
       })
       .mockResolvedValueOnce({
-        ok: false,
-        status: 503,
+        ok: true,
         text: async () =>
           JSON.stringify({
-            error: 'Social post moderation provider is not configured',
-            code: 'social_moderation_webhook_not_configured',
+            success: true,
+            post_id: 'post-pending',
+            moderation_state: 'pending',
+            published: false,
+            asset_url: 'https://cdn.example.com/social-post.jpg',
+            rate_limit: {
+              allowed: true,
+              limit_count: 3,
+              window_seconds: 86400,
+              recent_count: 0,
+              retry_after_seconds: 0,
+            },
+            cooldown: {
+              active: false,
+              cooldown_until: null,
+              recent_rejection_count: 0,
+              rejection_threshold: 3,
+              cooldown_hours: 24,
+            },
           }),
       });
 
@@ -448,15 +465,17 @@ describe('social service', () => {
         category: 'food',
         assetSourceUri: 'file:///photo.jpg',
       }),
-    ).rejects.toMatchObject({
-      code: 'social_moderation_webhook_not_configured',
-      status: 503,
-      message: 'Social post moderation provider is not configured',
-    });
+    ).resolves.toEqual(
+      expect.objectContaining({
+        id: 'post-pending',
+        moderation_state: 'pending',
+        moderation_status: 'pending',
+        asset_path: 'viewer-1/posts/22222222-2222-4222-8222-222222222222.jpg',
+        asset_url: 'https://cdn.example.com/social-post.jpg',
+      }),
+    );
 
-    expect(mockStorageRemove).toHaveBeenCalledWith([
-      'viewer-1/posts/22222222-2222-4222-8222-222222222222.jpg',
-    ]);
+    expect(mockStorageRemove).not.toHaveBeenCalled();
   });
 
   it('uses the backend moderation state as the source of truth when publish is immediately approved', async () => {
@@ -501,6 +520,54 @@ describe('social service', () => {
         id: 'post-approved',
         moderation_state: 'approved',
         moderation_status: 'approved',
+      }),
+    );
+  });
+
+  it('uses the backend moderation state as the source of truth when comments are created as pending', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      text: async () =>
+        JSON.stringify({
+          success: true,
+          comment_id: 'comment-pending',
+          post_id: 'post-1',
+          moderation_state: 'pending',
+          published: false,
+          rate_limit: {
+            allowed: true,
+            limit_count: 10,
+            window_seconds: 3600,
+            recent_count: 0,
+            retry_after_seconds: 0,
+          },
+          cooldown: {
+            active: false,
+            cooldown_until: null,
+            recent_rejection_count: 0,
+            rejection_threshold: 3,
+            cooldown_hours: 24,
+          },
+        }),
+    });
+
+    await expect(
+      createSocialComment({
+        viewerProfile: {
+          id: 'viewer-1',
+          username: 'alice',
+          avatar_url: null,
+        },
+        postId: 'post-1',
+        contentText: 'Nice progress',
+      }),
+    ).resolves.toEqual(
+      expect.objectContaining({
+        id: 'comment-pending',
+        post_id: 'post-1',
+        moderation_state: 'pending',
+        moderation_status: 'pending',
+        content_text: 'Nice progress',
       }),
     );
   });

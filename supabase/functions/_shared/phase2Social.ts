@@ -1,7 +1,11 @@
-import { Phase2HttpError } from './phase2Errors.ts';
+import { createPhase2DatabaseError, Phase2HttpError } from './phase2Errors.ts';
+import { normalizeModerationState } from './phase2Moderation.ts';
 import type {
+  Phase2ModerationState,
+  Phase2ModerationSubject,
   Phase2RateLimitResult,
   Phase2RejectionCooldownResult,
+  Phase2SocialModerationQueueContentType,
   Phase2SocialRateLimitAction,
   Phase2UserProfileSnapshot,
 } from './phase2Types.ts';
@@ -9,12 +13,39 @@ import {
   PHASE2_SOCIAL_BUCKET,
   isSocialAssetOwnedByUser,
   normalizeSocialImageMimeType,
+  readOptionalNumber,
+  readOptionalString,
 } from './phase2Utils.ts';
 
 interface SocialStorageObjectRow {
   bucket_id?: string | null;
   name?: string | null;
   metadata?: Record<string, unknown> | null;
+}
+
+interface SocialModerationQueueRow {
+  content_type?: string | null;
+  content_id?: string | null;
+  author_id?: string | null;
+  author_username?: string | null;
+  category?: string | null;
+  content_text?: string | null;
+  asset_path?: string | null;
+  asset_url?: string | null;
+  moderation_state?: string | null;
+  moderation_reason?: string | null;
+  moderation_provider?: string | null;
+  created_at?: string | null;
+  total_reports_24h?: number | null;
+  unique_reporters_24h?: number | null;
+  open_reports?: number | null;
+  reason_codes?: unknown;
+  last_reported_at?: string | null;
+  moderation_queued_at?: string | null;
+  moderation_claimed_at?: string | null;
+  moderation_completed_at?: string | null;
+  moderation_attempt_count?: number | null;
+  moderation_last_error?: string | null;
 }
 
 function createSocialUploadLookupFailedError() {
@@ -506,4 +537,200 @@ export async function getRecentReportCount24h(
       .map((item) => item.reporter_id)
       .filter((value): value is string => typeof value === 'string' && value.length > 0),
   ).size;
+}
+
+function normalizeSocialModerationSubject(
+  row: SocialModerationQueueRow,
+): Phase2ModerationSubject | null {
+  const contentType = readOptionalString(row.content_type);
+  const contentId = readOptionalString(row.content_id);
+  const createdAt = readOptionalString(row.created_at);
+
+  if (
+    (contentType !== 'post' && contentType !== 'comment') ||
+    !contentId ||
+    !createdAt
+  ) {
+    return null;
+  }
+
+  const rawReasonCodes = Array.isArray(row.reason_codes)
+    ? row.reason_codes
+    : [];
+
+  const category = readOptionalString(row.category);
+
+  return {
+    content_type: contentType,
+    content_id: contentId,
+    author_id: readOptionalString(row.author_id),
+    author_username: readOptionalString(row.author_username),
+    category:
+      category === 'before_after' || category === 'food' || category === 'physique'
+        ? category
+        : null,
+    content_text: readOptionalString(row.content_text),
+    asset_path: readOptionalString(row.asset_path),
+    asset_url: readOptionalString(row.asset_url),
+    moderation_state: normalizeModerationState(
+      row.moderation_state,
+      'pending',
+    ),
+    moderation_reason: readOptionalString(row.moderation_reason),
+    moderation_provider: readOptionalString(row.moderation_provider),
+    created_at: createdAt,
+    total_reports_24h: readOptionalNumber(row.total_reports_24h) ?? 0,
+    unique_reporters_24h: readOptionalNumber(row.unique_reporters_24h) ?? 0,
+    open_reports: readOptionalNumber(row.open_reports) ?? 0,
+    reason_codes: rawReasonCodes.filter(
+      (reasonCode): reasonCode is string =>
+        typeof reasonCode === 'string' && reasonCode.trim().length > 0,
+    ),
+    last_reported_at: readOptionalString(row.last_reported_at),
+    moderation_queued_at: readOptionalString(row.moderation_queued_at),
+    moderation_claimed_at: readOptionalString(row.moderation_claimed_at),
+    moderation_completed_at: readOptionalString(row.moderation_completed_at),
+    moderation_attempt_count: readOptionalNumber(row.moderation_attempt_count) ?? 0,
+    moderation_last_error: readOptionalString(row.moderation_last_error),
+  };
+}
+
+function getModerationQueuePriorityTimestamp(subject: Phase2ModerationSubject) {
+  return Date.parse(subject.moderation_queued_at ?? subject.created_at);
+}
+
+export function isSocialModerationSubjectClaimable(
+  subject: Phase2ModerationSubject,
+  options: {
+    nowIso?: string;
+    staleAfterMinutes?: number;
+  } = {},
+) {
+  if (subject.moderation_state !== 'pending') {
+    return false;
+  }
+
+  if (!subject.moderation_claimed_at) {
+    return true;
+  }
+
+  const nowMs = Date.parse(options.nowIso ?? new Date().toISOString());
+  const claimedAtMs = Date.parse(subject.moderation_claimed_at);
+  if (!Number.isFinite(nowMs) || !Number.isFinite(claimedAtMs)) {
+    return false;
+  }
+
+  const staleAfterMinutes = options.staleAfterMinutes ?? 15;
+  return claimedAtMs <= nowMs - (staleAfterMinutes * 60 * 1000);
+}
+
+export function compareSocialModerationSubjectsForClaim(
+  left: Phase2ModerationSubject,
+  right: Phase2ModerationSubject,
+) {
+  if (left.open_reports !== right.open_reports) {
+    return right.open_reports - left.open_reports;
+  }
+
+  const leftPriorityMs = getModerationQueuePriorityTimestamp(left);
+  const rightPriorityMs = getModerationQueuePriorityTimestamp(right);
+  if (leftPriorityMs !== rightPriorityMs) {
+    return leftPriorityMs - rightPriorityMs;
+  }
+
+  const leftCreatedAtMs = Date.parse(left.created_at);
+  const rightCreatedAtMs = Date.parse(right.created_at);
+  if (leftCreatedAtMs !== rightCreatedAtMs) {
+    return leftCreatedAtMs - rightCreatedAtMs;
+  }
+
+  return left.content_id.localeCompare(right.content_id);
+}
+
+export function selectClaimableSocialModerationSubjects(
+  subjects: Phase2ModerationSubject[],
+  options: {
+    limit: number;
+    nowIso?: string;
+    staleAfterMinutes?: number;
+  },
+) {
+  return [...subjects]
+    .filter((subject) =>
+      isSocialModerationSubjectClaimable(subject, {
+        nowIso: options.nowIso,
+        staleAfterMinutes: options.staleAfterMinutes,
+      }))
+    .sort(compareSocialModerationSubjectsForClaim)
+    .slice(0, options.limit);
+}
+
+export async function fetchSocialModerationQueueForDryRun(
+  client: any,
+  options: {
+    contentType: Phase2SocialModerationQueueContentType;
+    limit: number;
+    staleAfterMinutes: number;
+  },
+) {
+  const fetchLimit = Math.min(Math.max(options.limit * 10, 100), 500);
+  let query = client
+    .from('social_moderation_queue')
+    .select(
+      'content_type, content_id, author_id, author_username, category, content_text, asset_path, asset_url, moderation_state, moderation_reason, moderation_provider, created_at, total_reports_24h, unique_reporters_24h, open_reports, reason_codes, last_reported_at, moderation_queued_at, moderation_claimed_at, moderation_completed_at, moderation_attempt_count, moderation_last_error',
+    )
+    .eq('moderation_state', 'pending')
+    .limit(fetchLimit);
+
+  if (options.contentType !== 'all') {
+    query = query.eq('content_type', options.contentType);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw createPhase2DatabaseError(error, {
+      contextLabel: 'Social moderation queue dry run',
+      fallbackCode: 'social_moderation_queue_fetch_failed',
+      fallbackMessage: 'Failed to inspect the moderation queue',
+      relationName: 'social_moderation_queue',
+    });
+  }
+
+  const normalizedSubjects = (Array.isArray(data) ? data : [])
+    .map((row) => normalizeSocialModerationSubject(row as SocialModerationQueueRow))
+    .filter((row): row is Phase2ModerationSubject => row !== null);
+
+  return selectClaimableSocialModerationSubjects(normalizedSubjects, {
+    limit: options.limit,
+    staleAfterMinutes: options.staleAfterMinutes,
+  });
+}
+
+export async function claimSocialModerationBatch(
+  client: any,
+  options: {
+    contentType: Phase2SocialModerationQueueContentType;
+    limit: number;
+    staleAfterMinutes: number;
+  },
+) {
+  const { data, error } = await client.rpc('claim_social_moderation_batch', {
+    p_limit: options.limit,
+    p_content_type: options.contentType,
+    p_stale_after_minutes: options.staleAfterMinutes,
+  });
+
+  if (error) {
+    throw createPhase2DatabaseError(error, {
+      contextLabel: 'Social moderation queue claim',
+      fallbackCode: 'social_moderation_claim_failed',
+      fallbackMessage: 'Failed to claim moderation queue items',
+      rpcName: 'claim_social_moderation_batch',
+    });
+  }
+
+  return (Array.isArray(data) ? data : [])
+    .map((row) => normalizeSocialModerationSubject(row as SocialModerationQueueRow))
+    .filter((row): row is Phase2ModerationSubject => row !== null);
 }

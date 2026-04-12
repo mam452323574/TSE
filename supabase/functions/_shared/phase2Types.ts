@@ -42,6 +42,12 @@ export type Phase2SocialModerationAction =
   | 'reject'
   | 'dismiss_reports';
 
+export type Phase2SocialModerationQueueContentType =
+  | Phase2SocialReportTargetType
+  | 'all';
+
+export type Phase2ModerationActorType = 'admin' | 'system';
+
 export type Phase2CoachEntryStatus = 'pending' | 'ready' | 'error';
 
 export type Phase2GrowthState =
@@ -171,6 +177,80 @@ export interface SocialModerateContentResponse {
   moderation_state: Phase2ModerationState | null;
   affected_reports: number;
   event_id: string;
+}
+
+export interface Phase2ModerationSubject {
+  content_type: Phase2SocialReportTargetType;
+  content_id: string;
+  author_id: string | null;
+  author_username: string | null;
+  category: Phase2SocialCategory | null;
+  content_text: string | null;
+  asset_path: string | null;
+  asset_url: string | null;
+  moderation_state: Phase2ModerationState;
+  moderation_reason: string | null;
+  moderation_provider: string | null;
+  created_at: string;
+  total_reports_24h: number;
+  unique_reporters_24h: number;
+  open_reports: number;
+  reason_codes: string[];
+  last_reported_at: string | null;
+  moderation_queued_at: string | null;
+  moderation_claimed_at: string | null;
+  moderation_completed_at: string | null;
+  moderation_attempt_count: number;
+  moderation_last_error: string | null;
+}
+
+export interface Phase2ModerationDecision {
+  action: Phase2SocialModerationAction;
+  next_state: Phase2ModerationState;
+  reason_code: string;
+  provider: string;
+  summary: Record<string, unknown>;
+  labels?: string[];
+  confidence?: number | null;
+}
+
+export interface Phase2ModerationActor {
+  actor_type: Phase2ModerationActorType;
+  actor_id: string | null;
+  actor_label: string | null;
+}
+
+export interface SocialProcessModerationQueueRequest {
+  limit?: number;
+  content_type?: Phase2SocialModerationQueueContentType;
+  stale_after_minutes?: number;
+  dry_run?: boolean;
+}
+
+export interface SocialProcessModerationQueueResultItem {
+  content_type: Phase2SocialReportTargetType;
+  content_id: string;
+  previous_moderation_state: Phase2ModerationState;
+  moderation_state: Phase2ModerationState | null;
+  action: Phase2SocialModerationAction | null;
+  provider: string | null;
+  status: 'selected' | 'processed' | 'failed';
+  reason_code: string | null;
+  event_id: string | null;
+  affected_reports: number;
+  error_code: string | null;
+  error_message: string | null;
+  dry_run: boolean;
+}
+
+export interface SocialProcessModerationQueueResponse {
+  success: true;
+  dry_run: boolean;
+  selected_count: number;
+  claimed_count: number;
+  processed_count: number;
+  failed_count: number;
+  results: SocialProcessModerationQueueResultItem[];
 }
 
 export interface SocialReserveUploadRequest {

@@ -2,25 +2,19 @@ import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 import { createServiceRoleClient, requireAuthenticatedUser } from '../_shared/phase2Auth.ts';
 import { loadPhase2FeatureFlags, requireFeatureEnabled } from '../_shared/phase2Config.ts';
 import { parseSocialCreateCommentRequest } from '../_shared/phase2Contracts.ts';
-import { getOptionalWebhookUrl } from '../_shared/phase2Env.ts';
 import {
   createPhase2DatabaseError,
   getPhase2ErrorStatus,
   Phase2HttpError,
   toPhase2ErrorPayload,
 } from '../_shared/phase2Errors.ts';
+import { createRequestId, logPhase2Error } from '../_shared/phase2Observability.ts';
 import {
-  createRequestId,
-  logPhase2Error,
-  summarizeProviderPayload,
-} from '../_shared/phase2Observability.ts';
-import {
-  normalizeModerationState,
+  buildInitialSocialModerationFields,
   resolveSocialPublishModerationResult,
 } from '../_shared/phase2Moderation.ts';
 import { assertCommentableSocialPost, assertNoRecentDuplicateComment, fetchViewerProfileSnapshot, getSocialRateLimit, getSocialRejectionCooldown } from '../_shared/phase2Social.ts';
-import { postWebhookJson } from '../_shared/phase2Webhook.ts';
-import { PHASE2_SOCIAL_REQUEST_MAX_BYTES, normalizeSocialText, readJsonBody, readOptionalString, sha256Hex } from '../_shared/phase2Utils.ts';
+import { PHASE2_SOCIAL_REQUEST_MAX_BYTES, normalizeSocialText, readJsonBody, sha256Hex } from '../_shared/phase2Utils.ts';
 import type { Phase2ModerationState, SocialCreateCommentResponse } from '../_shared/phase2Types.ts';
 
 function requirePostMethod(req: Request) {
@@ -77,18 +71,15 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const moderationWebhookUrl = getOptionalWebhookUrl(
-      'N8N_SOCIAL_CREATE_COMMENT_WEBHOOK_URL',
-    );
     const moderationPlan = resolveSocialPublishModerationResult({
       moderationEnabled: featureFlags.moderation_enabled,
-      webhookConfigured: moderationWebhookUrl.length > 0,
-      missingWebhookCode: 'social_comment_moderation_webhook_not_configured',
-      missingWebhookMessage: 'Social comment moderation provider is not configured',
     });
     const profileSnapshot = await fetchViewerProfileSnapshot(supabase, user.id);
     const normalizedContentText = normalizeSocialText(requestBody.content_text);
     const contentHash = await sha256Hex(normalizedContentText);
+    const initialModerationFields = buildInitialSocialModerationFields(
+      moderationPlan.moderation_state,
+    );
 
     await assertNoRecentDuplicateComment(supabase, user.id, contentHash);
     const { data: createdComment, error: createError } = await supabase
@@ -101,6 +92,7 @@ Deno.serve(async (req: Request) => {
         content_text: normalizedContentText,
         content_hash: contentHash,
         moderation_state: moderationPlan.moderation_state,
+        ...initialModerationFields,
       })
       .select('id, moderation_state, post_id')
       .single();
@@ -114,77 +106,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    let moderationState = createdComment.moderation_state as Phase2ModerationState;
-    const cleanupCreatedComment = async () => {
-      await supabase.from('social_comments').delete().eq('id', createdComment.id);
-    };
-
-    if (moderationPlan.shouldQueueWebhook) {
-      let webhookResult: Awaited<ReturnType<typeof postWebhookJson>>;
-
-      try {
-        webhookResult = await postWebhookJson(moderationWebhookUrl, {
-          comment_id: createdComment.id,
-          post_id: requestBody.post_id,
-          user_id: user.id,
-          content_text: normalizedContentText,
-        });
-      } catch {
-        await cleanupCreatedComment();
-        throw new Phase2HttpError(
-          502,
-          'social_comment_moderation_webhook_failed',
-          'Social comment moderation provider could not be reached',
-        );
-      }
-
-      if (!webhookResult.ok) {
-        await cleanupCreatedComment();
-        throw new Phase2HttpError(
-          502,
-          'social_comment_moderation_webhook_failed',
-          'Social comment moderation provider returned an error',
-        );
-      }
-
-      if (!webhookResult.payload) {
-        await cleanupCreatedComment();
-        throw new Phase2HttpError(
-          502,
-          'social_comment_moderation_invalid_response',
-          'Social comment moderation provider returned an invalid payload',
-        );
-      }
-
-      moderationState = normalizeModerationState(
-        readOptionalString(webhookResult.payload?.moderation_state),
-        'pending',
-      );
-
-      const { error: updateError } = await supabase
-        .from('social_comments')
-        .update({
-          moderation_state: moderationState,
-          moderation_reason:
-            readOptionalString(webhookResult.payload?.moderation_reason) ?? null,
-          moderation_provider:
-            readOptionalString(webhookResult.payload?.moderation_provider) ?? 'n8n',
-          moderation_summary_json: summarizeProviderPayload(webhookResult.payload, {
-            provider: 'n8n',
-          }),
-        })
-        .eq('id', createdComment.id);
-
-      if (updateError) {
-        await cleanupCreatedComment();
-        throw createPhase2DatabaseError(updateError, {
-          contextLabel: 'Social comment publish finalization',
-          fallbackCode: 'social_comment_finalize_failed',
-          fallbackMessage: 'Failed to finalize the social comment moderation state',
-          relationName: 'social_comments',
-        });
-      }
-    }
+    const moderationState = createdComment.moderation_state as Phase2ModerationState;
 
     const responseBody: SocialCreateCommentResponse = {
       success: true,

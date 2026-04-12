@@ -2,7 +2,6 @@ import { handleCorsPreflightRequest, jsonResponse } from '../_shared/cors.ts';
 import { createServiceRoleClient, getSupabaseUrlOrThrow, requireAuthenticatedUser } from '../_shared/phase2Auth.ts';
 import { loadPhase2FeatureFlags, requireFeatureEnabled } from '../_shared/phase2Config.ts';
 import { parseSocialCreatePostRequest } from '../_shared/phase2Contracts.ts';
-import { getOptionalWebhookUrl } from '../_shared/phase2Env.ts';
 import {
   createPhase2DatabaseError,
   getPhase2ErrorStatus,
@@ -12,15 +11,13 @@ import {
 import {
   createRequestId,
   logPhase2Error,
-  summarizeProviderPayload,
 } from '../_shared/phase2Observability.ts';
 import {
-  normalizeModerationState,
+  buildInitialSocialModerationFields,
   resolveSocialPublishModerationResult,
 } from '../_shared/phase2Moderation.ts';
 import { assertNoRecentDuplicatePost, assertOwnedScan, fetchViewerProfileSnapshot, getSocialRateLimit, getSocialRejectionCooldown, resolveReservedSocialUpload } from '../_shared/phase2Social.ts';
-import { postWebhookJson } from '../_shared/phase2Webhook.ts';
-import { PHASE2_SOCIAL_BUCKET, PHASE2_SOCIAL_REQUEST_MAX_BYTES, buildPublicStorageUrl, normalizeSocialText, readJsonBody, readOptionalString, sha256Hex } from '../_shared/phase2Utils.ts';
+import { PHASE2_SOCIAL_BUCKET, PHASE2_SOCIAL_REQUEST_MAX_BYTES, buildPublicStorageUrl, normalizeSocialText, readJsonBody, sha256Hex } from '../_shared/phase2Utils.ts';
 import type { Phase2ModerationState, SocialCreatePostResponse } from '../_shared/phase2Types.ts';
 
 function requirePostMethod(req: Request) {
@@ -75,14 +72,8 @@ Deno.serve(async (req: Request) => {
       await assertOwnedScan(supabase, user.id, requestBody.scan_id);
     }
 
-    const moderationWebhookUrl = getOptionalWebhookUrl(
-      'N8N_SOCIAL_CREATE_POST_WEBHOOK_URL',
-    );
     const moderationPlan = resolveSocialPublishModerationResult({
       moderationEnabled: featureFlags.moderation_enabled,
-      webhookConfigured: moderationWebhookUrl.length > 0,
-      missingWebhookCode: 'social_moderation_webhook_not_configured',
-      missingWebhookMessage: 'Social post moderation provider is not configured',
     });
     const reservedUpload = requestBody.upload_id
       ? await resolveReservedSocialUpload(supabase, {
@@ -106,6 +97,9 @@ Deno.serve(async (req: Request) => {
     const assetHash = assetPath
       ? await sha256Hex(assetPath)
       : null;
+    const initialModerationFields = buildInitialSocialModerationFields(
+      moderationPlan.moderation_state,
+    );
 
     await assertNoRecentDuplicatePost(supabase, user.id, {
       contentHash,
@@ -127,6 +121,7 @@ Deno.serve(async (req: Request) => {
         content_hash: contentHash,
         asset_hash: assetHash,
         moderation_state: moderationPlan.moderation_state,
+        ...initialModerationFields,
       })
       .select('id, moderation_state, asset_url')
       .single();
@@ -140,82 +135,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    let moderationState = createdPost.moderation_state as Phase2ModerationState;
-    const cleanupCreatedPost = async () => {
-      await supabase.from('social_posts').delete().eq('id', createdPost.id);
-    };
-
-    if (moderationPlan.shouldQueueWebhook) {
-      let webhookResult: Awaited<ReturnType<typeof postWebhookJson>>;
-
-      try {
-        webhookResult = await postWebhookJson(moderationWebhookUrl, {
-          post_id: createdPost.id,
-          user_id: user.id,
-          category: requestBody.category,
-          content_text: normalizedContentText,
-          asset_path: assetPath,
-          asset_url: createdPost.asset_url ?? null,
-          scan_id: requestBody.scan_id ?? null,
-          share_payload_snapshot: requestBody.share_payload_snapshot ?? null,
-        });
-      } catch {
-        await cleanupCreatedPost();
-        throw new Phase2HttpError(
-          502,
-          'social_moderation_webhook_failed',
-          'Social post moderation provider could not be reached',
-        );
-      }
-
-      if (!webhookResult.ok) {
-        await cleanupCreatedPost();
-        throw new Phase2HttpError(
-          502,
-          'social_moderation_webhook_failed',
-          'Social post moderation provider returned an error',
-        );
-      }
-
-      if (!webhookResult.payload) {
-        await cleanupCreatedPost();
-        throw new Phase2HttpError(
-          502,
-          'social_moderation_invalid_response',
-          'Social post moderation provider returned an invalid payload',
-        );
-      }
-
-      const webhookModerationState = normalizeModerationState(
-        readOptionalString(webhookResult.payload?.moderation_state),
-        'pending',
-      );
-      moderationState = webhookModerationState;
-
-      const { error: updateError } = await supabase
-        .from('social_posts')
-        .update({
-          moderation_state: moderationState,
-          moderation_reason:
-            readOptionalString(webhookResult.payload?.moderation_reason) ?? null,
-          moderation_provider:
-            readOptionalString(webhookResult.payload?.moderation_provider) ?? 'n8n',
-          moderation_summary_json: summarizeProviderPayload(webhookResult.payload, {
-            provider: 'n8n',
-          }),
-        })
-        .eq('id', createdPost.id);
-
-      if (updateError) {
-        await cleanupCreatedPost();
-        throw createPhase2DatabaseError(updateError, {
-          contextLabel: 'Social publish finalization',
-          fallbackCode: 'social_post_finalize_failed',
-          fallbackMessage: 'Failed to finalize the social post moderation state',
-          relationName: 'social_posts',
-        });
-      }
-    }
+    const moderationState = createdPost.moderation_state as Phase2ModerationState;
 
     const responseBody: SocialCreatePostResponse = {
       success: true,
